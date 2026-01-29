@@ -1,0 +1,48 @@
+---
+id: "portfolio-site"
+title: "Personal Portfolio Website"
+description: "A modern, accessible portfolio site built with Next.js featuring progressive disclosure and optimized performance."
+technologies:
+  - "Next.js"
+  - "TypeScript"
+  - "Tailwind CSS"
+  - "MDX"
+  - "Docker"
+order: 1
+links:
+  - type: "live"
+    url: "https://example.com"
+    label: "View Live Site"
+  - type: "github"
+    url: "https://github.com/example/portfolio"
+    label: "View Source Code"
+createdAt: "2024-01-01T00:00:00.000Z"
+updatedAt: "2024-01-01T00:00:00.000Z"
+depth:
+  problem: "Needed a portfolio that respects visitors' time while providing depth for those who want it. Traditional portfolios either overwhelm with information or lack substance."
+  approach: "Implemented a progressive disclosure pattern with summary and depth layers. Content is stored in MDX files for easy updates without code changes. Built with accessibility as a core requirement, not an afterthought."
+  tradeoffs:
+    - decision: "Single-page vs multi-page architecture"
+      alternatives:
+        - "Multi-page with separate routes for each section"
+        - "Single-page with anchor navigation"
+      reasoning: "Single-page provides faster navigation and simpler state management for expand/collapse interactions, while still supporting deep linking."
+    - decision: "Custom components vs UI library"
+      alternatives:
+        - "Use Chakra UI or similar"
+        - "Build custom Tailwind components"
+      reasoning: "Custom components gave full control over bundle size and accessibility implementation, important for a portfolio showcasing frontend skills."
+  outcomes:
+    - metric: "Lighthouse Performance"
+      value: "98/100"
+      context: "Achieved through static generation and optimized assets"
+    - metric: "Accessibility Score"
+      value: "100/100"
+      context: "WCAG 2.1 AA compliant with full keyboard navigation"
+    - metric: "Time to Interactive"
+      value: "1.2 seconds"
+      context: "On simulated 3G connection"
+  reflections: "Would explore using a headless CMS for content management if the site needed frequent updates from non-technical users. The MDX approach works well for developer-maintained content."
+---
+
+{/* Additional project content */}

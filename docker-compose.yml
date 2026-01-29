@@ -1,0 +1,39 @@
+services:
+  # Frontend service - Next.js portfolio application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: portfolio-frontend
+    ports:
+      - "8087:8087"
+    volumes:
+      # Mount source code for hot reloading in development
+      - ./frontend:/app
+      # Prevent node_modules from being overwritten by volume mount
+      - /app/node_modules
+      # Prevent .next from being overwritten
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - PORT=8087
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+
+  # Production frontend service (use with: docker compose --profile production up)
+  frontend-prod:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+    container_name: portfolio-frontend-prod
+    ports:
+      - "8087:8087"
+    environment:
+      - NODE_ENV=production
+      - PORT=8087
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    profiles:
+      - production

@@ -1,0 +1,56 @@
+---
+id: "tech-corp"
+role: "Senior Software Engineer"
+company: "TechCorp Inc."
+location: "San Francisco, CA"
+startDate: "2021-03-01"
+endDate: null
+order: 1
+summary: "Leading frontend architecture and mentoring a team of 6 engineers on a B2B SaaS platform."
+highlights:
+  - "Reduced page load time by 40% through code splitting and lazy loading"
+  - "Established component library used across 5 product teams"
+  - "Mentored 6 junior developers, with 3 promoted to mid-level"
+createdAt: "2024-01-01T00:00:00.000Z"
+updatedAt: "2024-01-01T00:00:00.000Z"
+depth:
+  context: "Joined TechCorp during a critical growth phase when the engineering team was scaling from 15 to 50 engineers. The existing frontend codebase had accumulated significant technical debt, and there was no standardized approach to building UI components."
+  challenges:
+    - "Legacy codebase with inconsistent patterns and no type safety"
+    - "Performance issues causing customer churn on mobile devices"
+    - "Onboarding new engineers took 4-6 weeks due to lack of documentation"
+    - "Multiple teams duplicating UI components with slight variations"
+  decisions:
+    - title: "TypeScript Migration"
+      situation: "The JavaScript codebase had frequent runtime errors in production"
+      options:
+        - "Gradual migration to TypeScript"
+        - "Full rewrite in TypeScript"
+        - "Add Flow types instead"
+      chosen: "Gradual migration to TypeScript"
+      rationale: "Allowed us to maintain velocity while improving code quality incrementally. Set up strict mode for new files while converting existing files during feature work."
+    - title: "Component Library Architecture"
+      situation: "Teams were building similar components independently"
+      options:
+        - "Adopt an existing design system (Material UI, Chakra)"
+        - "Build custom component library"
+        - "Continue with team-specific components"
+      chosen: "Build custom component library"
+      rationale: "Our design requirements were unique enough that customizing an existing library would have been more work than building our own. Also gave us full control over bundle size and accessibility."
+  outcomes:
+    - metric: "Page Load Time"
+      value: "40% reduction"
+      context: "Measured via Lighthouse scores, from 4.2s to 2.5s on 3G"
+    - metric: "Developer Onboarding"
+      value: "60% faster"
+      context: "New engineers productive in 2 weeks instead of 5"
+    - metric: "Component Reuse"
+      value: "85% adoption"
+      context: "5 product teams now use the shared component library"
+  lessons:
+    - "Incremental migration is almost always better than big-bang rewrites"
+    - "Documentation is as important as the code itself"
+    - "Investing in developer experience pays dividends in team velocity"
+---
+
+{/* Additional experience content */}

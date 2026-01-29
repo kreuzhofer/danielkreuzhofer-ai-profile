@@ -1,0 +1,52 @@
+---
+id: "task-management-app"
+title: "TaskFlow - Team Task Management"
+description: "A real-time collaborative task management application with drag-and-drop boards and team workspaces."
+technologies:
+  - "React"
+  - "Node.js"
+  - "PostgreSQL"
+  - "WebSocket"
+  - "Redis"
+order: 2
+links:
+  - type: "live"
+    url: "https://taskflow.example.com"
+    label: "Try TaskFlow"
+  - type: "github"
+    url: "https://github.com/example/taskflow"
+    label: "View Source"
+  - type: "case-study"
+    url: "https://example.com/case-studies/taskflow"
+    label: "Read Case Study"
+createdAt: "2024-01-01T00:00:00.000Z"
+updatedAt: "2024-01-01T00:00:00.000Z"
+depth:
+  problem: "Small teams needed a lightweight alternative to enterprise project management tools. Existing solutions were either too complex or lacked real-time collaboration features."
+  approach: "Built a Kanban-style board with real-time sync using WebSockets. Focused on a clean, intuitive interface that requires minimal onboarding. Implemented optimistic updates for instant feedback."
+  tradeoffs:
+    - decision: "WebSocket vs polling for real-time updates"
+      alternatives:
+        - "Long polling"
+        - "Server-Sent Events"
+        - "WebSocket connections"
+      reasoning: "WebSockets provided bidirectional communication needed for collaborative editing. The connection overhead was acceptable given the interactive nature of the app."
+    - decision: "PostgreSQL vs MongoDB for data storage"
+      alternatives:
+        - "MongoDB for flexible schemas"
+        - "PostgreSQL for relational data"
+      reasoning: "Task relationships (boards, lists, cards, assignments) mapped naturally to relational data. PostgreSQL's JSONB columns provided flexibility where needed."
+  outcomes:
+    - metric: "Active Teams"
+      value: "500+"
+      context: "Teams actively using the platform monthly"
+    - metric: "Sync Latency"
+      value: "<100ms"
+      context: "Average time for changes to propagate to other users"
+    - metric: "Uptime"
+      value: "99.9%"
+      context: "Over 12 months of production operation"
+  reflections: "Would implement offline support from the start. Adding it later required significant refactoring. Also would consider using a CRDT library for conflict resolution instead of custom logic."
+---
+
+{/* Additional project content */}
