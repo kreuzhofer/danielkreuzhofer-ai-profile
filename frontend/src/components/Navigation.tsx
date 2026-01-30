@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import Link from 'next/link';
 
 /**
  * Props for the NavLink component
@@ -172,7 +173,7 @@ export function MobileMenu({
   /**
    * Handle navigation click - closes menu and calls onNavigate
    */
-  const handleClick = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (href: string) => (_e: React.MouseEvent<HTMLAnchorElement>) => {
     const sectionId = href.replace('#', '');
     
     if (onNavigate) {
@@ -284,6 +285,39 @@ export function MobileMenu({
             );
           })}
         </ul>
+
+        {/* Fit Analysis CTA */}
+        <div className="px-4 py-4 border-t border-gray-200">
+          <Link
+            href="/fit-analysis"
+            onClick={onClose}
+            className="
+              flex items-center justify-center gap-2
+              w-full px-4 py-3 min-h-[44px]
+              bg-blue-600 hover:bg-blue-700
+              text-white font-medium text-base
+              rounded-lg
+              transition-colors duration-200
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600
+            "
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+              />
+            </svg>
+            Fit Analysis
+          </Link>
+        </div>
       </nav>
     </div>
   );
@@ -361,6 +395,7 @@ export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
  * - Provides access to all sections within 2 clicks (Requirement 1.1)
  * - Indicates current active section (Requirement 1.5)
  * - Keyboard navigable with visible focus states
+ * - Includes Fit Analysis CTA button
  * 
  * @example
  * ```tsx
@@ -379,7 +414,7 @@ export function Navigation({
   /**
    * Handle navigation click - extracts section ID from href and calls onNavigate
    */
-  const handleClick = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (href: string) => (_e: React.MouseEvent<HTMLAnchorElement>) => {
     // Extract section ID from href (remove the # prefix)
     const sectionId = href.replace('#', '');
     
@@ -411,6 +446,21 @@ export function Navigation({
           />
         );
       })}
+      
+      {/* Fit Analysis CTA Button */}
+      <Link
+        href="/fit-analysis"
+        className="
+          ml-4 px-4 py-2
+          bg-blue-600 hover:bg-blue-700
+          text-white text-sm font-medium
+          rounded-lg
+          transition-colors duration-200
+          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600
+        "
+      >
+        Fit Analysis
+      </Link>
     </nav>
   );
 }

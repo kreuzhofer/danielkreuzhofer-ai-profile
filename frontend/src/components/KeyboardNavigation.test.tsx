@@ -417,11 +417,28 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
         />
       );
 
-      const links = screen.getAllByRole('link');
-      links.forEach(link => {
+      // Get only the section navigation links (not the Fit Analysis CTA button)
+      const sectionLinks = DEFAULT_SECTIONS.map(section => 
+        screen.getByRole('link', { name: section.label })
+      );
+      
+      sectionLinks.forEach(link => {
         // Using ring-foreground ensures contrast against background
         expect(link).toHaveClass('focus:ring-foreground');
       });
+    });
+
+    it('Fit Analysis button has visible focus indicator', () => {
+      render(
+        <Navigation
+          sections={DEFAULT_SECTIONS}
+          currentSection="about"
+        />
+      );
+
+      const fitAnalysisLink = screen.getByRole('link', { name: 'Fit Analysis' });
+      expect(fitAnalysisLink).toHaveClass('focus:ring-2');
+      expect(fitAnalysisLink).toHaveClass('focus:ring-blue-600');
     });
 
     it('focus indicators use ring-offset for visibility', () => {
@@ -474,11 +491,15 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       await user.tab();
       expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
 
-      // 8. Mobile menu button (visible in DOM even if hidden on desktop)
+      // 8. Fit Analysis CTA button
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Fit Analysis' })).toHaveFocus();
+
+      // 9. Mobile menu button (visible in DOM even if hidden on desktop)
       await user.tab();
       expect(screen.getByRole('button', { name: /open menu/i })).toHaveFocus();
 
-      // 9. Content area elements
+      // 10. Content area elements
       await user.tab();
       expect(screen.getByTestId('content-button')).toHaveFocus();
     });

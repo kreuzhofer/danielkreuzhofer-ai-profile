@@ -35,7 +35,7 @@ export interface LLMConfig {
 const DEFAULT_CONFIG: Required<Omit<LLMConfig, 'apiKey'>> = {
   model: 'gpt-4o-mini',
   temperature: 0.7,
-  maxTokens: 1024,
+  maxTokens: 4096,
   timeout: 30000,
 };
 
@@ -169,6 +169,17 @@ export async function* streamChatCompletion(
   const timeoutId = setTimeout(() => controller.abort(), fullConfig.timeout);
   
   try {
+    // Determine the correct token parameter based on model
+    // Newer models (gpt-5.x, o1, etc.) use max_completion_tokens
+    // Older models use max_tokens
+    const useMaxCompletionTokens = fullConfig.model.startsWith('gpt-5') || 
+                                    fullConfig.model.startsWith('o1') ||
+                                    fullConfig.model.startsWith('o3');
+    
+    const tokenParam = useMaxCompletionTokens 
+      ? { max_completion_tokens: fullConfig.maxTokens }
+      : { max_tokens: fullConfig.maxTokens };
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -179,7 +190,7 @@ export async function* streamChatCompletion(
         model: fullConfig.model,
         messages: openAIMessages,
         temperature: fullConfig.temperature,
-        max_tokens: fullConfig.maxTokens,
+        ...tokenParam,
         stream: true,
       }),
       signal: controller.signal,
@@ -190,6 +201,7 @@ export async function* streamChatCompletion(
     // Handle HTTP errors
     if (!response.ok) {
       const errorBody = await response.text();
+      console.error('OpenAI API error response:', response.status, errorBody);
       
       if (response.status === 429) {
         throw new LLMError(

@@ -237,7 +237,8 @@ describe("Property 1: Navigation Accessibility", () => {
             return hasHref && isInDocument;
           });
 
-          return allLinksAccessible && links.length === sections.length;
+          // sections.length + 1 for the Fit Analysis CTA button
+          return allLinksAccessible && links.length === sections.length + 1;
         }),
         { numRuns: 5 }
       );
