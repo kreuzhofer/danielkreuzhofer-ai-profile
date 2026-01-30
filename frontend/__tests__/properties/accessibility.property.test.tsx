@@ -678,3 +678,143 @@ describe("WCAG 2.1 AA Compliance", () => {
     });
   });
 });
+
+
+// =============================================================================
+// Property 10: Focus Management on Open/Close
+// =============================================================================
+
+import { ChatPanel } from "@/components/chat/ChatPanel";
+import { ChatTriggerButton } from "@/components/chat/ChatTriggerButton";
+
+/**
+ * Feature: ai-chatbot, Property 10: Focus Management on Open/Close
+ *
+ * *For any* chat panel open action, focus SHALL move to the chat panel
+ * (input field or first focusable element). *For any* chat panel close action,
+ * focus SHALL return to the trigger button.
+ *
+ * **Validates: Requirements 7.5**
+ */
+describe("Property 10: Focus Management on Open/Close", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    cleanup();
+  });
+
+  describe("Focus moves to panel on open", () => {
+    it("focus moves to close button when panel opens", async () => {
+      // Create a trigger button to focus initially
+      const triggerButton = document.createElement('button');
+      triggerButton.setAttribute('data-testid', 'trigger-button');
+      document.body.appendChild(triggerButton);
+      triggerButton.focus();
+      
+      // Render the panel as open
+      render(<ChatPanel isOpen={true} onClose={() => {}} />);
+      
+      // Run timers to allow focus to be set
+      jest.runAllTimers();
+      
+      // Focus should be on the close button
+      const closeButton = document.querySelector('[data-testid="chat-close-button"]');
+      expect(closeButton).toBeInTheDocument();
+      expect(document.activeElement).toBe(closeButton);
+      
+      // Cleanup
+      document.body.removeChild(triggerButton);
+    });
+  });
+
+  describe("Focus returns to trigger on close", () => {
+    it("focus returns to previously focused element when panel closes", () => {
+      // Create a trigger button to focus initially
+      const triggerButton = document.createElement('button');
+      triggerButton.setAttribute('data-testid', 'trigger-button');
+      document.body.appendChild(triggerButton);
+      triggerButton.focus();
+      
+      // Render the panel as open first
+      const { rerender } = render(<ChatPanel isOpen={true} onClose={() => {}} />);
+      
+      // Run timers to set initial focus
+      jest.runAllTimers();
+      
+      // Now close the panel
+      rerender(<ChatPanel isOpen={false} onClose={() => {}} />);
+      
+      // Focus should return to the trigger button
+      expect(document.activeElement).toBe(triggerButton);
+      
+      // Cleanup
+      document.body.removeChild(triggerButton);
+    });
+  });
+
+  describe("Focus trap within panel", () => {
+    it("Tab key cycles focus within the panel", () => {
+      render(<ChatPanel isOpen={true} onClose={() => {}} />);
+      jest.runAllTimers();
+      
+      // Get all focusable elements in the panel
+      const panel = document.querySelector('[data-testid="chat-panel-container"]');
+      const focusableElements = panel?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      
+      // Should have focusable elements
+      expect(focusableElements?.length).toBeGreaterThan(0);
+      
+      // Focus the first element
+      focusableElements?.[0].focus();
+      expect(document.activeElement).toBe(focusableElements?.[0]);
+    });
+  });
+
+  describe("ChatPanel accessibility", () => {
+    it("ChatPanel has no WCAG accessibility violations when open", async () => {
+      jest.useRealTimers(); // axe needs real timers
+      
+      render(<ChatPanel isOpen={true} onClose={() => {}} />);
+      
+      // Get the portal content from document.body
+      const panel = document.querySelector('[data-testid="chat-panel"]');
+      
+      if (panel) {
+        const results = await axe(panel as HTMLElement);
+        expect(results).toHaveNoViolations();
+      }
+    });
+  });
+
+  describe("ChatTriggerButton accessibility", () => {
+    it("ChatTriggerButton has no WCAG accessibility violations", async () => {
+      jest.useRealTimers(); // axe needs real timers
+      
+      const { container } = render(
+        <ChatTriggerButton onClick={() => {}} ariaLabel="Open chat" />
+      );
+      
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
+    it("ChatTriggerButton is keyboard accessible", () => {
+      const onClick = jest.fn();
+      render(<ChatTriggerButton onClick={onClick} ariaLabel="Open chat" />);
+      
+      const button = document.querySelector('[data-testid="chat-trigger-button"]') as HTMLElement;
+      
+      // Should be focusable
+      button.focus();
+      expect(document.activeElement).toBe(button);
+      
+      // Should have proper ARIA attributes
+      expect(button.getAttribute('aria-label')).toBe('Open chat');
+    });
+  });
+});

@@ -705,3 +705,132 @@ describe("Property 12: State Persistence Across Viewport Changes", () => {
     });
   });
 });
+
+
+// =============================================================================
+// Property 11 (Chat): State Persistence Across Viewport Changes
+// =============================================================================
+
+import { ChatProvider, useChat } from "@/context/ChatContext";
+
+/**
+ * Feature: ai-chatbot, Property 11: State Persistence Across Viewport Changes
+ *
+ * *For any* chat panel state (open/closed) and conversation history,
+ * resizing the viewport SHALL preserve both the open/closed state
+ * and all conversation messages.
+ *
+ * **Validates: Requirements 9.4**
+ */
+describe("Property 11 (Chat): State Persistence Across Viewport Changes", () => {
+  /**
+   * Test component to access chat context
+   */
+  function TestChatState() {
+    const { isOpen, messages, openChat, closeChat, sendMessage } = useChat();
+    return (
+      <div>
+        <div data-testid="chat-is-open">{isOpen ? 'open' : 'closed'}</div>
+        <div data-testid="chat-message-count">{messages.length}</div>
+        <button data-testid="open-chat" onClick={openChat}>Open</button>
+        <button data-testid="close-chat" onClick={closeChat}>Close</button>
+        <button data-testid="send-message" onClick={() => sendMessage('Test message')}>Send</button>
+      </div>
+    );
+  }
+
+  // Mock fetch for API calls
+  beforeEach(() => {
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        ok: true,
+        body: new ReadableStream({
+          start(controller) {
+            controller.enqueue(new TextEncoder().encode('data: {"type":"chunk","content":"Response"}\n\n'));
+            controller.enqueue(new TextEncoder().encode('data: {"type":"done"}\n\n'));
+            controller.close();
+          },
+        }),
+      })
+    );
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    cleanup();
+  });
+
+  describe("Chat open/closed state persistence", () => {
+    it("open state persists across re-renders (simulating viewport change)", async () => {
+      const { rerender } = render(
+        <ChatProvider>
+          <TestChatState />
+        </ChatProvider>
+      );
+
+      // Open the chat
+      const openButton = screen.getByTestId('open-chat');
+      await act(async () => {
+        openButton.click();
+      });
+
+      expect(screen.getByTestId('chat-is-open').textContent).toBe('open');
+
+      // Simulate viewport change by re-rendering
+      rerender(
+        <ChatProvider>
+          <TestChatState />
+        </ChatProvider>
+      );
+
+      // State should persist
+      expect(screen.getByTestId('chat-is-open').textContent).toBe('open');
+    });
+
+    it("closed state persists across re-renders (simulating viewport change)", async () => {
+      const { rerender } = render(
+        <ChatProvider>
+          <TestChatState />
+        </ChatProvider>
+      );
+
+      // Chat starts closed
+      expect(screen.getByTestId('chat-is-open').textContent).toBe('closed');
+
+      // Simulate viewport change by re-rendering
+      rerender(
+        <ChatProvider>
+          <TestChatState />
+        </ChatProvider>
+      );
+
+      // State should persist
+      expect(screen.getByTestId('chat-is-open').textContent).toBe('closed');
+    });
+  });
+
+  describe("Message history persistence", () => {
+    it("message count persists across re-renders (simulating viewport change)", async () => {
+      const { rerender } = render(
+        <ChatProvider>
+          <TestChatState />
+        </ChatProvider>
+      );
+
+      // Get initial message count (should be 1 for welcome message)
+      const initialCount = parseInt(screen.getByTestId('chat-message-count').textContent || '0');
+      expect(initialCount).toBe(1);
+
+      // Simulate viewport change by re-rendering
+      rerender(
+        <ChatProvider>
+          <TestChatState />
+        </ChatProvider>
+      );
+
+      // Message count should persist
+      const countAfterRerender = parseInt(screen.getByTestId('chat-message-count').textContent || '0');
+      expect(countAfterRerender).toBe(initialCount);
+    });
+  });
+});

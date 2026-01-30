@@ -7,7 +7,7 @@ services:
       target: development
     container_name: portfolio-frontend
     ports:
-      - "8087:8087"
+      - "${PORT:-8087}:${PORT:-8087}"
     volumes:
       # Mount source code for hot reloading in development
       - ./frontend:/app
@@ -16,9 +16,12 @@ services:
       # Prevent .next from being overwritten
       - /app/.next
     environment:
-      - NODE_ENV=development
-      - PORT=8087
-      - HOSTNAME=0.0.0.0
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${PORT:-8087}
+      - HOSTNAME=${HOSTNAME:-0.0.0.0}
+      # AI Chatbot - OpenAI Configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
     restart: unless-stopped
     profiles:
       - development
@@ -31,11 +34,14 @@ services:
       target: production
     container_name: portfolio-frontend-prod
     ports:
-      - "8087:8087"
+      - "${PORT:-8087}:${PORT:-8087}"
     environment:
       - NODE_ENV=production
-      - PORT=8087
-      - HOSTNAME=0.0.0.0
+      - PORT=${PORT:-8087}
+      - HOSTNAME=${HOSTNAME:-0.0.0.0}
+      # AI Chatbot - OpenAI Configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
     restart: unless-stopped
     profiles:
       - production
