@@ -146,7 +146,7 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             {/* Copyright and attribution */}
             <p className="text-sm text-gray-600">
-              © {new Date().getFullYear()} Portfolio. All rights reserved.
+              © {new Date().getFullYear()} Daniel Kreuzhofer. All rights reserved.
             </p>
 
             {/* Footer navigation/links */}

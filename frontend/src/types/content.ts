@@ -27,7 +27,7 @@ export interface ContentItem {
  * Social media link
  */
 export interface SocialLink {
-  platform: "linkedin" | "github" | "twitter" | "email";
+  platform: "linkedin" | "github" | "twitter" | "email" | "youtube" | "website";
   url: string;
   label: string;
 }
@@ -71,10 +71,10 @@ export interface ProjectLink {
 }
 
 /**
- * Contact option (email, LinkedIn, calendar, form)
+ * Contact option (email, LinkedIn, calendar, form, phone, website)
  */
 export interface ContactOption {
-  type: "email" | "linkedin" | "calendar" | "form";
+  type: "email" | "linkedin" | "calendar" | "form" | "phone" | "website";
   label: string;
   url: string;
   description: string;
