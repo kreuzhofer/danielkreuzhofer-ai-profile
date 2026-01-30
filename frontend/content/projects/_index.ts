@@ -5,7 +5,6 @@
 
 // Project entries - listed in order of appearance (most impactful first)
 export const projectFiles: string[] = [
+  'crosslink-channel.mdx',
   'portfolio-site.mdx',
-  'task-management-app.mdx',
-  'analytics-dashboard.mdx',
 ];

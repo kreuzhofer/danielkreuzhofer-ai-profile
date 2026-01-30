@@ -5,7 +5,13 @@
 
 // Experience entries - listed in order of appearance (most recent first)
 export const experienceFiles: string[] = [
-  'tech-corp.mdx',
-  'startup-labs.mdx',
-  'agency-digital.mdx',
+  'aws-current.mdx',
+  'aws-team-lead.mdx',
+  'aws-healthcare.mdx',
+  'aws-media.mdx',
+  'aws-microsoft.mdx',
+  'aws-initial.mdx',
+  'microsoft-evangelist.mdx',
+  'microsoft-consultant.mdx',
+  'crosslink.mdx',
 ];
