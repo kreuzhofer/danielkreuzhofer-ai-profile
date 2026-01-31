@@ -500,7 +500,7 @@ export interface ProjectsSectionProps {
 export function ProjectsSection({ projects, className = '' }: ProjectsSectionProps) {
   const { isExpanded, toggle } = useExpandable();
   const [technologyFilter, setTechnologyFilter] = useState<string>('');
-  const { ref, style } = useScrollAnimation({ triggerOnce: true });
+  const { ref, animationStyle } = useScrollAnimation({ triggerOnce: true });
 
   // Sort projects by order field (lower order = first)
   const sortedProjects = useMemo(
@@ -532,7 +532,7 @@ export function ProjectsSection({ projects, className = '' }: ProjectsSectionPro
       aria-labelledby="projects-heading"
       className={`py-12 md:py-16 lg:py-20 ${className}`}
     >
-      <div ref={ref} style={style} className="max-w-4xl mx-auto">
+      <div ref={ref} style={animationStyle} className="max-w-4xl mx-auto">
         {/* Section heading - h2 for proper hierarchy under page h1 */}
         <h2
           id="projects-heading"

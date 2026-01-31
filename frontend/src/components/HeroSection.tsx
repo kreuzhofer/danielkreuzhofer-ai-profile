@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useReducedMotion } from '@/hooks';
 import { useChat } from '@/context/ChatContext';
 import { Button } from './ui/Button';
@@ -71,7 +72,7 @@ export function HeroSection({
   ctaText = 'Explore My Work',
   ctaHref = '#about',
   className = '',
-}: HeroSectionProps): JSX.Element {
+}: HeroSectionProps): React.JSX.Element {
   const prefersReducedMotion = useReducedMotion();
   const { openChat } = useChat();
 

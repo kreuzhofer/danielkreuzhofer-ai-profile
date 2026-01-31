@@ -262,7 +262,7 @@ export interface ContactSectionProps {
  */
 export function ContactSection({ contact, className = '' }: ContactSectionProps) {
   const { headline, subtext, options } = contact;
-  const { ref, style } = useScrollAnimation({ triggerOnce: true });
+  const { ref, animationStyle } = useScrollAnimation({ triggerOnce: true });
 
   return (
     <section
@@ -270,7 +270,7 @@ export function ContactSection({ contact, className = '' }: ContactSectionProps)
       aria-labelledby="contact-heading"
       className={`py-12 md:py-16 lg:py-20 ${className}`}
     >
-      <div ref={ref} style={style} className="max-w-4xl mx-auto">
+      <div ref={ref} style={animationStyle} className="max-w-4xl mx-auto">
         {/* Section heading - h2 for proper hierarchy under page h1 */}
         <h2
           id="contact-heading"

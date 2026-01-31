@@ -39,30 +39,39 @@ function ChatUI() {
   // Track if panel should be rendered (stays true during exit animation)
   const [shouldRender, setShouldRender] = React.useState(false);
   // Track animation state for smooth transitions
-  const [isAnimating, setIsAnimating] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState(false);
 
+  // Handle open/close with animation
   React.useEffect(() => {
-    if (isOpen) {
-      // Opening: render immediately, then trigger animation
+    if (isOpen && !shouldRender) {
+      // Opening: mount first, then animate in
       setShouldRender(true);
-      // Small delay to ensure DOM is ready before animation starts
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setIsAnimating(true);
-        });
-      });
-    } else if (shouldRender) {
-      // Closing: start exit animation
-      setIsAnimating(false);
+    } else if (!isOpen && shouldRender && isVisible) {
+      // Closing: animate out first, then unmount
+      setIsVisible(false);
     }
-  }, [isOpen, shouldRender]);
+  }, [isOpen, shouldRender, isVisible]);
 
-  // Handle animation end to unmount after exit animation
-  const handleAnimationEnd = React.useCallback(() => {
-    if (!isOpen) {
-      setShouldRender(false);
+  // Trigger enter animation after mount
+  React.useEffect(() => {
+    if (shouldRender && !isVisible && isOpen) {
+      // Small delay to ensure DOM is ready
+      const timeoutId = setTimeout(() => {
+        setIsVisible(true);
+      }, 20);
+      return () => clearTimeout(timeoutId);
     }
-  }, [isOpen]);
+  }, [shouldRender, isVisible, isOpen]);
+
+  // Unmount after exit animation completes
+  React.useEffect(() => {
+    if (shouldRender && !isVisible && !isOpen) {
+      const timeoutId = setTimeout(() => {
+        setShouldRender(false);
+      }, 350); // Match animation duration + buffer
+      return () => clearTimeout(timeoutId);
+    }
+  }, [shouldRender, isVisible, isOpen]);
 
   return (
     <>
@@ -76,9 +85,8 @@ function ChatUI() {
       {shouldRender && (
         <ChatPanelWithContent
           isOpen={isOpen}
-          isVisible={isAnimating}
+          isVisible={isVisible}
           onClose={closeChat}
-          onTransitionEnd={handleAnimationEnd}
           messages={messages}
           isLoading={isLoading}
           error={error}
@@ -98,7 +106,6 @@ interface ChatPanelWithContentProps {
   isOpen: boolean;
   isVisible: boolean;
   onClose: () => void;
-  onTransitionEnd: () => void;
   messages: Array<{
     id: string;
     role: 'user' | 'assistant' | 'system';
@@ -129,7 +136,6 @@ function ChatPanelWithContent({
   isOpen,
   isVisible,
   onClose,
-  onTransitionEnd,
   messages,
   isLoading,
   error,
@@ -235,10 +241,6 @@ function ChatPanelWithContent({
     }
   }, [isOpen, handleKeyDown, isMobile]);
 
-  if (!isOpen && !isVisible) {
-    return null;
-  }
-
   // Use createPortal for proper stacking context
   const { createPortal } = require('react-dom');
 
@@ -279,7 +281,6 @@ function ChatPanelWithContent({
             : (isVisible ? 'translate-x-0' : 'translate-x-full')
           }
         `}
-        onTransitionEnd={onTransitionEnd}
         data-testid="chat-panel-container"
       >
         {/* Header */}
