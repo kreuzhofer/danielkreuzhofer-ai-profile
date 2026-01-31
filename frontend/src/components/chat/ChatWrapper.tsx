@@ -96,7 +96,9 @@ function ChatUI() {
  */
 interface ChatPanelWithContentProps {
   isOpen: boolean;
+  isVisible: boolean;
   onClose: () => void;
+  onTransitionEnd: () => void;
   messages: Array<{
     id: string;
     role: 'user' | 'assistant' | 'system';
@@ -117,10 +119,17 @@ interface ChatPanelWithContentProps {
  * Responsive behavior:
  * - Mobile: Fullscreen with backdrop overlay, blocks page interaction
  * - Desktop (sm+): Slide-in panel without overlay, page remains interactive
+ * 
+ * Animation:
+ * - Slides in from right with easing animation
+ * - Backdrop fades in/out on mobile
+ * - Respects reduced motion preferences
  */
 function ChatPanelWithContent({
   isOpen,
+  isVisible,
   onClose,
+  onTransitionEnd,
   messages,
   isLoading,
   error,
@@ -226,7 +235,7 @@ function ChatPanelWithContent({
     }
   }, [isOpen, handleKeyDown, isMobile]);
 
-  if (!isOpen) {
+  if (!isOpen && !isVisible) {
     return null;
   }
 
@@ -244,14 +253,17 @@ function ChatPanelWithContent({
       {/* Semi-transparent backdrop - mobile only */}
       {isMobile && (
         <div
-          className="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
+          className={`
+            absolute inset-0 bg-black transition-opacity duration-300 ease-out
+            ${isVisible ? 'opacity-50' : 'opacity-0'}
+          `}
           onClick={handleBackdropClick}
           aria-hidden="true"
           data-testid="chat-panel-backdrop"
         />
       )}
 
-      {/* Panel container - slides in from right */}
+      {/* Panel container - slides in from right on desktop, from bottom on mobile */}
       <div
         ref={panelRef}
         className={`
@@ -260,9 +272,14 @@ function ChatPanelWithContent({
           sm:max-w-md
           bg-white shadow-2xl
           flex flex-col
-          transform transition-transform duration-300 ease-out
-          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+          transform transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+          motion-reduce:transition-none
+          ${isMobile 
+            ? (isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0')
+            : (isVisible ? 'translate-x-0' : 'translate-x-full')
+          }
         `}
+        onTransitionEnd={onTransitionEnd}
         data-testid="chat-panel-container"
       >
         {/* Header */}
