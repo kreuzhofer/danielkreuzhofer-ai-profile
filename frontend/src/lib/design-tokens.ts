@@ -1,10 +1,13 @@
 /**
  * Design Tokens for Visual Design System
  *
+ * COLOR PALETTE: "Thoughtful Innovator"
+ * 
+ * Personality: Creative & innovative, calm & focused, thoughtful communication
+ * Impression: Innovative & forward-thinking
+ *
  * This file defines the core design tokens used throughout the portfolio website.
  * These tokens provide a single source of truth for colors, typography, and animations.
- *
- * Requirements: 1.1, 1.2, 1.4, 1.8, 4.4
  */
 
 /**
@@ -27,73 +30,72 @@ export interface ColorScale {
 /**
  * Color palettes for the design system
  *
- * - Primary (Teal): Conveys trust and expertise (Requirement 1.1)
- * - Secondary (Amber): For CTAs and interactive highlights (Requirement 1.2)
- * - Neutral (Gray): For text and backgrounds
+ * - Primary (Indigo): Innovation, creativity, wisdom, technology
+ * - Secondary (Orange): Energy, enthusiasm, warmth, action
+ * - Neutral (Slate): Calm, focused, professional
  */
 export const colors = {
   /**
-   * Primary palette - Deep teal for trust/expertise
-   * Used for primary actions, links, and brand elements
+   * Primary palette - Deep Indigo
+   * Conveys innovation, creativity, wisdom, and technology
    */
   primary: {
-    50: '#f0fdfa',
-    100: '#ccfbf1',
-    200: '#99f6e4',
-    300: '#5eead4',
-    400: '#2dd4bf',
-    500: '#14b8a6', // Primary accent
-    600: '#0d9488',
-    700: '#0f766e',
-    800: '#115e59',
-    900: '#134e4a',
-    950: '#042f2e',
+    50: '#eef2ff',
+    100: '#e0e7ff',
+    200: '#c7d2fe',
+    300: '#a5b4fc',
+    400: '#818cf8',
+    500: '#6366f1', // Primary accent
+    600: '#4f46e5',
+    700: '#4338ca',
+    800: '#3730a3',
+    900: '#312e81',
+    950: '#1e1b4b',
   },
   /**
-   * Secondary palette - Warm amber for CTAs
-   * Used for call-to-action buttons and interactive highlights
+   * Secondary palette - Warm Coral/Orange
+   * Conveys energy, enthusiasm, warmth, and action
    */
   secondary: {
-    50: '#fffbeb',
-    100: '#fef3c7',
-    200: '#fde68a',
-    300: '#fcd34d',
-    400: '#fbbf24',
-    500: '#f59e0b', // Secondary accent
-    600: '#d97706',
-    700: '#b45309',
-    800: '#92400e',
-    900: '#78350f',
-    950: '#451a03',
+    50: '#fff7ed',
+    100: '#ffedd5',
+    200: '#fed7aa',
+    300: '#fdba74',
+    400: '#fb923c',
+    500: '#f97316', // Secondary accent
+    600: '#ea580c',
+    700: '#c2410c',
+    800: '#9a3412',
+    900: '#7c2d12',
+    950: '#431407',
   },
   /**
-   * Neutral palette - Gray scale
-   * Used for text, backgrounds, and borders
+   * Neutral palette - Cool Slate
+   * Calm, focused, professional feel
    */
   neutral: {
-    50: '#fafafa',
-    100: '#f4f4f5',
-    200: '#e4e4e7',
-    300: '#d4d4d8',
-    400: '#a1a1aa',
-    500: '#71717a',
-    600: '#52525b',
-    700: '#3f3f46',
-    800: '#27272a',
-    900: '#18181b',
-    950: '#09090b',
+    50: '#f8fafc',
+    100: '#f1f5f9',
+    200: '#e2e8f0',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    500: '#64748b',
+    600: '#475569',
+    700: '#334155',
+    800: '#1e293b',
+    900: '#0f172a',
+    950: '#020617',
   },
 } as const;
 
 /**
  * Semantic colors for status indicators
- * Requirement 1.8: Define semantic color tokens for success, warning, and error states
  */
 export const semanticColors = {
   success: '#10b981',
   warning: '#f59e0b',
   error: '#ef4444',
-  info: '#3b82f6',
+  info: '#06b6d4', // Cyan for tech-forward feel
 } as const;
 
 /**
@@ -185,11 +187,11 @@ export const shadows = {
 export const gradients = {
   hero: {
     light: `linear-gradient(135deg, ${colors.primary[50]} 0%, #ffffff 50%, ${colors.secondary[50]} 100%)`,
-    dark: `linear-gradient(135deg, ${colors.primary[950]} 0%, #09090b 50%, ${colors.secondary[950]} 100%)`,
+    dark: `linear-gradient(135deg, ${colors.primary[950]} 0%, #0f172a 50%, ${colors.secondary[950]} 100%)`,
   },
   section: {
     light: `linear-gradient(180deg, #ffffff 0%, ${colors.primary[50]} 100%)`,
-    dark: `linear-gradient(180deg, #09090b 0%, ${colors.primary[950]} 100%)`,
+    dark: `linear-gradient(180deg, #0f172a 0%, ${colors.primary[950]} 100%)`,
   },
 } as const;
 
