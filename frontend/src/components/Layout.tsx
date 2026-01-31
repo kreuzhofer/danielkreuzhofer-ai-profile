@@ -106,17 +106,15 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
         />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            {/* Logo/Site title area - h1 for proper heading hierarchy (Requirement 7.4) */}
+            {/* Logo/Site title area */}
             <div className="flex-shrink-0">
-              <h1 className="text-xl font-semibold text-foreground">
-                <a 
-                  href="#" 
-                  aria-label="Portfolio - Go to top of page"
-                  className="hover:text-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground rounded-md"
-                >
-                  Portfolio
-                </a>
-              </h1>
+              <a 
+                href="#" 
+                aria-label="Daniel Kreuzhofer - Go to top of page"
+                className="text-xl font-semibold text-foreground hover:text-[var(--primary-600)] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground rounded-md"
+              >
+                Daniel Kreuzhofer
+              </a>
             </div>
 
             {/* Navigation component for desktop */}

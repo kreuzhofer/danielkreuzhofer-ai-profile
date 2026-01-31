@@ -36,6 +36,34 @@ function ChatUI() {
     retryLastMessage,
   } = useChat();
 
+  // Track if panel should be rendered (stays true during exit animation)
+  const [shouldRender, setShouldRender] = React.useState(false);
+  // Track animation state for smooth transitions
+  const [isAnimating, setIsAnimating] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      // Opening: render immediately, then trigger animation
+      setShouldRender(true);
+      // Small delay to ensure DOM is ready before animation starts
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(true);
+        });
+      });
+    } else if (shouldRender) {
+      // Closing: start exit animation
+      setIsAnimating(false);
+    }
+  }, [isOpen, shouldRender]);
+
+  // Handle animation end to unmount after exit animation
+  const handleAnimationEnd = React.useCallback(() => {
+    if (!isOpen) {
+      setShouldRender(false);
+    }
+  }, [isOpen]);
+
   return (
     <>
       {/* Chat trigger button - always visible */}
@@ -44,11 +72,13 @@ function ChatUI() {
         ariaLabel="Open chat to ask about my experience"
       />
 
-      {/* Chat panel - shown when open */}
-      {isOpen && (
+      {/* Chat panel - rendered during open state and exit animation */}
+      {shouldRender && (
         <ChatPanelWithContent
           isOpen={isOpen}
+          isVisible={isAnimating}
           onClose={closeChat}
+          onTransitionEnd={handleAnimationEnd}
           messages={messages}
           isLoading={isLoading}
           error={error}

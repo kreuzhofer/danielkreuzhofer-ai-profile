@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Daniel Kreuzhofer - Portfolio",
-  description: "Professional portfolio showcasing experience, projects, and skills",
+  title: "Daniel Kreuzhofer - Cloud. AI. Clarity.",
+  description: "Senior Solutions Architect helping companies leverage Cloud and AI with substance, not hype. 20+ years of experience in enterprise architecture, migrations, and GenAI implementation.",
 };
 
 export default function RootLayout({

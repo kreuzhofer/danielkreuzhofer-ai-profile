@@ -10,13 +10,14 @@
 import { Metadata } from 'next';
 import { FitAnalysisProvider } from '@/context/FitAnalysisContext';
 import { FitAnalysisModule } from '@/components/fit-analysis/FitAnalysisModule';
+import { PageHeader } from '@/components/PageHeader';
 
 export const metadata: Metadata = {
-  title: 'Fit Analysis | Portfolio',
+  title: 'Fit Analysis | Daniel Kreuzhofer',
   description:
     'Get an honest, AI-powered assessment of how well your job description aligns with my experience. Includes strengths, gaps, and transparent recommendations.',
   openGraph: {
-    title: 'Fit Analysis | Portfolio',
+    title: 'Fit Analysis | Daniel Kreuzhofer',
     description:
       'Get an honest, AI-powered assessment of how well your job description aligns with my experience.',
     type: 'website',
@@ -26,9 +27,12 @@ export const metadata: Metadata = {
 export default function FitAnalysisPage() {
   return (
     <FitAnalysisProvider>
-      <main className="min-h-screen bg-white">
-        <FitAnalysisModule />
-      </main>
+      <div className="min-h-screen bg-background">
+        <PageHeader />
+        <main>
+          <FitAnalysisModule />
+        </main>
+      </div>
     </FitAnalysisProvider>
   );
 }

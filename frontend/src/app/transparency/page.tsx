@@ -17,14 +17,15 @@
 import { Metadata } from 'next';
 import { TransparencyDashboardProvider } from '@/context/TransparencyDashboardContext';
 import { TransparencyDashboard } from './TransparencyDashboard';
+import { PageHeader } from '@/components/PageHeader';
 import { loadSkills } from '@/lib/transparency-dashboard-loader';
 
 export const metadata: Metadata = {
-  title: 'Transparency Dashboard | Portfolio',
+  title: 'Transparency Dashboard | Daniel Kreuzhofer',
   description:
     'An honest view of my expertise: Core Strengths backed by evidence, Working Knowledge areas, and Explicit Gaps I\'ve chosen not to pursue.',
   openGraph: {
-    title: 'Transparency Dashboard | Portfolio',
+    title: 'Transparency Dashboard | Daniel Kreuzhofer',
     description:
       'An honest view of my expertise: Core Strengths, Working Knowledge, and Explicit Gaps.',
     type: 'website',
@@ -37,9 +38,12 @@ export default function TransparencyDashboardPage() {
 
   return (
     <TransparencyDashboardProvider initialSkills={skills} initialGaps={gaps}>
-      <main className="min-h-screen bg-white">
-        <TransparencyDashboard />
-      </main>
+      <div className="min-h-screen bg-background">
+        <PageHeader />
+        <main>
+          <TransparencyDashboard />
+        </main>
+      </div>
     </TransparencyDashboardProvider>
   );
 }
