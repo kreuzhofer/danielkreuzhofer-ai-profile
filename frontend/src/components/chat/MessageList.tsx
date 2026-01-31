@@ -48,8 +48,18 @@ export function MessageList({
   const containerRef = useRef<HTMLDivElement>(null);
   const lastAnnouncedMessageRef = useRef<string | null>(null);
   
-  // Generate starter questions once on mount
-  const [starterQuestions] = useState(() => getRandomStarterQuestions(3));
+  // Check if this is a fresh conversation (no user messages yet)
+  const isNewConversation = messages.filter(m => m.role === 'user').length === 0;
+  
+  // Generate starter questions - re-randomize when conversation is cleared
+  const [starterQuestions, setStarterQuestions] = useState(() => getRandomStarterQuestions(3));
+  
+  // Re-randomize starter questions when conversation is cleared (new chat)
+  useEffect(() => {
+    if (isNewConversation && messages.length === 0) {
+      setStarterQuestions(getRandomStarterQuestions(3));
+    }
+  }, [isNewConversation, messages.length]);
 
   // Create the welcome message with current timestamp
   const welcomeMessage: ChatMessageType = {
@@ -59,9 +69,6 @@ export function MessageList({
 
   // Combine welcome message with conversation messages
   const allMessages = [welcomeMessage, ...messages];
-  
-  // Check if this is a fresh conversation (no user messages yet)
-  const isNewConversation = messages.filter(m => m.role === 'user').length === 0;
   
   // Get the last assistant message for screen reader announcement
   const lastAssistantMessage = [...messages]

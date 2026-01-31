@@ -30,7 +30,7 @@ import type {
 
 // Directory paths
 const CONTENT_DIR = path.join(process.cwd(), "content");
-const KNOWLEDGE_DIR = path.join(process.cwd(), "..", "knowledge");
+const KNOWLEDGE_DIR = path.join(process.cwd(), "knowledge");
 
 // =============================================================================
 // MDX Parsing Utilities

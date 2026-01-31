@@ -15,8 +15,8 @@ WORKDIR /app
 # ============================================
 FROM base AS deps
 
-# Copy package files
-COPY package.json package-lock.json* ./
+# Copy package files (from frontend/ since context is repo root)
+COPY frontend/package.json frontend/package-lock.json* ./
 
 # Install dependencies
 RUN npm ci
@@ -31,8 +31,11 @@ WORKDIR /app
 # Copy node_modules from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 
-# Copy source code
-COPY . .
+# Copy source code (from frontend/ since context is repo root)
+COPY frontend/ ./
+
+# Copy knowledge directory for AI chatbot context
+COPY knowledge/ ./knowledge/
 
 # Expose port 8087 for development
 EXPOSE 8087
@@ -55,8 +58,11 @@ WORKDIR /app
 # Copy node_modules from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 
-# Copy source code
-COPY . .
+# Copy source code (from frontend/ since context is repo root)
+COPY frontend/ ./
+
+# Copy knowledge directory for AI chatbot context
+COPY knowledge/ ./knowledge/
 
 # Set environment variable for production build
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -85,6 +91,9 @@ RUN adduser --system --uid 1001 nextjs
 # Copy built application from builder stage
 COPY --from=builder /app/public ./public
 
+# Copy knowledge directory for AI chatbot context
+COPY --from=builder /app/knowledge ./knowledge
+
 # Set correct permissions for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
@@ -94,6 +103,9 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+
+# Copy content directory for MDX files (needed at runtime)
+COPY --from=builder /app/content ./content
 
 # Switch to non-root user
 USER nextjs

@@ -2,8 +2,8 @@ services:
   # Frontend service - Next.js portfolio application
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
       target: development
     container_name: portfolio-frontend
     ports:
@@ -11,6 +11,8 @@ services:
     volumes:
       # Mount source code for hot reloading in development
       - ./frontend:/app
+      # Mount knowledge directory for AI chatbot context
+      - ./knowledge:/app/knowledge:ro
       # Prevent node_modules from being overwritten by volume mount
       - /app/node_modules
       # Prevent .next from being overwritten
@@ -29,8 +31,8 @@ services:
   # Production frontend service (use with: docker compose --profile production up)
   frontend-prod:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
       target: production
     container_name: portfolio-frontend-prod
     ports:

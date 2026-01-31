@@ -208,7 +208,7 @@ export function SkillItem({ skill, indicatorVariant = 'bars', className = '' }: 
   return (
     <div
       className={`
-        flex items-center justify-between gap-3 py-2 px-3
+        flex items-start justify-between gap-3 py-2 px-3
         bg-white rounded-lg border border-gray-100
         hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5
         transition-all duration-200
@@ -216,23 +216,25 @@ export function SkillItem({ skill, indicatorVariant = 'bars', className = '' }: 
       `}
     >
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-foreground truncate">
+        <div className="flex items-start gap-2">
+          <span className="text-sm font-medium text-foreground">
             {name}
           </span>
           {yearsOfExperience !== undefined && yearsOfExperience > 0 && (
-            <span className="text-xs text-gray-500 whitespace-nowrap">
+            <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
               {yearsOfExperience}y
             </span>
           )}
         </div>
         {context && (
-          <p className="text-xs text-gray-500 mt-0.5 truncate">
+          <p className="text-xs text-gray-500 mt-0.5">
             {context}
           </p>
         )}
       </div>
-      <ProficiencyIndicator level={level} variant={indicatorVariant} />
+      <div className="flex-shrink-0 mt-0.5">
+        <ProficiencyIndicator level={level} variant={indicatorVariant} />
+      </div>
     </div>
   );
 }
