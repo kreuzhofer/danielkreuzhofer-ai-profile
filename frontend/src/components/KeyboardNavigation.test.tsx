@@ -491,15 +491,19 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       await user.tab();
       expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
 
-      // 8. Fit Analysis CTA button
+      // 8. Skills Transparency CTA button
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Skills Transparency' })).toHaveFocus();
+
+      // 9. Fit Analysis CTA button
       await user.tab();
       expect(screen.getByRole('link', { name: 'Fit Analysis' })).toHaveFocus();
 
-      // 9. Mobile menu button (visible in DOM even if hidden on desktop)
+      // 10. Mobile menu button (visible in DOM even if hidden on desktop)
       await user.tab();
       expect(screen.getByRole('button', { name: /open menu/i })).toHaveFocus();
 
-      // 10. Content area elements
+      // 11. Content area elements
       await user.tab();
       expect(screen.getByTestId('content-button')).toHaveFocus();
     });
