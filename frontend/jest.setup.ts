@@ -11,6 +11,33 @@ global.TextDecoder = TextDecoder as typeof global.TextDecoder;
 global.ReadableStream = ReadableStream as typeof global.ReadableStream;
 global.TransformStream = TransformStream as typeof global.TransformStream;
 
+// Mock react-markdown since it's an ESM module that Jest can't handle
+jest.mock('react-markdown', () => {
+  return {
+    __esModule: true,
+    default: ({ children }: { children: string }) => {
+      // Simple mock that renders content as-is
+      const React = require('react');
+      return React.createElement('div', { 'data-testid': 'markdown-content' }, children);
+    },
+  };
+});
+
+// Mock matchMedia for useReducedMotion hook and other media query tests
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
 // Polyfill Response for stream handler tests
 if (typeof global.Response === 'undefined') {
   global.Response = class Response {

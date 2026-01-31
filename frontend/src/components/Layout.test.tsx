@@ -3,6 +3,21 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Layout } from './Layout';
 
+// Mock matchMedia for useReducedMotion and useScrollProgress hooks
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
 describe('Layout Component', () => {
   describe('Semantic HTML Structure', () => {
     it('renders header, main, and footer landmarks', () => {

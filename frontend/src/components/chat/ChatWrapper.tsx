@@ -7,17 +7,18 @@
  * - ChatProvider context for state management
  * - ChatTriggerButton for opening the chat
  * - ChatPanel with full chat interface
+ * - Suggestion chips for conversation starters and follow-ups
  *
  * **Validates: Requirements 1.1**
  * - 1.1: Chat trigger button visible and accessible on portfolio page
  */
 
 import React from 'react';
-import { ChatProvider, useChat } from '@/context/ChatContext';
+import { useChat } from '@/context/ChatContext';
 import { ChatTriggerButton } from './ChatTriggerButton';
-import { ChatPanel } from './ChatPanel';
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
+import { generateFollowUpSuggestions } from '@/lib/chat-suggestions';
 
 /**
  * Inner component that uses the chat context
@@ -82,6 +83,10 @@ interface ChatPanelWithContentProps {
 
 /**
  * ChatPanel with integrated content (MessageList and ChatInput)
+ * 
+ * Responsive behavior:
+ * - Mobile: Fullscreen with backdrop overlay, blocks page interaction
+ * - Desktop (sm+): Slide-in panel without overlay, page remains interactive
  */
 function ChatPanelWithContent({
   isOpen,
@@ -96,6 +101,45 @@ function ChatPanelWithContent({
   const panelRef = React.useRef<HTMLDivElement>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
   const previousActiveElement = React.useRef<HTMLElement | null>(null);
+  const [isMobile, setIsMobile] = React.useState(false);
+  const [followUpSuggestions, setFollowUpSuggestions] = React.useState<string[]>([]);
+
+  // Detect mobile viewport
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640); // sm breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Generate follow-up suggestions when messages change
+  React.useEffect(() => {
+    // Only generate suggestions after an assistant message completes
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === 'assistant' && lastMessage?.status === 'complete') {
+      const suggestions = generateFollowUpSuggestions(
+        messages.map(m => ({ role: m.role, content: m.content })),
+        3
+      );
+      setFollowUpSuggestions(suggestions);
+    } else if (isLoading) {
+      // Clear suggestions while loading
+      setFollowUpSuggestions([]);
+    }
+  }, [messages, isLoading]);
+
+  /**
+   * Handle suggestion selection - send as a message
+   */
+  const handleSuggestionSelect = React.useCallback(
+    (suggestion: string) => {
+      onSendMessage(suggestion);
+    },
+    [onSendMessage]
+  );
 
   /**
    * Handle Escape key to close the panel
@@ -111,60 +155,7 @@ function ChatPanelWithContent({
   );
 
   /**
-   * Focus trap - keep focus within the panel when open
-   */
-  const handleFocusTrap = React.useCallback((event: KeyboardEvent) => {
-    if (event.key !== 'Tab' || !panelRef.current) return;
-
-    const focusableElements = panelRef.current.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-
-    if (focusableElements.length === 0) return;
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    if (event.shiftKey && document.activeElement === firstElement) {
-      event.preventDefault();
-      lastElement.focus();
-    } else if (!event.shiftKey && document.activeElement === lastElement) {
-      event.preventDefault();
-      firstElement.focus();
-    }
-  }, []);
-
-  /**
-   * Store the previously focused element and set up focus management
-   */
-  React.useEffect(() => {
-    if (isOpen) {
-      previousActiveElement.current = document.activeElement as HTMLElement;
-      document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('keydown', handleFocusTrap);
-
-      const timeoutId = setTimeout(() => {
-        closeButtonRef.current?.focus();
-      }, 0);
-
-      document.body.style.overflow = 'hidden';
-
-      return () => {
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keydown', handleFocusTrap);
-        document.body.style.overflow = '';
-        clearTimeout(timeoutId);
-      };
-    } else {
-      if (previousActiveElement.current) {
-        previousActiveElement.current.focus();
-        previousActiveElement.current = null;
-      }
-    }
-  }, [isOpen, handleKeyDown, handleFocusTrap]);
-
-  /**
-   * Handle backdrop click to close panel
+   * Handle backdrop click to close panel (mobile only)
    */
   const handleBackdropClick = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -175,6 +166,36 @@ function ChatPanelWithContent({
     [onClose]
   );
 
+  /**
+   * Store the previously focused element and set up focus management
+   */
+  React.useEffect(() => {
+    if (isOpen) {
+      previousActiveElement.current = document.activeElement as HTMLElement;
+      document.addEventListener('keydown', handleKeyDown);
+
+      const timeoutId = setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 0);
+
+      // Block scrolling on mobile only
+      if (isMobile) {
+        document.body.style.overflow = 'hidden';
+      }
+
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = '';
+        clearTimeout(timeoutId);
+      };
+    } else {
+      if (previousActiveElement.current) {
+        previousActiveElement.current.focus();
+        previousActiveElement.current = null;
+      }
+    }
+  }, [isOpen, handleKeyDown, isMobile]);
+
   if (!isOpen) {
     return null;
   }
@@ -184,27 +205,30 @@ function ChatPanelWithContent({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex justify-end"
+      className={`fixed inset-0 z-50 flex justify-end ${isMobile ? '' : 'pointer-events-none'}`}
       role="dialog"
-      aria-modal="true"
+      aria-modal={isMobile ? 'true' : 'false'}
       aria-labelledby="chat-panel-title"
       data-testid="chat-panel"
     >
-      {/* Semi-transparent backdrop */}
-      <div
-        className="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
-        onClick={handleBackdropClick}
-        aria-hidden="true"
-        data-testid="chat-panel-backdrop"
-      />
+      {/* Semi-transparent backdrop - mobile only */}
+      {isMobile && (
+        <div
+          className="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
+          onClick={handleBackdropClick}
+          aria-hidden="true"
+          data-testid="chat-panel-backdrop"
+        />
+      )}
 
-      {/* Panel container */}
+      {/* Panel container - slides in from right */}
       <div
         ref={panelRef}
         className={`
+          ${isMobile ? '' : 'pointer-events-auto'}
           relative w-full h-full
           sm:max-w-md
-          bg-white shadow-xl
+          bg-white shadow-2xl
           flex flex-col
           transform transition-transform duration-300 ease-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
@@ -287,6 +311,8 @@ function ChatPanelWithContent({
           messages={messages.filter(m => m.role !== 'system')}
           isLoading={isLoading}
           onRetry={onRetry}
+          onSuggestionSelect={handleSuggestionSelect}
+          followUpSuggestions={followUpSuggestions}
         />
 
         {/* Error display */}
@@ -311,14 +337,11 @@ function ChatPanelWithContent({
 }
 
 /**
- * ChatWrapper - provides chat functionality to the app
+ * ChatWrapper - provides chat UI components to the app
+ * Note: ChatProvider must be wrapped at a higher level (e.g., layout.tsx)
  */
 export function ChatWrapper() {
-  return (
-    <ChatProvider>
-      <ChatUI />
-    </ChatProvider>
-  );
+  return <ChatUI />;
 }
 
 export default ChatWrapper;

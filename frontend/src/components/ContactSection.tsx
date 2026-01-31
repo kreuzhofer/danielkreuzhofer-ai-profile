@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import type { Contact, ContactOption } from '@/types/content';
+import { useScrollAnimation } from '@/hooks';
 
 /**
  * Props for the ContactOptionIcon component
@@ -170,7 +170,7 @@ export function ContactOptionCard({ option, className = '' }: ContactOptionCardP
       className={`
         group flex items-start gap-4 p-5
         bg-white rounded-xl border border-gray-100
-        hover:border-gray-200 hover:shadow-md
+        hover:border-gray-200 hover:shadow-lg hover:-translate-y-0.5
         transition-all duration-200
         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground
         min-h-[44px]
@@ -262,6 +262,7 @@ export interface ContactSectionProps {
  */
 export function ContactSection({ contact, className = '' }: ContactSectionProps) {
   const { headline, subtext, options } = contact;
+  const { ref, style } = useScrollAnimation({ triggerOnce: true });
 
   return (
     <section
@@ -269,7 +270,7 @@ export function ContactSection({ contact, className = '' }: ContactSectionProps)
       aria-labelledby="contact-heading"
       className={`py-12 md:py-16 lg:py-20 ${className}`}
     >
-      <div className="max-w-4xl mx-auto">
+      <div ref={ref} style={style} className="max-w-4xl mx-auto">
         {/* Section heading - h2 for proper hierarchy under page h1 */}
         <h2
           id="contact-heading"

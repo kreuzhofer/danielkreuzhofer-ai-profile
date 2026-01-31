@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import type { Project, ProjectDepth as ProjectDepthType, ProjectLink, Tradeoff, Outcome } from '@/types/content';
 import { Expandable } from './Expandable';
 import { useExpandable } from '@/hooks/useExpandable';
+import { useScrollAnimation } from '@/hooks';
 
 /**
  * Get the icon for a project link type.
@@ -370,7 +371,7 @@ export function ProjectCard({ project, isExpanded, onToggle }: ProjectCardProps)
         <ProjectDepth depth={project.depth} />
       }
       ariaLabel={`Project: ${project.title}`}
-      className="border border-gray-200 rounded-lg overflow-hidden mb-4 last:mb-0"
+      className="border border-gray-200 rounded-lg overflow-hidden mb-4 last:mb-0 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       buttonClassName="hover:bg-gray-50"
     />
   );
@@ -499,6 +500,7 @@ export interface ProjectsSectionProps {
 export function ProjectsSection({ projects, className = '' }: ProjectsSectionProps) {
   const { isExpanded, toggle } = useExpandable();
   const [technologyFilter, setTechnologyFilter] = useState<string>('');
+  const { ref, style } = useScrollAnimation({ triggerOnce: true });
 
   // Sort projects by order field (lower order = first)
   const sortedProjects = useMemo(
@@ -530,7 +532,7 @@ export function ProjectsSection({ projects, className = '' }: ProjectsSectionPro
       aria-labelledby="projects-heading"
       className={`py-12 md:py-16 lg:py-20 ${className}`}
     >
-      <div className="max-w-4xl mx-auto">
+      <div ref={ref} style={style} className="max-w-4xl mx-auto">
         {/* Section heading - h2 for proper hierarchy under page h1 */}
         <h2
           id="projects-heading"

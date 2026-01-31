@@ -28,6 +28,21 @@ import { Expandable } from './Expandable';
 import { ExperienceFilter } from './ExperienceSection';
 import type { About, Contact, ContactOption } from '@/types/content';
 
+// Mock matchMedia for useReducedMotion and useScrollProgress hooks
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
 describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
   describe('Skip Link Navigation', () => {
     it('skip link is first focusable element on page', async () => {

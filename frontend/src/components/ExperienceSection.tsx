@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import type { Experience, ExperienceDepth as ExperienceDepthType, Decision, Outcome } from '@/types/content';
 import { Expandable } from './Expandable';
 import { useExpandable } from '@/hooks/useExpandable';
+import { useScrollAnimation } from '@/hooks';
 
 /**
  * Format a date range for display.
@@ -387,7 +388,7 @@ export function ExperienceItem({ experience, isExpanded, onToggle }: ExperienceI
         <ExperienceDepth depth={experience.depth} />
       }
       ariaLabel={`${experience.role} at ${experience.company}`}
-      className="border border-gray-200 rounded-lg overflow-hidden mb-4 last:mb-0"
+      className="border border-gray-200 rounded-lg overflow-hidden mb-4 last:mb-0 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       buttonClassName="hover:bg-gray-50"
     />
   );
@@ -516,6 +517,7 @@ export interface ExperienceSectionProps {
 export function ExperienceSection({ experiences, className = '' }: ExperienceSectionProps) {
   const { isExpanded, toggle } = useExpandable();
   const [companyFilter, setCompanyFilter] = useState<string>('');
+  const { ref, style } = useScrollAnimation({ triggerOnce: true });
 
   // Sort experiences by order field (lower order = first)
   const sortedExperiences = useMemo(
@@ -547,7 +549,7 @@ export function ExperienceSection({ experiences, className = '' }: ExperienceSec
       aria-labelledby="experience-heading"
       className={`py-12 md:py-16 lg:py-20 ${className}`}
     >
-      <div className="max-w-4xl mx-auto">
+      <div ref={ref} style={style} className="max-w-4xl mx-auto">
         {/* Section heading - h2 for proper hierarchy under page h1 */}
         <h2
           id="experience-heading"

@@ -215,14 +215,17 @@ describe('ChatMessage', () => {
   });
 
   describe('Content Formatting', () => {
-    it('preserves whitespace in message content', () => {
+    it('preserves whitespace in user message content', () => {
       const message = createMessage({
+        role: 'user',
         content: 'Line 1\nLine 2\n  Indented',
       });
       render(<ChatMessage message={message} />);
 
+      // User messages have whitespace-pre-wrap on the inner p element
       const content = screen.getByTestId('message-content');
-      expect(content).toHaveClass('whitespace-pre-wrap');
+      const paragraph = content.querySelector('p');
+      expect(paragraph).toHaveClass('whitespace-pre-wrap');
     });
 
     it('handles long words with word break', () => {

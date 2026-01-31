@@ -172,6 +172,10 @@ export interface MessageListProps {
   isLoading: boolean;
   /** Callback to retry the last failed message */
   onRetry?: () => void;
+  /** Callback when a suggestion is selected */
+  onSuggestionSelect?: (suggestion: string) => void;
+  /** Follow-up suggestions to display after the last assistant message */
+  followUpSuggestions?: string[];
 }
 
 /**

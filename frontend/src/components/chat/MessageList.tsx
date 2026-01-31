@@ -1,20 +1,24 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { MessageListProps, ChatMessage as ChatMessageType } from '@/types/chat';
 import { WELCOME_MESSAGE } from '@/types/chat';
 import { ChatMessage } from './ChatMessage';
+import { SuggestionChips } from './SuggestionChips';
+import { getRandomStarterQuestions } from '@/lib/chat-suggestions';
 
 /**
  * MessageList component - displays the conversation messages in the chat panel.
  *
  * Features:
  * - Displays welcome message (system role) at the top
+ * - Shows starter suggestion chips for new conversations
  * - Renders user messages aligned right with blue background
  * - Renders assistant messages aligned left with gray background
  * - Auto-scrolls to the latest message when new messages arrive
  * - ARIA live region to announce new assistant messages to screen readers
  * - Shows loading indicator when isLoading is true
+ * - Displays follow-up suggestions after assistant responses
  * - Handles error state with retry button
  *
  * **Validates: Requirements 1.3, 5.4, 7.2**
@@ -28,13 +32,24 @@ import { ChatMessage } from './ChatMessage';
  *   messages={messages}
  *   isLoading={isLoading}
  *   onRetry={() => retryLastMessage()}
+ *   onSuggestionSelect={(q) => sendMessage(q)}
+ *   followUpSuggestions={['Follow up 1', 'Follow up 2']}
  * />
  * ```
  */
-export function MessageList({ messages, isLoading, onRetry }: MessageListProps) {
+export function MessageList({
+  messages,
+  isLoading,
+  onRetry,
+  onSuggestionSelect,
+  followUpSuggestions = [],
+}: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastAnnouncedMessageRef = useRef<string | null>(null);
+  
+  // Generate starter questions once on mount
+  const [starterQuestions] = useState(() => getRandomStarterQuestions(3));
 
   // Create the welcome message with current timestamp
   const welcomeMessage: ChatMessageType = {
@@ -44,11 +59,21 @@ export function MessageList({ messages, isLoading, onRetry }: MessageListProps) 
 
   // Combine welcome message with conversation messages
   const allMessages = [welcomeMessage, ...messages];
-
+  
+  // Check if this is a fresh conversation (no user messages yet)
+  const isNewConversation = messages.filter(m => m.role === 'user').length === 0;
+  
   // Get the last assistant message for screen reader announcement
   const lastAssistantMessage = [...messages]
     .reverse()
     .find((msg) => msg.role === 'assistant' && msg.status === 'complete');
+  
+  // Determine if we should show follow-up suggestions
+  const showFollowUpSuggestions = 
+    !isLoading && 
+    !isNewConversation && 
+    lastAssistantMessage?.status === 'complete' &&
+    followUpSuggestions.length > 0;
 
   /**
    * Auto-scroll to the latest message when messages change
@@ -122,6 +147,28 @@ export function MessageList({ messages, isLoading, onRetry }: MessageListProps) 
           onRetry={message.status === 'error' ? onRetry : undefined}
         />
       ))}
+      
+      {/* Starter suggestions for new conversations */}
+      {isNewConversation && !isLoading && onSuggestionSelect && (
+        <div className="mb-4">
+          <SuggestionChips
+            suggestions={starterQuestions}
+            onSelect={onSuggestionSelect}
+            label="Suggested questions to get started"
+          />
+        </div>
+      )}
+      
+      {/* Follow-up suggestions after assistant responses */}
+      {showFollowUpSuggestions && onSuggestionSelect && (
+        <div className="mb-4">
+          <SuggestionChips
+            suggestions={followUpSuggestions}
+            onSelect={onSuggestionSelect}
+            label="Follow-up questions"
+          />
+        </div>
+      )}
 
       {/* Loading indicator */}
       {isLoading && renderLoadingIndicator()}

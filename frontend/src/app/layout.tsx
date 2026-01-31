@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ChatProvider } from "@/context/ChatContext";
 import { ChatWrapper } from "@/components/chat/ChatWrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
 });
 
 const geistMono = Geist_Mono({
@@ -26,10 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${geistMono.variable} antialiased font-sans`}
       >
-        {children}
-        <ChatWrapper />
+        <ChatProvider>
+          {children}
+          <ChatWrapper />
+        </ChatProvider>
       </body>
     </html>
   );

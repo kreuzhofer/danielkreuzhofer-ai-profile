@@ -1,4 +1,5 @@
 import { Layout } from '@/components/Layout';
+import { HeroSection } from '@/components/HeroSection';
 import { AboutSection } from '@/components/AboutSection';
 import { ExperienceSection } from '@/components/ExperienceSection';
 import { ProjectsSection } from '@/components/ProjectsSection';
@@ -6,6 +7,7 @@ import { SkillsSection } from '@/components/SkillsSection';
 import { ContactSection } from '@/components/ContactSection';
 import {
   getAbout,
+  getHero,
   getExperiences,
   getProjects,
   getSkillCategories,
@@ -30,6 +32,7 @@ import {
  */
 export default function Home() {
   // Load all content data at build time
+  const hero = getHero();
   const about = getAbout();
   const experiences = getExperiences();
   const projects = getProjects();
@@ -38,6 +41,14 @@ export default function Home() {
 
   return (
     <Layout>
+      {/* Hero Section - full viewport intro */}
+      <HeroSection
+        headline={hero.headline}
+        tagline={hero.tagline}
+        ctaText={hero.ctaText}
+        ctaHref={hero.ctaHref}
+      />
+
       {/* About Section - id="about" for anchor navigation */}
       <AboutSection about={about} />
 

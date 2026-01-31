@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import type { SkillCategory, Skill } from '@/types/content';
+import { useScrollAnimation } from '@/hooks';
 
 /**
  * Props for the ProficiencyIndicator component
@@ -210,7 +210,7 @@ export function SkillItem({ skill, indicatorVariant = 'bars', className = '' }: 
       className={`
         flex items-center justify-between gap-3 py-2 px-3
         bg-white rounded-lg border border-gray-100
-        hover:border-gray-200 hover:shadow-sm
+        hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5
         transition-all duration-200
         ${className}
       `}
@@ -353,6 +353,7 @@ export interface SkillsSectionProps {
 export function SkillsSection({ skillCategories, indicatorVariant = 'bars', className = '' }: SkillsSectionProps) {
   // Sort categories by order field (lower order = first)
   const sortedCategories = [...skillCategories].sort((a, b) => a.order - b.order);
+  const { ref, style } = useScrollAnimation({ triggerOnce: true });
 
   return (
     <section
@@ -360,7 +361,7 @@ export function SkillsSection({ skillCategories, indicatorVariant = 'bars', clas
       aria-labelledby="skills-heading"
       className={`py-12 md:py-16 lg:py-20 ${className}`}
     >
-      <div className="max-w-4xl mx-auto">
+      <div ref={ref} style={style} className="max-w-4xl mx-auto">
         {/* Section heading - h2 for proper hierarchy under page h1 */}
         <h2
           id="skills-heading"

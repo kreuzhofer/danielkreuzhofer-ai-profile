@@ -21,6 +21,23 @@ import type { About, Contact, Experience, Project, SkillCategory } from "@/types
 // Extend Jest matchers with jest-axe
 expect.extend(toHaveNoViolations);
 
+// Mock matchMedia for useReducedMotion hook
+beforeAll(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+});
+
 // Ensure cleanup after each test
 afterEach(() => {
   cleanup();

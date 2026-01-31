@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import type { ChatMessage as ChatMessageType, MessageRole } from '@/types/chat';
 
 /**
@@ -108,8 +109,58 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
         `}
       >
         {/* Message content */}
-        <p className="whitespace-pre-wrap break-words" data-testid="message-content">
-          {message.content}
+        <div className="prose prose-sm max-w-none break-words" data-testid="message-content">
+          {message.role === 'user' ? (
+            // User messages: plain text, no markdown
+            <p className="whitespace-pre-wrap m-0">{message.content}</p>
+          ) : (
+            // Assistant/system messages: render markdown
+            <ReactMarkdown
+              components={{
+                // Style overrides for chat context
+                p: ({ children }) => <p className="m-0 mb-2 last:mb-0">{children}</p>,
+                ul: ({ children }) => <ul className="m-0 mb-2 pl-4 list-disc">{children}</ul>,
+                ol: ({ children }) => <ol className="m-0 mb-2 pl-4 list-decimal">{children}</ol>,
+                li: ({ children }) => <li className="m-0 mb-1">{children}</li>,
+                strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                em: ({ children }) => <em className="italic">{children}</em>,
+                code: ({ children, className }) => {
+                  // Check if it's inline code or a code block
+                  const isInline = !className;
+                  return isInline ? (
+                    <code className="bg-gray-200 text-gray-800 px-1 py-0.5 rounded text-xs font-mono">
+                      {children}
+                    </code>
+                  ) : (
+                    <code className={`${className} block bg-gray-800 text-gray-100 p-2 rounded text-xs font-mono overflow-x-auto`}>
+                      {children}
+                    </code>
+                  );
+                },
+                pre: ({ children }) => <pre className="m-0 mb-2">{children}</pre>,
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {children}
+                  </a>
+                ),
+                h1: ({ children }) => <h1 className="text-lg font-bold m-0 mb-2">{children}</h1>,
+                h2: ({ children }) => <h2 className="text-base font-bold m-0 mb-2">{children}</h2>,
+                h3: ({ children }) => <h3 className="text-sm font-bold m-0 mb-1">{children}</h3>,
+                blockquote: ({ children }) => (
+                  <blockquote className="border-l-2 border-gray-300 pl-3 italic m-0 mb-2">
+                    {children}
+                  </blockquote>
+                ),
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
+          )}
           {isStreaming && (
             <span
               className="inline-block w-2 h-4 ml-1 bg-current animate-pulse"
@@ -117,7 +168,7 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
               data-testid="streaming-cursor"
             />
           )}
-        </p>
+        </div>
 
         {/* Timestamp */}
         <p

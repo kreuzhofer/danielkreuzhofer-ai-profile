@@ -13,6 +13,7 @@ import type {
   Contact,
   Experience,
   ExperienceFrontmatter,
+  Hero,
   Project,
   ProjectFrontmatter,
   SkillCategory,
@@ -48,6 +49,20 @@ export function getAbout(): About {
     valueProposition: frontmatter.valueProposition || "",
     profileImage: frontmatter.profileImage,
     socialLinks: frontmatter.socialLinks || [],
+  };
+}
+
+/**
+ * Get the Hero section content from about.mdx
+ */
+export function getHero(): Hero {
+  const filePath = path.join(CONTENT_DIR, "about.mdx");
+  const { frontmatter } = parseMarkdownFile<{ hero?: Hero }>(filePath);
+  return {
+    headline: frontmatter.hero?.headline || "Welcome",
+    tagline: frontmatter.hero?.tagline || "",
+    ctaText: frontmatter.hero?.ctaText || "Learn More",
+    ctaHref: frontmatter.hero?.ctaHref || "#about",
   };
 }
 
@@ -174,6 +189,7 @@ export function getContact(): Contact {
  */
 export const contentLoader = {
   getAbout: async (): Promise<About> => getAbout(),
+  getHero: async (): Promise<Hero> => getHero(),
   getExperiences: async (): Promise<Experience[]> => getExperiences(),
   getProjects: async (): Promise<Project[]> => getProjects(),
   getSkillCategories: async (): Promise<SkillCategory[]> => getSkillCategories(),

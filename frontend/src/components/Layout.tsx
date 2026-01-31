@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { Navigation, MobileMenuButton, MobileMenu, DEFAULT_SECTIONS } from './Navigation';
-import { useActiveSection } from '../hooks/useActiveSection';
+import { useActiveSection, useScrollProgress, useReducedMotion } from '../hooks';
 import { FloatingContactButton } from './FloatingContactButton';
 
 /**
@@ -46,6 +46,12 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
     defaultSection: initialSection,
   });
   
+  // Use scroll progress hook for progress indicator
+  const { progress } = useScrollProgress();
+  
+  // Check reduced motion preference
+  const prefersReducedMotion = useReducedMotion();
+  
   // State for mobile menu open/closed
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -85,6 +91,19 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
         role="banner"
         className="sticky top-0 z-40 w-full border-b border-gray-200 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       >
+        {/* Scroll progress indicator (Requirement 5.3) */}
+        <div
+          className="absolute top-0 left-0 h-0.5 bg-[var(--primary-500)] z-50"
+          style={{
+            width: `${progress * 100}%`,
+            transition: prefersReducedMotion ? 'none' : 'width 100ms ease-out',
+          }}
+          role="progressbar"
+          aria-valuenow={Math.round(progress * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Page scroll progress"
+        />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo/Site title area - h1 for proper heading hierarchy (Requirement 7.4) */}

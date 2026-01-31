@@ -10,3 +10,4 @@ export { MessageList } from './MessageList';
 export { ChatMessage } from './ChatMessage';
 export { ChatInput } from './ChatInput';
 export { ChatWrapper } from './ChatWrapper';
+export { SuggestionChips } from './SuggestionChips';
