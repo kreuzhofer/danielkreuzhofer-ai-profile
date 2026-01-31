@@ -26,13 +26,13 @@ export function PageHeader() {
             </Link>
           </div>
 
-          {/* Back to home link */}
+          {/* Back link */}
           <nav>
             <Link
               href="/"
               className="text-sm text-[var(--neutral-600)] hover:text-[var(--primary-600)] transition-colors"
             >
-              ← Back to Home
+              ← Back to Portfolio
             </Link>
           </nav>
         </div>

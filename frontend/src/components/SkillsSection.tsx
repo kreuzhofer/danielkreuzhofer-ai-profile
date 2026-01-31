@@ -204,37 +204,45 @@ export interface SkillItemProps {
  */
 export function SkillItem({ skill, indicatorVariant = 'bars', className = '' }: SkillItemProps) {
   const { name, level, yearsOfExperience, context } = skill;
+  const levelLabel = getLevelLabel(level);
 
   return (
     <div
       className={`
-        flex items-start justify-between gap-3 py-2 px-3
+        py-3 px-4
         bg-white rounded-lg border border-gray-100
         hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5
         transition-all duration-200
         ${className}
       `}
     >
-      <div className="flex-1 min-w-0">
-        <div className="flex items-start gap-2">
-          <span className="text-sm font-medium text-foreground">
-            {name}
-          </span>
-          {yearsOfExperience !== undefined && yearsOfExperience > 0 && (
-            <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
-              {yearsOfExperience}y
+      {/* Skill name as headline */}
+      <h4 className="text-sm font-semibold text-foreground mb-1">
+        {name}
+      </h4>
+      
+      {/* Metadata line: proficiency indicator + level label + years */}
+      <div className="flex items-center gap-2 mb-1.5">
+        <ProficiencyIndicator level={level} variant={indicatorVariant} />
+        <span className="text-xs font-medium text-gray-600">
+          {levelLabel}
+        </span>
+        {yearsOfExperience !== undefined && yearsOfExperience > 0 && (
+          <>
+            <span className="text-gray-300">·</span>
+            <span className="text-xs text-gray-500">
+              {yearsOfExperience} {yearsOfExperience === 1 ? 'year' : 'years'}
             </span>
-          )}
-        </div>
-        {context && (
-          <p className="text-xs text-gray-500 mt-0.5">
-            {context}
-          </p>
+          </>
         )}
       </div>
-      <div className="flex-shrink-0 mt-0.5">
-        <ProficiencyIndicator level={level} variant={indicatorVariant} />
-      </div>
+      
+      {/* Context as description */}
+      {context && (
+        <p className="text-xs text-gray-500 leading-relaxed">
+          {context}
+        </p>
+      )}
     </div>
   );
 }
@@ -303,7 +311,7 @@ export function SkillCategoryCard({ category, indicatorVariant = 'bars', classNa
 
       {/* Skills list */}
       {skills && skills.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="space-y-2">
           {skills.map((skill, index) => (
             <SkillItem
               key={`${skill.name}-${index}`}

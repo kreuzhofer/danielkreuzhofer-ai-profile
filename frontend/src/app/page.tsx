@@ -4,6 +4,7 @@ import { AboutSection } from '@/components/AboutSection';
 import { ExperienceSection } from '@/components/ExperienceSection';
 import { ProjectsSection } from '@/components/ProjectsSection';
 import { SkillsSection } from '@/components/SkillsSection';
+import { RecruiterCTASection } from '@/components/RecruiterCTASection';
 import { ContactSection } from '@/components/ContactSection';
 import {
   getAbout,
@@ -60,6 +61,9 @@ export default function Home() {
 
       {/* Skills Section - id="skills" for anchor navigation */}
       <SkillsSection skillCategories={skillCategories} />
+
+      {/* Recruiter CTA Section - Skills Transparency & Fit Analysis */}
+      <RecruiterCTASection />
 
       {/* Contact Section - id="contact" for anchor navigation */}
       <ContactSection contact={contact} />
