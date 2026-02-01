@@ -14,4 +14,11 @@ export const experienceFiles: string[] = [
   'microsoft-evangelist.mdx',
   'microsoft-consultant.mdx',
   'crosslink.mdx',
+  'unicredit.mdx',
+  'hypovereinsbank.mdx',
+  'mydays.mdx',
+  'netoption.mdx',
 ];
+
+/** Number of experiences to show initially before "Show More" */
+export const INITIAL_EXPERIENCE_COUNT = 6;

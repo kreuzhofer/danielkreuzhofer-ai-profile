@@ -28,6 +28,15 @@ function ChatIcon({ className = '' }: { className?: string }) {
 }
 
 /**
+ * Professional affiliation/expertise tags for the hero section
+ */
+const HERO_TAGS = [
+  'AWS',
+  'Microsoft',
+  'Founder',
+];
+
+/**
  * HeroSection component props
  */
 export interface HeroSectionProps {
@@ -119,12 +128,30 @@ export function HeroSection({
             text-4xl md:text-5xl lg:text-6xl
             font-bold tracking-tight
             text-[var(--foreground)]
-            mb-6
+            mb-4
             ${headlineAnimationClasses}
           `}
         >
           {headline}
         </h1>
+
+        {/* Professional tags */}
+        <div
+          className={`
+            flex flex-wrap items-center justify-center gap-2
+            mb-6
+            ${taglineAnimationClasses}
+          `}
+        >
+          {HERO_TAGS.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--primary-900)] text-[var(--primary-300)]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
 
         {/* Tagline */}
         <p

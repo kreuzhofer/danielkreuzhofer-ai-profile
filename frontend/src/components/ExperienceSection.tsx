@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import type { Experience, ExperienceDepth as ExperienceDepthType, Decision, Outcome } from '@/types/content';
 import { Expandable } from './Expandable';
 import { useExpandable } from '@/hooks/useExpandable';
@@ -401,6 +401,13 @@ export function ExperienceItem({ experience, isExpanded, onToggle }: ExperienceI
 const FILTER_THRESHOLD = 5;
 
 /**
+ * Default number of experiences to show initially.
+ * Users can expand to see more.
+ * Shows ~14 years of experience (AWS + Microsoft roles).
+ */
+const DEFAULT_VISIBLE_COUNT = 8;
+
+/**
  * Props for the ExperienceFilter component
  */
 interface ExperienceFilterProps {
@@ -489,6 +496,8 @@ export interface ExperienceSectionProps {
   experiences: Experience[];
   /** Additional CSS classes for the section */
   className?: string;
+  /** Number of experiences to show initially (default: 6) */
+  initialVisibleCount?: number;
 }
 
 /**
@@ -502,6 +511,7 @@ export interface ExperienceSectionProps {
  * - Proper heading hierarchy (h2 for section title)
  * - Responsive layout
  * - Filter by company when more than 5 items
+ * - Show more/less button to expand/collapse the list
  * 
  * **Validates: Requirements 2.2, 3.2, 4.5**
  * - 2.2: THE Summary_Layer for Experience SHALL display a timeline with role titles, company names, and date ranges
@@ -514,9 +524,10 @@ export interface ExperienceSectionProps {
  * <ExperienceSection experiences={experiences} />
  * ```
  */
-export function ExperienceSection({ experiences, className = '' }: ExperienceSectionProps) {
+export function ExperienceSection({ experiences, className = '', initialVisibleCount = DEFAULT_VISIBLE_COUNT }: ExperienceSectionProps) {
   const { isExpanded, toggle } = useExpandable();
   const [companyFilter, setCompanyFilter] = useState<string>('');
+  const [showAll, setShowAll] = useState(false);
   const { ref, animationStyle } = useScrollAnimation({ triggerOnce: true });
 
   // Sort experiences by order field (lower order = first)
@@ -540,8 +551,36 @@ export function ExperienceSection({ experiences, className = '' }: ExperienceSec
     [sortedExperiences, companyFilter]
   );
 
+  // Apply visibility limit (only when not filtering)
+  const visibleExperiences = useMemo(() => {
+    if (companyFilter || showAll) {
+      return filteredExperiences;
+    }
+    return filteredExperiences.slice(0, initialVisibleCount);
+  }, [filteredExperiences, companyFilter, showAll, initialVisibleCount]);
+
   // Show filter only when there are more than FILTER_THRESHOLD items
   const showFilter = experiences.length > FILTER_THRESHOLD;
+  
+  // Show expand button when there are more items than initially visible
+  const hasMoreItems = !companyFilter && filteredExperiences.length > initialVisibleCount;
+  const hiddenCount = filteredExperiences.length - initialVisibleCount;
+
+  // Ref for the show more/less button to scroll to after collapsing
+  const showMoreButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Handle show more/less toggle with scroll behavior
+  const handleToggleShowAll = () => {
+    if (showAll) {
+      // When collapsing, scroll to the button's new position
+      setShowAll(false);
+      setTimeout(() => {
+        showMoreButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    } else {
+      setShowAll(true);
+    }
+  };
 
   return (
     <section
@@ -568,9 +607,9 @@ export function ExperienceSection({ experiences, className = '' }: ExperienceSec
         )}
 
         {/* Experience timeline */}
-        {filteredExperiences.length > 0 ? (
+        {visibleExperiences.length > 0 ? (
           <div className="space-y-4">
-            {filteredExperiences.map((experience) => (
+            {visibleExperiences.map((experience) => (
               <ExperienceItem
                 key={experience.id}
                 experience={experience}
@@ -587,6 +626,47 @@ export function ExperienceSection({ experiences, className = '' }: ExperienceSec
           <p className="text-[var(--foreground-muted)] text-center py-8">
             No experience entries available.
           </p>
+        )}
+
+        {/* Show more/less button */}
+        {hasMoreItems && (
+          <div className="mt-6 text-center">
+            <button
+              ref={showMoreButtonRef}
+              type="button"
+              onClick={handleToggleShowAll}
+              className="
+                inline-flex items-center gap-2
+                px-6 py-3
+                min-h-[44px]
+                text-sm font-medium
+                text-[var(--primary-400)] hover:text-[var(--primary-300)]
+                bg-[var(--surface-elevated)] hover:bg-[var(--surface)]
+                border border-[var(--border)] hover:border-[var(--primary-500)]
+                rounded-lg
+                transition-all duration-200
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)]
+              "
+              aria-expanded={showAll}
+              aria-controls="experience-list"
+            >
+              {showAll ? (
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                  </svg>
+                  Show Less
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  Show {hiddenCount} More Experience{hiddenCount !== 1 ? 's' : ''}
+                </>
+              )}
+            </button>
+          </div>
         )}
       </div>
     </section>
