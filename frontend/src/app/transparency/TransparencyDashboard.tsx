@@ -36,13 +36,13 @@ function DashboardIntro() {
   return (
     <div className="mb-12" data-testid="dashboard-intro">
       <h1
-        className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
+        className="text-3xl md:text-4xl font-bold text-[var(--foreground)] mb-4"
         data-testid="dashboard-title"
       >
         Transparency Dashboard
       </h1>
       <p
-        className="text-lg text-gray-600 mb-8 max-w-3xl"
+        className="text-lg text-[var(--foreground-muted)] mb-8 max-w-3xl"
         data-testid="dashboard-description"
       >
         An honest view of my expertise. Core Strengths are backed by evidence from real projects
@@ -52,27 +52,27 @@ function DashboardIntro() {
 
       {/* Tier Legend */}
       <div
-        className="flex flex-wrap gap-4 p-4 bg-gray-50 rounded-lg"
+        className="flex flex-wrap gap-4 p-4 bg-[var(--surface)] rounded-lg border border-[var(--border)]"
         data-testid="tier-legend"
         role="list"
         aria-label="Expertise tier legend"
       >
         <div className="flex items-center gap-2" role="listitem">
           <span className="w-3 h-3 rounded-full bg-emerald-500" aria-hidden="true" />
-          <span className="text-sm text-gray-700">
-            <strong>Core Strengths</strong> — Deep expertise with evidence
+          <span className="text-sm text-[var(--foreground-muted)]">
+            <strong className="text-[var(--foreground)]">Core Strengths</strong> — Deep expertise with evidence
           </span>
         </div>
         <div className="flex items-center gap-2" role="listitem">
-          <span className="w-3 h-3 rounded-full bg-blue-500" aria-hidden="true" />
-          <span className="text-sm text-gray-700">
-            <strong>Working Knowledge</strong> — Competent, not expert
+          <span className="w-3 h-3 rounded-full bg-[var(--primary-500)]" aria-hidden="true" />
+          <span className="text-sm text-[var(--foreground-muted)]">
+            <strong className="text-[var(--foreground)]">Working Knowledge</strong> — Competent, not expert
           </span>
         </div>
         <div className="flex items-center gap-2" role="listitem">
-          <span className="w-3 h-3 rounded-full bg-slate-400" aria-hidden="true" />
-          <span className="text-sm text-gray-700">
-            <strong>Explicit Gaps</strong> — Intentionally not pursued
+          <span className="w-3 h-3 rounded-full bg-slate-500" aria-hidden="true" />
+          <span className="text-sm text-[var(--foreground-muted)]">
+            <strong className="text-[var(--foreground)]">Explicit Gaps</strong> — Intentionally not pursued
           </span>
         </div>
       </div>
@@ -92,8 +92,8 @@ function LoadingState() {
       role="status"
       aria-label="Loading dashboard"
     >
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500" />
-      <span className="ml-3 text-gray-600">Loading expertise data...</span>
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--primary-500)]" />
+      <span className="ml-3 text-[var(--foreground-muted)]">Loading expertise data...</span>
     </div>
   );
 }
@@ -105,12 +105,12 @@ function LoadingState() {
 function ErrorState({ message }: { message: string }) {
   return (
     <div
-      className="p-6 bg-red-50 border border-red-200 rounded-lg"
+      className="p-6 bg-red-500/20 border border-red-500/30 rounded-lg"
       data-testid="dashboard-error"
       role="alert"
     >
-      <h2 className="text-lg font-semibold text-red-800 mb-2">Unable to load dashboard</h2>
-      <p className="text-red-600">{message}</p>
+      <h2 className="text-lg font-semibold text-red-400 mb-2">Unable to load dashboard</h2>
+      <p className="text-red-300">{message}</p>
       <button
         onClick={() => window.location.reload()}
         className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
@@ -133,10 +133,10 @@ function ErrorState({ message }: { message: string }) {
 function EmptyGapsMessage() {
   return (
     <div
-      className="p-6 bg-slate-50 border border-slate-200 rounded-lg text-center"
+      className="p-6 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-center"
       data-testid="empty-gaps-message"
     >
-      <p className="text-slate-600">
+      <p className="text-[var(--foreground-muted)]">
         Gaps are being documented. Check back soon for a transparent view of areas
         I&apos;ve intentionally chosen not to pursue.
       </p>
@@ -242,12 +242,12 @@ function ExplicitGapsSection() {
     >
       <h2
         id="explicit-gaps-heading"
-        className="text-2xl font-bold text-gray-900 mb-2"
+        className="text-2xl font-bold text-[var(--foreground)] mb-2"
         data-testid="explicit-gaps-heading"
       >
         {tierConfig.title}
       </h2>
-      <p className="text-gray-600 mb-6" data-testid="explicit-gaps-description">
+      <p className="text-[var(--foreground-muted)] mb-6" data-testid="explicit-gaps-description">
         {tierConfig.description}
       </p>
 

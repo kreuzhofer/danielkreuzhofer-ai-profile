@@ -32,8 +32,8 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
       {/* Animated spinner */}
       <div className="relative">
         <div
-          className="w-16 h-16 border-4 border-blue-200 rounded-full animate-spin"
-          style={{ borderTopColor: '#3B82F6' }}
+          className="w-16 h-16 border-4 border-[var(--primary-900)] rounded-full animate-spin"
+          style={{ borderTopColor: 'var(--primary-500)' }}
           aria-hidden="true"
         />
         <div className="absolute inset-0 flex items-center justify-center">
@@ -45,14 +45,14 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
 
       {/* Status message */}
       <p
-        className="mt-4 text-lg font-medium text-gray-700"
+        className="mt-4 text-lg font-medium text-[var(--foreground)]"
         data-testid="loading-message"
       >
         {message}
       </p>
 
       {/* Progress steps */}
-      <div className="mt-4 text-sm text-gray-500 space-y-1 text-center">
+      <div className="mt-4 text-sm text-[var(--foreground-muted)] space-y-1 text-center">
         <p>• Reviewing your job description</p>
         <p>• Matching against documented experience</p>
         <p>• Generating honest assessment</p>

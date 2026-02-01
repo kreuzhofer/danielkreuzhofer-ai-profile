@@ -81,7 +81,7 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
       {/* Skip link for keyboard navigation - hidden until focused */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--primary-500)] focus:text-white focus:rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)]"
       >
         Skip to main content
       </a>
@@ -89,7 +89,7 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
       {/* Header landmark with navigation */}
       <header
         role="banner"
-        className="sticky top-0 z-40 w-full border-b border-gray-200 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        className="sticky top-0 z-40 w-full border-b border-[var(--border)] bg-[var(--background)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--background)]/60"
       >
         {/* Scroll progress indicator (Requirement 5.3) */}
         <div
@@ -111,7 +111,7 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
               <a 
                 href="#" 
                 aria-label="Daniel Kreuzhofer - Go to top of page"
-                className="text-xl font-semibold text-foreground hover:text-[var(--primary-600)] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground rounded-md"
+                className="text-xl font-semibold text-[var(--foreground)] hover:text-[var(--primary-400)] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)] rounded-md"
               >
                 Daniel Kreuzhofer
               </a>
@@ -157,12 +157,12 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
       {/* Footer landmark */}
       <footer
         role="contentinfo"
-        className="border-t border-gray-200 bg-background"
+        className="border-t border-[var(--border)] bg-[var(--background)]"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             {/* Copyright and attribution */}
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-[var(--foreground-muted)]">
               © {new Date().getFullYear()} Daniel Kreuzhofer. All rights reserved.
             </p>
 

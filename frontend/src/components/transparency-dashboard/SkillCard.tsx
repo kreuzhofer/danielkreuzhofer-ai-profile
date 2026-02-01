@@ -56,13 +56,13 @@ function getTierBadgeClasses(tier: SkillTier): string {
 
   switch (tier) {
     case 'core_strength':
-      return `${baseClasses} bg-emerald-100 text-emerald-800 border border-emerald-200`;
+      return `${baseClasses} bg-emerald-500/20 text-emerald-400 border border-emerald-500/30`;
     case 'working_knowledge':
-      return `${baseClasses} bg-blue-100 text-blue-800 border border-blue-200`;
+      return `${baseClasses} bg-[var(--primary-500)]/20 text-[var(--primary-400)] border border-[var(--primary-500)]/30`;
     case 'explicit_gap':
-      return `${baseClasses} bg-slate-100 text-slate-700 border border-slate-200`;
+      return `${baseClasses} bg-slate-500/20 text-slate-400 border border-slate-500/30`;
     default:
-      return `${baseClasses} bg-gray-100 text-gray-700 border border-gray-200`;
+      return `${baseClasses} bg-[var(--surface-elevated)] text-[var(--foreground-muted)] border border-[var(--border)]`;
   }
 }
 
@@ -167,7 +167,7 @@ export function YearsIndicator({ years }: YearsIndicatorProps) {
 
   return (
     <span
-      className="inline-flex items-center gap-1 text-xs text-gray-600"
+      className="inline-flex items-center gap-1 text-xs text-[var(--foreground-muted)]"
       data-testid="years-indicator"
     >
       <svg
@@ -205,7 +205,7 @@ function EvidenceIndicator({ count }: { count: number }) {
 
   return (
     <span
-      className="inline-flex items-center gap-1 text-xs text-gray-600"
+      className="inline-flex items-center gap-1 text-xs text-[var(--foreground-muted)]"
       data-testid="evidence-indicator"
       aria-label={`${count} ${label} available`}
     >
@@ -238,10 +238,10 @@ function EvidenceIndicator({ count }: { count: number }) {
 function getCardClasses(tier: SkillTier, isSelected: boolean): string {
   const baseClasses = `
     relative w-full min-h-[44px] p-4 rounded-lg
-    bg-white shadow-sm border
+    bg-[var(--surface)] shadow-sm border
     transition-all duration-200 ease-in-out
     cursor-pointer
-    focus:outline-none focus:ring-2 focus:ring-offset-2
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--background)]
     hover:shadow-md
   `;
 
@@ -252,26 +252,26 @@ function getCardClasses(tier: SkillTier, isSelected: boolean): string {
   switch (tier) {
     case 'core_strength':
       return `${baseClasses} ${selectedClasses}
-        border-emerald-200 hover:border-emerald-300
+        border-emerald-500/30 hover:border-emerald-500/50
         focus:ring-emerald-500
-        ${isSelected ? 'ring-emerald-500 bg-emerald-50' : ''}
+        ${isSelected ? 'ring-emerald-500 bg-emerald-500/10' : ''}
       `;
     case 'working_knowledge':
       return `${baseClasses} ${selectedClasses}
-        border-blue-200 hover:border-blue-300
-        focus:ring-blue-500
-        ${isSelected ? 'ring-blue-500 bg-blue-50' : ''}
+        border-[var(--primary-500)]/30 hover:border-[var(--primary-500)]/50
+        focus:ring-[var(--primary-500)]
+        ${isSelected ? 'ring-[var(--primary-500)] bg-[var(--primary-500)]/10' : ''}
       `;
     case 'explicit_gap':
       return `${baseClasses} ${selectedClasses}
-        border-slate-200 hover:border-slate-300
+        border-slate-500/30 hover:border-slate-500/50
         focus:ring-slate-500
-        ${isSelected ? 'ring-slate-500 bg-slate-50' : ''}
+        ${isSelected ? 'ring-slate-500 bg-slate-500/10' : ''}
       `;
     default:
       return `${baseClasses} ${selectedClasses}
-        border-gray-200 hover:border-gray-300
-        focus:ring-gray-500
+        border-[var(--border)] hover:border-[var(--foreground-subtle)]
+        focus:ring-[var(--foreground-subtle)]
       `;
   }
 }
@@ -335,7 +335,7 @@ export function SkillCard({ skill, onClick, isSelected }: SkillCardProps) {
       {/* Card Header: Name and Tier Badge */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3
-          className="text-base font-semibold text-gray-900 text-left"
+          className="text-base font-semibold text-[var(--foreground)] text-left"
           data-testid="skill-name"
         >
           {name}
@@ -345,7 +345,7 @@ export function SkillCard({ skill, onClick, isSelected }: SkillCardProps) {
 
       {/* Context Description */}
       <p
-        className="text-sm text-gray-600 text-left mb-3 line-clamp-2"
+        className="text-sm text-[var(--foreground-muted)] text-left mb-3 line-clamp-2"
         data-testid="skill-context"
       >
         {context}

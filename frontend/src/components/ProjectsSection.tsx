@@ -69,7 +69,7 @@ export function ProjectSummary({ project, isExpanded }: ProjectSummaryProps) {
   const { title, description, technologies, links } = project;
 
   return (
-    <div className="w-full py-4 px-4 hover:bg-gray-50 transition-colors duration-200 rounded-lg">
+    <div className="w-full py-4 px-4 hover:bg-[var(--surface-elevated)] transition-colors duration-200 rounded-lg">
       <div className="flex flex-col gap-3">
         {/* Header: Title and expand indicator */}
         <div className="flex items-start justify-between gap-4">
@@ -83,7 +83,7 @@ export function ProjectSummary({ project, isExpanded }: ProjectSummaryProps) {
             className={`
               inline-flex items-center justify-center
               w-6 h-6 rounded-full flex-shrink-0
-              bg-gray-100 text-gray-500
+              bg-[var(--surface-elevated)] text-[var(--foreground-muted)]
               transition-transform duration-200
               ${isExpanded ? 'rotate-180' : ''}
             `}
@@ -106,7 +106,7 @@ export function ProjectSummary({ project, isExpanded }: ProjectSummaryProps) {
         </div>
 
         {/* Description */}
-        <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+        <p className="text-sm md:text-base text-[var(--foreground-muted)] leading-relaxed">
           {description}
         </p>
 
@@ -116,7 +116,7 @@ export function ProjectSummary({ project, isExpanded }: ProjectSummaryProps) {
             {technologies.map((tech, index) => (
               <span
                 key={index}
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--primary-900)] text-[var(--primary-300)]"
               >
                 {tech}
               </span>
@@ -134,7 +134,7 @@ export function ProjectSummary({ project, isExpanded }: ProjectSummaryProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${link.label} for ${title} (opens in new tab)`}
-                className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm text-[var(--foreground-muted)] hover:text-[var(--primary-400)] transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 {getLinkIcon(link.type)}
@@ -163,21 +163,21 @@ function TradeoffCard({ tradeoff }: TradeoffCardProps) {
   const { decision, alternatives, reasoning } = tradeoff;
 
   return (
-    <div className="bg-gray-50 rounded-lg p-4">
+    <div className="bg-[var(--surface-elevated)] rounded-lg p-4">
       <h5 className="font-medium text-foreground mb-2">{decision}</h5>
       
       {alternatives && alternatives.length > 0 && (
         <div className="mb-3">
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <span className="text-xs font-medium text-[var(--foreground-subtle)] uppercase tracking-wide">
             Alternatives Considered:
           </span>
           <ul className="mt-1 space-y-1">
             {alternatives.map((alt, index) => (
               <li
                 key={index}
-                className="text-sm text-gray-600 flex items-start gap-2"
+                className="text-sm text-[var(--foreground-muted)] flex items-start gap-2"
               >
-                <span className="text-gray-400">○</span>
+                <span className="text-[var(--foreground-subtle)]">○</span>
                 <span>{alt}</span>
               </li>
             ))}
@@ -187,10 +187,10 @@ function TradeoffCard({ tradeoff }: TradeoffCardProps) {
       
       {reasoning && (
         <div>
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <span className="text-xs font-medium text-[var(--foreground-subtle)] uppercase tracking-wide">
             Reasoning:
           </span>
-          <p className="text-sm text-gray-700 mt-1">{reasoning}</p>
+          <p className="text-sm text-[var(--foreground-muted)] mt-1">{reasoning}</p>
         </div>
       )}
     </div>
@@ -212,11 +212,11 @@ function OutcomeCard({ outcome }: OutcomeCardProps) {
   const { metric, value, context } = outcome;
 
   return (
-    <div className="bg-green-50 rounded-lg p-4 text-center">
-      <div className="text-2xl font-bold text-green-600 mb-1">{value}</div>
-      <div className="text-sm font-medium text-gray-700">{metric}</div>
+    <div className="bg-[var(--success)]/10 rounded-lg p-4 text-center">
+      <div className="text-2xl font-bold text-[var(--success)] mb-1">{value}</div>
+      <div className="text-sm font-medium text-[var(--foreground)]">{metric}</div>
       {context && (
-        <div className="text-xs text-gray-500 mt-1">{context}</div>
+        <div className="text-xs text-[var(--foreground-muted)] mt-1">{context}</div>
       )}
     </div>
   );
@@ -252,31 +252,31 @@ export function ProjectDepth({ depth }: ProjectDepthProps) {
   const { problem, approach, tradeoffs, outcomes, reflections } = depth;
 
   return (
-    <div className="px-4 pb-4 pt-2 space-y-6 border-t border-gray-100">
+    <div className="px-4 pb-4 pt-2 space-y-6 border-t border-[var(--border)]">
       {/* Problem statement */}
       {problem && (
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+          <h4 className="text-sm font-semibold text-[var(--foreground-muted)] uppercase tracking-wide mb-2">
             The Problem
           </h4>
-          <p className="text-gray-600 leading-relaxed">{problem}</p>
+          <p className="text-[var(--foreground-muted)] leading-relaxed">{problem}</p>
         </div>
       )}
 
       {/* Approach taken */}
       {approach && (
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+          <h4 className="text-sm font-semibold text-[var(--foreground-muted)] uppercase tracking-wide mb-2">
             Approach
           </h4>
-          <p className="text-gray-600 leading-relaxed">{approach}</p>
+          <p className="text-[var(--foreground-muted)] leading-relaxed">{approach}</p>
         </div>
       )}
 
       {/* Trade-offs considered */}
       {tradeoffs && tradeoffs.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+          <h4 className="text-sm font-semibold text-[var(--foreground-muted)] uppercase tracking-wide mb-3">
             Trade-offs Considered
           </h4>
           <div className="space-y-3">
@@ -290,7 +290,7 @@ export function ProjectDepth({ depth }: ProjectDepthProps) {
       {/* Quantified outcomes */}
       {outcomes && outcomes.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+          <h4 className="text-sm font-semibold text-[var(--foreground-muted)] uppercase tracking-wide mb-3">
             Results
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -304,11 +304,11 @@ export function ProjectDepth({ depth }: ProjectDepthProps) {
       {/* Reflections */}
       {reflections && (
         <div>
-          <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+          <h4 className="text-sm font-semibold text-[var(--foreground-muted)] uppercase tracking-wide mb-2">
             Reflections
           </h4>
-          <div className="flex items-start gap-3 text-gray-600">
-            <span className="flex-shrink-0 text-purple-500 mt-0.5">
+          <div className="flex items-start gap-3 text-[var(--foreground-muted)]">
+            <span className="flex-shrink-0 text-[var(--primary-400)] mt-0.5">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
@@ -371,8 +371,8 @@ export function ProjectCard({ project, isExpanded, onToggle }: ProjectCardProps)
         <ProjectDepth depth={project.depth} />
       }
       ariaLabel={`Project: ${project.title}`}
-      className="border border-gray-200 rounded-lg overflow-hidden mb-4 last:mb-0 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
-      buttonClassName="hover:bg-gray-50"
+      className="border border-[var(--border)] bg-[var(--surface)] rounded-lg overflow-hidden mb-4 last:mb-0 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+      buttonClassName="hover:bg-[var(--surface-elevated)]"
     />
   );
 }
@@ -418,7 +418,7 @@ interface TechnologyFilterProps {
 export function TechnologyFilter({ technologies, selectedTechnology, onFilterChange }: TechnologyFilterProps) {
   return (
     <div className="mb-6 flex flex-wrap items-center gap-3">
-      <label htmlFor="technology-filter" className="text-sm font-medium text-gray-700">
+      <label htmlFor="technology-filter" className="text-sm font-medium text-[var(--foreground-muted)]">
         Filter by technology:
       </label>
       <select
@@ -428,9 +428,9 @@ export function TechnologyFilter({ technologies, selectedTechnology, onFilterCha
         className="
           px-3 py-2 text-sm
           min-h-[44px]
-          border border-gray-300 rounded-lg
-          bg-white text-gray-700
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+          border border-[var(--border)] rounded-lg
+          bg-[var(--surface)] text-[var(--foreground)]
+          focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:border-[var(--primary-500)]
           cursor-pointer
           min-w-[180px]
         "
@@ -450,10 +450,10 @@ export function TechnologyFilter({ technologies, selectedTechnology, onFilterCha
           className="
             px-3 py-2 text-sm
             min-h-[44px] min-w-[44px]
-            text-gray-600 hover:text-gray-800
-            hover:bg-gray-100 rounded-lg
+            text-[var(--foreground-muted)] hover:text-[var(--foreground)]
+            hover:bg-[var(--surface-elevated)] rounded-lg
             transition-colors duration-200
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)]
           "
           aria-label="Clear filter"
         >
@@ -563,11 +563,11 @@ export function ProjectsSection({ projects, className = '' }: ProjectsSectionPro
             ))}
           </div>
         ) : technologyFilter ? (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-[var(--foreground-muted)] text-center py-8">
             No projects found using &quot;{technologyFilter}&quot;.
           </p>
         ) : (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-[var(--foreground-muted)] text-center py-8">
             No projects available.
           </p>
         )}

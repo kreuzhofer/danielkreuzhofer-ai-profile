@@ -43,31 +43,31 @@ const getSeverityClasses = (severity: GapSeverity): {
   switch (severity) {
     case 'minor':
       return {
-        border: 'border-gray-200',
-        bg: 'bg-gray-50',
-        badge: 'bg-gray-200 text-gray-700',
-        icon: 'text-gray-500',
+        border: 'border-[var(--border)]',
+        bg: 'bg-[var(--surface)]',
+        badge: 'bg-[var(--surface-elevated)] text-[var(--foreground-muted)]',
+        icon: 'text-[var(--foreground-muted)]',
       };
     case 'moderate':
       return {
-        border: 'border-yellow-200',
-        bg: 'bg-yellow-50',
-        badge: 'bg-yellow-200 text-yellow-800',
-        icon: 'text-yellow-600',
+        border: 'border-[var(--warning)]/30',
+        bg: 'bg-[var(--warning)]/10',
+        badge: 'bg-[var(--warning)]/20 text-[var(--warning)]',
+        icon: 'text-[var(--warning)]',
       };
     case 'significant':
       return {
-        border: 'border-red-200',
-        bg: 'bg-red-50',
-        badge: 'bg-red-200 text-red-800',
-        icon: 'text-red-600',
+        border: 'border-[var(--error)]/30',
+        bg: 'bg-[var(--error)]/10',
+        badge: 'bg-[var(--error)]/20 text-[var(--error)]',
+        icon: 'text-[var(--error)]',
       };
     default:
       return {
-        border: 'border-gray-200',
-        bg: 'bg-gray-50',
-        badge: 'bg-gray-200 text-gray-700',
-        icon: 'text-gray-500',
+        border: 'border-[var(--border)]',
+        bg: 'bg-[var(--surface)]',
+        badge: 'bg-[var(--surface-elevated)] text-[var(--foreground-muted)]',
+        icon: 'text-[var(--foreground-muted)]',
       };
   }
 };
@@ -98,7 +98,7 @@ const GapItem: React.FC<GapItemProps> = ({ gap }) => {
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h4 className="font-semibold text-gray-900">{gap.title}</h4>
+            <h4 className="font-semibold text-[var(--foreground)]">{gap.title}</h4>
             <span
               className={`text-xs px-2 py-0.5 rounded-full ${classes.badge}`}
               data-testid="severity-badge"
@@ -106,7 +106,7 @@ const GapItem: React.FC<GapItemProps> = ({ gap }) => {
               {severityDisplay.label}
             </span>
           </div>
-          <p className="text-gray-700 mt-1">{gap.description}</p>
+          <p className="text-[var(--foreground-muted)] mt-1">{gap.description}</p>
         </div>
       </div>
     </li>
@@ -120,7 +120,7 @@ export const GapList: React.FC<GapListProps> = ({ items }) => {
   if (items.length === 0) {
     return (
       <div
-        className="text-gray-500 text-center py-4"
+        className="text-[var(--foreground-muted)] text-center py-4"
         data-testid="gap-list-empty"
       >
         No significant gaps identified.
@@ -142,9 +142,9 @@ export const GapList: React.FC<GapListProps> = ({ items }) => {
     <section aria-labelledby="gaps-heading" data-testid="gap-list">
       <h3
         id="gaps-heading"
-        className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2"
+        className="text-lg font-semibold text-[var(--foreground)] mb-3 flex items-center gap-2"
       >
-        <span className="text-yellow-600" aria-hidden="true">
+        <span className="text-[var(--warning)]" aria-hidden="true">
           ⚠
         </span>
         Areas to Consider ({items.length})

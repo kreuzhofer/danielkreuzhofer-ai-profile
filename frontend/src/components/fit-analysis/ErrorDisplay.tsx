@@ -49,9 +49,9 @@ const getErrorClasses = (type: FitAnalysisErrorType): {
   switch (type) {
     case 'validation':
       return {
-        border: 'border-yellow-300',
-        bg: 'bg-yellow-50',
-        icon: 'text-yellow-600',
+        border: 'border-[var(--warning)]',
+        bg: 'bg-[var(--warning)]/10',
+        icon: 'text-[var(--warning)]',
       };
     case 'network':
     case 'timeout':
@@ -59,9 +59,9 @@ const getErrorClasses = (type: FitAnalysisErrorType): {
     case 'unknown':
     default:
       return {
-        border: 'border-red-300',
-        bg: 'bg-red-50',
-        icon: 'text-red-600',
+        border: 'border-[var(--error)]',
+        bg: 'bg-[var(--error)]/10',
+        icon: 'text-[var(--error)]',
       };
   }
 };
@@ -131,7 +131,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         <div className="flex-1 min-w-0">
           {/* Error message */}
           <p
-            className="font-medium text-gray-900"
+            className="font-medium text-[var(--foreground)]"
             data-testid="error-message"
           >
             {error.message}
@@ -140,12 +140,12 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
           {/* Suggestions */}
           {suggestions.length > 0 && (
             <ul
-              className="mt-2 text-sm text-gray-600 space-y-1"
+              className="mt-2 text-sm text-[var(--foreground-muted)] space-y-1"
               data-testid="error-suggestions"
             >
               {suggestions.map((suggestion, index) => (
                 <li key={index} className="flex items-center gap-2">
-                  <span className="text-gray-400" aria-hidden="true">
+                  <span className="text-[var(--foreground-subtle)]" aria-hidden="true">
                     •
                   </span>
                   {suggestion}
@@ -159,7 +159,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
             {error.retryable && (
               <button
                 onClick={onRetry}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="px-4 py-2 text-sm font-medium text-[var(--background)] bg-[var(--primary-500)] hover:bg-[var(--primary-400)] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:ring-offset-2"
                 data-testid="retry-button"
               >
                 Try Again
@@ -169,7 +169,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
             {onDismiss && (
               <button
                 onClick={onDismiss}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                className="px-4 py-2 text-sm font-medium text-[var(--foreground)] bg-[var(--surface-elevated)] border border-[var(--border)] hover:bg-[var(--surface)] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--foreground-subtle)] focus:ring-offset-2"
                 data-testid="dismiss-button"
               >
                 Dismiss

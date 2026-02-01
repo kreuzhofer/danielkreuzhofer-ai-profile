@@ -25,13 +25,13 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'style'>
 function getVariantClasses(variant: CardProps['variant']): string {
   switch (variant) {
     case 'default':
-      return 'bg-white dark:bg-[var(--neutral-800)]';
+      return 'bg-[var(--surface)]';
     case 'outlined':
-      return 'bg-transparent border border-[var(--neutral-200)] dark:border-[var(--neutral-700)]';
+      return 'bg-transparent border border-[var(--border)]';
     case 'elevated':
-      return 'bg-white dark:bg-[var(--neutral-800)] shadow-lg';
+      return 'bg-[var(--surface-elevated)] shadow-lg';
     default:
-      return 'bg-white dark:bg-[var(--neutral-800)]';
+      return 'bg-[var(--surface)]';
   }
 }
 

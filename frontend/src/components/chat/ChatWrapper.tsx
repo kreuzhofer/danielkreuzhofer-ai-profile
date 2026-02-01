@@ -272,7 +272,7 @@ function ChatPanelWithContent({
           ${isMobile ? '' : 'pointer-events-auto'}
           relative w-full h-full
           sm:max-w-md
-          bg-white shadow-2xl
+          bg-[var(--surface)] shadow-2xl
           flex flex-col
           transform transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
           motion-reduce:transition-none
@@ -284,10 +284,10 @@ function ChatPanelWithContent({
         data-testid="chat-panel-container"
       >
         {/* Header */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-gray-200 flex-shrink-0">
+        <header className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] flex-shrink-0">
           <h2
             id="chat-panel-title"
-            className="text-lg font-semibold text-gray-900"
+            className="text-lg font-semibold text-[var(--foreground)]"
           >
             Ask AI About Me
           </h2>
@@ -299,8 +299,8 @@ function ChatPanelWithContent({
               onClick={onClearConversation}
               className={`
                 p-2 rounded-md
-                text-gray-500 hover:text-gray-700 hover:bg-gray-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+                text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)]
+                focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:ring-offset-1 focus:ring-offset-[var(--surface)]
                 transition-colors duration-150
               `}
               aria-label="Start new conversation"
@@ -329,8 +329,8 @@ function ChatPanelWithContent({
               onClick={onClose}
               className={`
                 p-2 rounded-md
-                text-gray-500 hover:text-gray-700 hover:bg-gray-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+                text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)]
+                focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:ring-offset-1 focus:ring-offset-[var(--surface)]
                 transition-colors duration-150
               `}
               aria-label="Close chat panel"
@@ -365,13 +365,13 @@ function ChatPanelWithContent({
 
         {/* Error display */}
         {error && (
-          <div className="px-4 py-2 bg-red-50 border-t border-red-200">
-            <p className="text-sm text-red-600">{error.message}</p>
+          <div className="px-4 py-2 bg-red-500/20 border-t border-red-500/30">
+            <p className="text-sm text-red-400">{error.message}</p>
           </div>
         )}
 
         {/* Chat Input */}
-        <div className="border-t border-gray-200 p-4 flex-shrink-0">
+        <div className="border-t border-[var(--border)] p-4 flex-shrink-0">
           <ChatInput
             onSubmit={onSendMessage}
             disabled={isLoading}

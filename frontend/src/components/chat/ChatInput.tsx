@@ -144,12 +144,13 @@ export function ChatInput({
           rows={1}
           className={`
             w-full px-4 py-3
-            border border-gray-300 rounded-lg
+            border border-[var(--border)] rounded-lg
+            bg-[var(--surface-elevated)]
             resize-none
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-            disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
+            focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:border-transparent
+            disabled:bg-[var(--surface)] disabled:text-[var(--foreground-subtle)] disabled:cursor-not-allowed
             transition-colors duration-150
-            text-gray-900 placeholder-gray-500
+            text-[var(--foreground)] placeholder-[var(--foreground-subtle)]
           `}
           style={{ minHeight: '48px', maxHeight: '150px' }}
           aria-label="Message input"
@@ -167,11 +168,11 @@ export function ChatInput({
           min-w-[44px] min-h-[44px]
           rounded-lg
           transition-colors duration-150
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+          focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:ring-offset-1
           ${
             isSendDisabled
-              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800'
+              ? 'bg-[var(--surface-elevated)] text-[var(--foreground-subtle)] cursor-not-allowed'
+              : 'bg-[var(--primary-500)] text-[var(--background)] hover:bg-[var(--primary-400)] active:bg-[var(--primary-600)]'
           }
         `}
         aria-label="Send message"

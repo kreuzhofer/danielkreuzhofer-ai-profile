@@ -122,27 +122,27 @@ function getColorClasses(level: ConfidenceLevel): {
   switch (level) {
     case 'strong_match':
       return {
-        text: 'text-green-700',
-        bg: 'bg-green-50',
-        border: 'border-green-200',
+        text: 'text-[var(--success)]',
+        bg: 'bg-[var(--success)]/10',
+        border: 'border-[var(--success)]/30',
       };
     case 'partial_match':
       return {
-        text: 'text-yellow-700',
-        bg: 'bg-yellow-50',
-        border: 'border-yellow-200',
+        text: 'text-[var(--warning)]',
+        bg: 'bg-[var(--warning)]/10',
+        border: 'border-[var(--warning)]/30',
       };
     case 'limited_match':
       return {
-        text: 'text-red-700',
-        bg: 'bg-red-50',
-        border: 'border-red-200',
+        text: 'text-[var(--error)]',
+        bg: 'bg-[var(--error)]/10',
+        border: 'border-[var(--error)]/30',
       };
     default:
       return {
-        text: 'text-gray-700',
-        bg: 'bg-gray-50',
-        border: 'border-gray-200',
+        text: 'text-[var(--foreground-muted)]',
+        bg: 'bg-[var(--surface)]',
+        border: 'border-[var(--border)]',
       };
   }
 }
@@ -204,7 +204,7 @@ export function ConfidenceIndicator({
 
           {/* Description - explains what the confidence level means */}
           <p
-            className="text-sm text-gray-600 mt-0.5"
+            className="text-sm text-[var(--foreground-muted)] mt-0.5"
             data-testid="confidence-description"
           >
             {display.description}

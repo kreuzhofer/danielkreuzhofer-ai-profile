@@ -56,8 +56,8 @@ export function MobileMenuButton({ isOpen, onToggle }: MobileMenuButtonProps) {
       className="
         inline-flex items-center justify-center
         min-w-[44px] min-h-[44px] p-2
-        text-gray-600 hover:text-foreground
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground focus:rounded-md
+        text-[var(--foreground-muted)] hover:text-[var(--foreground)]
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)] focus:rounded-md
         transition-colors duration-200
         md:hidden
       "
@@ -217,14 +217,14 @@ export function MobileMenu({
         aria-label="Mobile navigation"
         className={`
           absolute top-0 right-0 h-full w-64 max-w-[80vw]
-          bg-background shadow-xl
+          bg-[var(--surface)] shadow-xl
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
       >
         {/* Menu header with close button */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <span className="text-lg font-semibold text-foreground">Menu</span>
+        <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
+          <span className="text-lg font-semibold text-[var(--foreground)]">Menu</span>
           <button
             type="button"
             onClick={onClose}
@@ -232,8 +232,8 @@ export function MobileMenu({
             className="
               inline-flex items-center justify-center
               min-w-[44px] min-h-[44px] p-2
-              text-gray-600 hover:text-foreground
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground focus:rounded-md
+              text-[var(--foreground-muted)] hover:text-[var(--foreground)]
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--surface)] focus:rounded-md
               transition-colors duration-200
             "
           >
@@ -272,10 +272,10 @@ export function MobileMenu({
                     block px-6 py-3 min-h-[44px]
                     text-base font-medium
                     transition-colors duration-200
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-foreground
+                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--primary-500)]
                     ${isActive
-                      ? 'text-foreground bg-gray-100 border-l-4 border-foreground'
-                      : 'text-gray-600 hover:text-foreground hover:bg-gray-50'
+                      ? 'text-[var(--foreground)] bg-[var(--surface-elevated)] border-l-4 border-[var(--primary-500)]'
+                      : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)]'
                     }
                   `}
                 >
@@ -287,18 +287,18 @@ export function MobileMenu({
         </ul>
 
         {/* CTA Buttons */}
-        <div className="px-4 py-4 border-t border-gray-200 space-y-3">
+        <div className="px-4 py-4 border-t border-[var(--border)] space-y-3">
           <Link
             href="/transparency"
             onClick={onClose}
             className="
               flex items-center justify-center gap-2
               w-full px-4 py-3 min-h-[44px]
-              bg-gray-100 hover:bg-gray-200
-              text-gray-700 font-medium text-base
+              bg-[var(--surface-elevated)] hover:bg-[var(--primary-900)]
+              text-[var(--foreground)] font-medium text-base
               rounded-lg
               transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--surface)]
             "
           >
             <svg
@@ -323,11 +323,11 @@ export function MobileMenu({
             className="
               flex items-center justify-center gap-2
               w-full px-4 py-3 min-h-[44px]
-              bg-blue-600 hover:bg-blue-700
+              bg-[var(--secondary-500)] hover:bg-[var(--secondary-600)]
               text-white font-medium text-base
               rounded-lg
               transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary-500)] focus:ring-offset-[var(--surface)]
             "
           >
             <svg
@@ -382,10 +382,10 @@ export function NavLink({ href, label, isActive, onClick }: NavLinkProps) {
       aria-current={isActive ? 'page' : undefined}
       className={`
         relative px-3 py-2 text-sm font-medium transition-colors duration-200
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground focus:rounded-md
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)] focus:rounded-md
         ${isActive
-          ? 'text-foreground'
-          : 'text-gray-600 hover:text-foreground'
+          ? 'text-[var(--foreground)]'
+          : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
         }
       `}
     >
@@ -492,11 +492,11 @@ export function Navigation({
           href="/transparency"
           className="
             px-4 py-2
-            bg-gray-100 hover:bg-gray-200
-            text-gray-700 text-sm font-medium
+            bg-[var(--surface-elevated)] hover:bg-[var(--primary-900)]
+            text-[var(--foreground)] text-sm font-medium
             rounded-lg
             transition-colors duration-200
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]
           "
         >
           Skills Transparency
@@ -505,11 +505,11 @@ export function Navigation({
           href="/fit-analysis"
           className="
             px-4 py-2
-            bg-blue-600 hover:bg-blue-700
+            bg-[var(--secondary-500)] hover:bg-[var(--secondary-600)]
             text-white text-sm font-medium
             rounded-lg
             transition-colors duration-200
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary-500)] focus:ring-offset-[var(--background)]
           "
         >
           Fit Analysis

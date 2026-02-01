@@ -48,16 +48,16 @@ const HistoryItem: React.FC<HistoryItemProps> = ({ item, onSelect }) => {
   return (
     <button
       onClick={() => onSelect(item.id)}
-      className="w-full text-left p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="w-full text-left p-3 rounded-lg border border-[var(--border)] hover:border-[var(--primary-600)] hover:bg-[var(--surface-elevated)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:ring-offset-2"
       data-testid="history-item"
       aria-label={`Load analysis from ${formatDate(item.timestamp)}: ${item.jobDescriptionPreview.substring(0, 50)}...`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <p className="text-sm text-gray-900 truncate">
+          <p className="text-sm text-[var(--foreground)] truncate">
             {item.jobDescriptionPreview}
           </p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-[var(--foreground-muted)] mt-1">
             {formatDate(item.timestamp)}
           </p>
         </div>
@@ -65,10 +65,10 @@ const HistoryItem: React.FC<HistoryItemProps> = ({ item, onSelect }) => {
           <span
             className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full ${
               item.confidenceScore === 'strong_match'
-                ? 'bg-green-100 text-green-800'
+                ? 'bg-[var(--success)]/20 text-[var(--success)]'
                 : item.confidenceScore === 'partial_match'
-                ? 'bg-yellow-100 text-yellow-800'
-                : 'bg-red-100 text-red-800'
+                ? 'bg-[var(--warning)]/20 text-[var(--warning)]'
+                : 'bg-[var(--error)]/20 text-[var(--error)]'
             }`}
             data-testid="history-item-confidence"
           >
@@ -104,27 +104,27 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
 
   return (
     <div
-      className="border border-gray-200 rounded-lg overflow-hidden"
+      className="border border-[var(--border)] rounded-lg overflow-hidden"
       data-testid="history-panel"
     >
       {/* Header */}
       <button
         onClick={toggleExpanded}
-        className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+        className="w-full flex items-center justify-between px-4 py-3 bg-[var(--surface)] hover:bg-[var(--surface-elevated)] transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--primary-500)]"
         aria-expanded={isExpanded}
         aria-controls="history-content"
         data-testid="history-toggle"
       >
         <div className="flex items-center gap-2">
-          <span className="text-gray-600" aria-hidden="true">
+          <span className="text-[var(--foreground-muted)]" aria-hidden="true">
             📋
           </span>
-          <span className="font-medium text-gray-900">
+          <span className="font-medium text-[var(--foreground)]">
             Recent Analyses ({items.length}/{MAX_HISTORY_ITEMS})
           </span>
         </div>
         <span
-          className={`text-gray-500 transition-transform ${
+          className={`text-[var(--foreground-muted)] transition-transform ${
             isExpanded ? 'rotate-180' : ''
           }`}
           aria-hidden="true"
@@ -142,7 +142,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
         >
           {items.length === 0 ? (
             <p
-              className="text-gray-500 text-center py-4"
+              className="text-[var(--foreground-muted)] text-center py-4"
               data-testid="history-empty"
             >
               No previous analyses yet. Your analysis history will appear here.
@@ -160,7 +160,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
               </div>
               <button
                 onClick={onClearHistory}
-                className="w-full text-sm text-red-600 hover:text-red-700 hover:bg-red-50 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                className="w-full text-sm text-[var(--error)] hover:text-[var(--error)] hover:bg-[var(--error)]/10 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--error)] focus:ring-offset-2"
                 data-testid="clear-history-button"
               >
                 Clear History

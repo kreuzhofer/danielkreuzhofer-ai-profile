@@ -162,14 +162,14 @@ function EvidenceItem({ evidence }: EvidenceItemProps) {
   return (
     <a
       href={reference}
-      className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors min-h-[44px]"
+      className="flex items-start gap-3 p-3 rounded-lg bg-[var(--surface-elevated)] hover:bg-[var(--primary-900)] transition-colors min-h-[44px]"
       data-testid={`evidence-item-${evidence.id}`}
       // Internal links open in same tab (Requirement 5.6)
       {...(!isInternalLink && { target: '_blank', rel: 'noopener noreferrer' })}
     >
       {/* Evidence Type Icon */}
       <span
-        className="flex-shrink-0 mt-0.5 text-gray-500"
+        className="flex-shrink-0 mt-0.5 text-[var(--foreground-muted)]"
         data-testid={`evidence-type-icon-${evidence.id}`}
       >
         <EvidenceIcon type={type} />
@@ -179,13 +179,13 @@ function EvidenceItem({ evidence }: EvidenceItemProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span
-            className="text-sm font-medium text-gray-900"
+            className="text-sm font-medium text-[var(--foreground)]"
             data-testid={`evidence-title-${evidence.id}`}
           >
             {title}
           </span>
           <span
-            className="text-xs text-gray-500 bg-gray-200 px-1.5 py-0.5 rounded"
+            className="text-xs text-[var(--foreground-muted)] bg-[var(--surface)] px-1.5 py-0.5 rounded"
             data-testid={`evidence-type-${evidence.id}`}
           >
             {typeDisplay.label}
@@ -193,7 +193,7 @@ function EvidenceItem({ evidence }: EvidenceItemProps) {
         </div>
         {excerpt && (
           <p
-            className="text-sm text-gray-600 mt-1 line-clamp-2"
+            className="text-sm text-[var(--foreground-muted)] mt-1 line-clamp-2"
             data-testid={`evidence-excerpt-${evidence.id}`}
           >
             {excerpt}
@@ -203,7 +203,7 @@ function EvidenceItem({ evidence }: EvidenceItemProps) {
 
       {/* External link indicator */}
       {!isInternalLink && (
-        <span className="flex-shrink-0 text-gray-400" aria-hidden="true">
+        <span className="flex-shrink-0 text-[var(--foreground-subtle)]" aria-hidden="true">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -347,16 +347,16 @@ export function SkillDetailPanel({ skill, isOpen, onClose, triggerRef }: SkillDe
       >
       <div
         ref={panelRef}
-        className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] flex flex-col"
+        className="bg-[var(--surface)] rounded-lg shadow-xl max-w-md w-full max-h-[90vh] flex flex-col"
         data-testid="skill-detail-panel"
         data-skill-id={skill.id}
       >
         {/* Sticky Header */}
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
+        <div className="px-6 py-4 border-b border-[var(--border)] flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3 min-w-0">
             <h2
               id="skill-detail-title"
-              className="text-xl font-semibold text-gray-900 truncate"
+              className="text-xl font-semibold text-[var(--foreground)] truncate"
               data-testid="skill-detail-name"
             >
               {name}
@@ -367,12 +367,12 @@ export function SkillDetailPanel({ skill, isOpen, onClose, triggerRef }: SkillDe
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="flex-shrink-0 p-2 rounded-full hover:bg-gray-100 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="flex-shrink-0 p-2 rounded-full hover:bg-[var(--surface-elevated)] transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Close"
             data-testid="skill-detail-close-button"
           >
             <svg
-              className="w-5 h-5 text-gray-500"
+              className="w-5 h-5 text-[var(--foreground-muted)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -392,7 +392,7 @@ export function SkillDetailPanel({ skill, isOpen, onClose, triggerRef }: SkillDe
         <div className="px-6 py-4 overflow-y-auto flex-1">
           {/* Tier Description */}
           <p
-            className="text-sm text-gray-500 mb-4"
+            className="text-sm text-[var(--foreground-subtle)] mb-4"
             data-testid="skill-detail-tier-description"
           >
             {tierConfig.description}
@@ -408,13 +408,13 @@ export function SkillDetailPanel({ skill, isOpen, onClose, triggerRef }: SkillDe
           {/* Full Context Description (Requirement 3.2) */}
           <div className="mb-6">
             <h3
-              className="text-sm font-medium text-gray-700 mb-2"
+              className="text-sm font-medium text-[var(--foreground-muted)] mb-2"
               data-testid="skill-detail-context-heading"
             >
               Context
             </h3>
             <p
-              className="text-gray-600"
+              className="text-[var(--foreground)]"
               data-testid="skill-detail-context"
             >
               {context}
@@ -425,7 +425,7 @@ export function SkillDetailPanel({ skill, isOpen, onClose, triggerRef }: SkillDe
           {hasEvidence && (
             <div data-testid="skill-detail-evidence-section">
               <h3
-                className="text-sm font-medium text-gray-700 mb-3"
+                className="text-sm font-medium text-[var(--foreground-muted)] mb-3"
                 data-testid="skill-detail-evidence-heading"
               >
                 Evidence ({evidence.length})
@@ -448,7 +448,7 @@ export function SkillDetailPanel({ skill, isOpen, onClose, triggerRef }: SkillDe
           {/* No Evidence Message */}
           {!hasEvidence && tier !== 'explicit_gap' && (
             <div
-              className="text-sm text-gray-500 italic"
+              className="text-sm text-[var(--foreground-subtle)] italic"
               data-testid="skill-detail-no-evidence"
             >
               {tier === 'working_knowledge'

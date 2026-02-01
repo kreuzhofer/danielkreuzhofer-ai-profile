@@ -169,10 +169,10 @@ export function ContactOptionCard({ option, className = '' }: ContactOptionCardP
       {...linkProps}
       className={`
         group flex items-start gap-4 p-5
-        bg-white rounded-xl border border-gray-100
-        hover:border-gray-200 hover:shadow-lg hover:-translate-y-0.5
+        bg-[var(--surface)] rounded-xl border border-[var(--border)]
+        hover:border-[var(--primary-600)] hover:shadow-lg hover:-translate-y-0.5
         transition-all duration-200
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]
         min-h-[44px]
         ${className}
       `}
@@ -183,8 +183,8 @@ export function ContactOptionCard({ option, className = '' }: ContactOptionCardP
         className="
           flex-shrink-0 flex items-center justify-center
           w-12 h-12 rounded-lg
-          bg-gray-50 group-hover:bg-gray-100
-          text-gray-600 group-hover:text-foreground
+          bg-[var(--surface-elevated)] group-hover:bg-[var(--primary-900)]
+          text-[var(--foreground-muted)] group-hover:text-[var(--primary-400)]
           transition-colors duration-200
         "
       >
@@ -193,10 +193,10 @@ export function ContactOptionCard({ option, className = '' }: ContactOptionCardP
 
       {/* Content */}
       <div className="flex-1 min-w-0 pt-1">
-        <h3 className="text-base font-semibold text-foreground group-hover:text-gray-900">
+        <h3 className="text-base font-semibold text-[var(--foreground)] group-hover:text-[var(--primary-400)]">
           {label}
         </h3>
-        <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+        <p className="text-sm text-[var(--foreground-muted)] mt-1 leading-relaxed">
           {description}
         </p>
       </div>
@@ -205,7 +205,7 @@ export function ContactOptionCard({ option, className = '' }: ContactOptionCardP
       <div
         className="
           flex-shrink-0 self-center
-          text-gray-400 group-hover:text-gray-600
+          text-[var(--foreground-subtle)] group-hover:text-[var(--primary-400)]
           transition-transform duration-200 group-hover:translate-x-1
         "
         aria-hidden="true"
@@ -274,14 +274,14 @@ export function ContactSection({ contact, className = '' }: ContactSectionProps)
         {/* Section heading - h2 for proper hierarchy under page h1 */}
         <h2
           id="contact-heading"
-          className="text-3xl md:text-4xl font-bold text-foreground mb-4"
+          className="text-3xl md:text-4xl font-bold text-[var(--foreground)] mb-4"
         >
           {headline || 'Get in Touch'}
         </h2>
 
         {/* Inviting subtext with soft language */}
         {subtext && (
-          <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed">
+          <p className="text-lg md:text-xl text-[var(--foreground-muted)] mb-10 max-w-2xl leading-relaxed">
             {subtext}
           </p>
         )}
@@ -297,13 +297,13 @@ export function ContactSection({ contact, className = '' }: ContactSectionProps)
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-[var(--foreground-muted)] text-center py-8">
             Contact options coming soon.
           </p>
         )}
 
         {/* Soft closing message */}
-        <p className="text-sm text-gray-500 mt-8 text-center">
+        <p className="text-sm text-[var(--foreground-subtle)] mt-8 text-center">
           No pressure—reach out whenever feels right.
         </p>
       </div>

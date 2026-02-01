@@ -47,10 +47,10 @@ export function FloatingContactButton({
         fixed bottom-6 right-6 z-40
         flex items-center justify-center
         min-w-[44px] min-h-[44px] w-12 h-12
-        bg-foreground text-background
+        bg-[var(--primary-500)] text-[var(--background)]
         rounded-full shadow-lg
-        hover:bg-gray-800 hover:shadow-xl hover:scale-105
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground
+        hover:bg-[var(--primary-400)] hover:shadow-xl hover:scale-105
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)]
         transition-all duration-200 ease-in-out
         ${className}
       `}

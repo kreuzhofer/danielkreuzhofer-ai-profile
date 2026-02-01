@@ -145,11 +145,11 @@ export function SocialLinks({ links, className = '' }: SocialLinksProps) {
           className="
             inline-flex items-center justify-center
             min-w-[44px] min-h-[44px] p-2
-            text-gray-600 hover:text-foreground
-            bg-gray-100 hover:bg-gray-200
+            text-[var(--foreground-muted)] hover:text-[var(--foreground)]
+            bg-[var(--surface-elevated)] hover:bg-[var(--primary-900)]
             rounded-full
             transition-colors duration-200
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)]
           "
         >
           <SocialLinkIcon platform={link.platform} />
@@ -213,7 +213,7 @@ export function AboutSection({ about, className = '' }: AboutSectionProps) {
           {/* Profile image (optional) */}
           {profileImage && (
             <div className="flex-shrink-0">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden bg-gray-200">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden bg-[var(--surface-elevated)]">
                 <img
                   src={profileImage}
                   alt="Profile"
@@ -235,14 +235,14 @@ export function AboutSection({ about, className = '' }: AboutSectionProps) {
 
             {/* Brief bio (under 100 words) */}
             {bio && (
-              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+              <p className="text-base md:text-lg text-[var(--foreground-muted)] leading-relaxed">
                 {bio}
               </p>
             )}
 
             {/* Primary value proposition */}
             {valueProposition && (
-              <p className="text-base md:text-lg text-gray-600 italic border-l-4 border-gray-300 pl-4">
+              <p className="text-base md:text-lg text-[var(--foreground-subtle)] italic border-l-4 border-[var(--primary-600)] pl-4">
                 {valueProposition}
               </p>
             )}

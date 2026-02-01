@@ -54,7 +54,7 @@ export function GapCard({ gap }: GapCardProps) {
 
   return (
     <div
-      className="p-4 rounded-lg bg-slate-50 border border-slate-200"
+      className="p-4 rounded-lg bg-slate-500/10 border border-slate-500/30"
       data-testid={`gap-card-${id}`}
       data-gap-id={id}
     >
@@ -62,7 +62,7 @@ export function GapCard({ gap }: GapCardProps) {
       <div className="flex items-start gap-2 mb-2">
         {/* Icon indicating intentional gap */}
         <span
-          className="flex-shrink-0 mt-0.5 text-slate-400"
+          className="flex-shrink-0 mt-0.5 text-slate-500"
           aria-hidden="true"
         >
           <svg
@@ -76,7 +76,7 @@ export function GapCard({ gap }: GapCardProps) {
           </svg>
         </span>
         <h3
-          className="text-base font-medium text-slate-700"
+          className="text-base font-medium text-slate-300"
           data-testid={`gap-name-${id}`}
         >
           {name}
@@ -85,7 +85,7 @@ export function GapCard({ gap }: GapCardProps) {
 
       {/* Gap Explanation (Requirement 4.2) */}
       <p
-        className="text-sm text-slate-600 ml-6"
+        className="text-sm text-slate-400 ml-6"
         data-testid={`gap-explanation-${id}`}
       >
         {explanation}
@@ -97,7 +97,7 @@ export function GapCard({ gap }: GapCardProps) {
           className="mt-2 ml-6 text-sm text-slate-500 italic"
           data-testid={`gap-alternative-${id}`}
         >
-          <span className="font-medium not-italic">Instead:</span> {alternativeFocus}
+          <span className="font-medium not-italic text-slate-400">Instead:</span> {alternativeFocus}
         </div>
       )}
     </div>

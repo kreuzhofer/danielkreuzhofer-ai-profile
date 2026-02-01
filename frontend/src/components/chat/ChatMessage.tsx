@@ -31,26 +31,26 @@ const getMessageStyles = (role: MessageRole): MessageStyles => {
     case 'user':
       return {
         container: 'flex justify-end',
-        bubble: 'bg-blue-600 text-white rounded-2xl rounded-br-md',
-        timestamp: 'text-blue-200',
+        bubble: 'bg-[var(--primary-600)] text-[var(--foreground)] rounded-2xl rounded-br-md',
+        timestamp: 'text-[var(--primary-300)]',
       };
     case 'assistant':
       return {
         container: 'flex justify-start',
-        bubble: 'bg-gray-100 text-gray-900 rounded-2xl rounded-bl-md',
-        timestamp: 'text-gray-500',
+        bubble: 'bg-[var(--surface-elevated)] text-[var(--foreground)] rounded-2xl rounded-bl-md',
+        timestamp: 'text-[var(--foreground-subtle)]',
       };
     case 'system':
       return {
         container: 'flex justify-center',
-        bubble: 'bg-gray-50 text-gray-700 rounded-2xl border border-gray-200',
-        timestamp: 'text-gray-400',
+        bubble: 'bg-[var(--surface)] text-[var(--foreground-muted)] rounded-2xl border border-[var(--border)]',
+        timestamp: 'text-[var(--foreground-subtle)]',
       };
     default:
       return {
         container: 'flex justify-start',
-        bubble: 'bg-gray-100 text-gray-900 rounded-2xl',
-        timestamp: 'text-gray-500',
+        bubble: 'bg-[var(--surface-elevated)] text-[var(--foreground)] rounded-2xl',
+        timestamp: 'text-[var(--foreground-subtle)]',
       };
   }
 };
@@ -128,11 +128,11 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
                   // Check if it's inline code or a code block
                   const isInline = !className;
                   return isInline ? (
-                    <code className="bg-gray-200 text-gray-800 px-1 py-0.5 rounded text-xs font-mono">
+                    <code className="bg-[var(--surface)] text-[var(--foreground)] px-1 py-0.5 rounded text-xs font-mono">
                       {children}
                     </code>
                   ) : (
-                    <code className={`${className} block bg-gray-800 text-gray-100 p-2 rounded text-xs font-mono overflow-x-auto`}>
+                    <code className={`${className} block bg-[var(--background)] text-[var(--foreground)] p-2 rounded text-xs font-mono overflow-x-auto`}>
                       {children}
                     </code>
                   );
@@ -143,7 +143,7 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+                    className="text-[var(--primary-400)] hover:underline"
                   >
                     {children}
                   </a>
@@ -152,7 +152,7 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
                 h2: ({ children }) => <h2 className="text-base font-bold m-0 mb-2">{children}</h2>,
                 h3: ({ children }) => <h3 className="text-sm font-bold m-0 mb-1">{children}</h3>,
                 blockquote: ({ children }) => (
-                  <blockquote className="border-l-2 border-gray-300 pl-3 italic m-0 mb-2">
+                  <blockquote className="border-l-2 border-[var(--border)] pl-3 italic m-0 mb-2">
                     {children}
                   </blockquote>
                 ),
@@ -180,8 +180,8 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
 
         {/* Error state with retry button */}
         {isError && onRetry && (
-          <div className="mt-2 pt-2 border-t border-red-200" data-testid="error-section">
-            <p className="text-red-600 text-sm mb-2">
+          <div className="mt-2 pt-2 border-t border-[var(--error)]/30" data-testid="error-section">
+            <p className="text-[var(--error)] text-sm mb-2">
               Failed to send message
             </p>
             <button
@@ -189,10 +189,10 @@ export function ChatMessage({ message, onRetry }: ChatMessageProps) {
               onClick={onRetry}
               className={`
                 px-3 py-1 text-sm
-                bg-red-100 text-red-700
+                bg-[var(--error)]/10 text-[var(--error)]
                 rounded-md
-                hover:bg-red-200
-                focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1
+                hover:bg-[var(--error)]/20
+                focus:outline-none focus:ring-2 focus:ring-[var(--error)] focus:ring-offset-1
                 transition-colors duration-150
               `}
               data-testid="retry-button"

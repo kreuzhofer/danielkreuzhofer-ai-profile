@@ -130,7 +130,7 @@ export function HeroSection({
         <p
           className={`
             text-lg md:text-xl lg:text-2xl
-            text-[var(--neutral-600)] dark:text-[var(--neutral-400)]
+            text-[var(--foreground-muted)]
             max-w-2xl mx-auto
             mb-10
             ${taglineAnimationClasses}

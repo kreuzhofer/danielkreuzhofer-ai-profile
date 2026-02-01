@@ -84,13 +84,13 @@ export function RecruiterCTASection({ className = '' }: RecruiterCTASectionProps
       >
         {/* Section intro */}
         <div className="text-center mb-10">
-          <p className="text-sm font-medium text-[var(--primary-600)] uppercase tracking-wide mb-2">
+          <p className="text-sm font-medium text-[var(--primary-400)] uppercase tracking-wide mb-2">
             For Recruiters & Hiring Managers
           </p>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-[var(--foreground)] mb-3">
             I believe in radical transparency
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-[var(--foreground-muted)] max-w-2xl mx-auto">
             Skip the guesswork. Get honest insights into my expertise and an AI-powered 
             assessment of how I match your specific requirements.
           </p>
@@ -101,27 +101,27 @@ export function RecruiterCTASection({ className = '' }: RecruiterCTASectionProps
           {/* Skills Transparency Card */}
           <Link
             href="/transparency"
-            className="group block p-6 bg-white rounded-xl border border-gray-200 
-                       hover:border-[var(--primary-300)] hover:shadow-lg 
+            className="group block p-6 bg-[var(--surface)] rounded-xl border border-[var(--border)] 
+                       hover:border-[var(--primary-600)] hover:shadow-lg 
                        transition-all duration-200"
           >
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-[var(--primary-50)] 
+              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-[var(--primary-900)] 
                               flex items-center justify-center
-                              group-hover:bg-[var(--primary-100)] transition-colors">
-                <TransparencyIcon className="w-6 h-6 text-[var(--primary-600)]" />
+                              group-hover:bg-[var(--primary-800)] transition-colors">
+                <TransparencyIcon className="w-6 h-6 text-[var(--primary-400)]" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-semibold text-foreground mb-1 
-                               group-hover:text-[var(--primary-700)] transition-colors">
+                <h3 className="text-lg font-semibold text-[var(--foreground)] mb-1 
+                               group-hover:text-[var(--primary-400)] transition-colors">
                   Skills Transparency
                 </h3>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-[var(--foreground-muted)] mb-3">
                   See evidence-backed expertise, working knowledge areas, and explicit gaps 
                   I&apos;ve chosen not to pursue.
                 </p>
                 <span className="inline-flex items-center text-sm font-medium 
-                                 text-[var(--primary-600)] group-hover:text-[var(--primary-700)]">
+                                 text-[var(--primary-400)] group-hover:text-[var(--primary-300)]">
                   View dashboard
                   <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" 
                        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -135,27 +135,27 @@ export function RecruiterCTASection({ className = '' }: RecruiterCTASectionProps
           {/* Fit Analysis Card */}
           <Link
             href="/fit-analysis"
-            className="group block p-6 bg-white rounded-xl border border-gray-200 
-                       hover:border-[var(--primary-300)] hover:shadow-lg 
+            className="group block p-6 bg-[var(--surface)] rounded-xl border border-[var(--border)] 
+                       hover:border-[var(--secondary-500)] hover:shadow-lg 
                        transition-all duration-200"
           >
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-[var(--primary-50)] 
+              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-[var(--secondary-900)] 
                               flex items-center justify-center
-                              group-hover:bg-[var(--primary-100)] transition-colors">
-                <FitAnalysisIcon className="w-6 h-6 text-[var(--primary-600)]" />
+                              group-hover:bg-[var(--secondary-800)] transition-colors">
+                <FitAnalysisIcon className="w-6 h-6 text-[var(--secondary-400)]" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-semibold text-foreground mb-1 
-                               group-hover:text-[var(--primary-700)] transition-colors">
+                <h3 className="text-lg font-semibold text-[var(--foreground)] mb-1 
+                               group-hover:text-[var(--secondary-400)] transition-colors">
                   Fit Analysis
                 </h3>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-[var(--foreground-muted)] mb-3">
                   Paste your job description and get an instant, honest assessment of 
                   alignment, strengths, and potential gaps.
                 </p>
                 <span className="inline-flex items-center text-sm font-medium 
-                                 text-[var(--primary-600)] group-hover:text-[var(--primary-700)]">
+                                 text-[var(--secondary-400)] group-hover:text-[var(--secondary-300)]">
                   Analyze fit
                   <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" 
                        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

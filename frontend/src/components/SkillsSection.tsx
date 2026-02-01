@@ -63,27 +63,27 @@ function getLevelColor(level: Skill['level']): { filled: string; empty: string; 
   switch (level) {
     case 'expert':
       return {
-        filled: 'bg-green-500',
-        empty: 'bg-gray-200',
-        text: 'text-green-700 bg-green-100',
+        filled: 'bg-emerald-500',
+        empty: 'bg-[var(--border)]',
+        text: 'text-emerald-400 bg-emerald-500/20',
       };
     case 'proficient':
       return {
-        filled: 'bg-blue-500',
-        empty: 'bg-gray-200',
-        text: 'text-blue-700 bg-blue-100',
+        filled: 'bg-[var(--primary-500)]',
+        empty: 'bg-[var(--border)]',
+        text: 'text-[var(--primary-400)] bg-[var(--primary-500)]/20',
       };
     case 'familiar':
       return {
-        filled: 'bg-yellow-500',
-        empty: 'bg-gray-200',
-        text: 'text-yellow-700 bg-yellow-100',
+        filled: 'bg-amber-500',
+        empty: 'bg-[var(--border)]',
+        text: 'text-amber-400 bg-amber-500/20',
       };
     default:
       return {
-        filled: 'bg-gray-500',
-        empty: 'bg-gray-200',
-        text: 'text-gray-700 bg-gray-100',
+        filled: 'bg-[var(--foreground-subtle)]',
+        empty: 'bg-[var(--border)]',
+        text: 'text-[var(--foreground-muted)] bg-[var(--surface-elevated)]',
       };
   }
 }
@@ -210,27 +210,27 @@ export function SkillItem({ skill, indicatorVariant = 'bars', className = '' }: 
     <div
       className={`
         py-3 px-4
-        bg-white rounded-lg border border-gray-100
-        hover:border-gray-200 hover:shadow-md hover:-translate-y-0.5
+        bg-[var(--surface)] rounded-lg border border-[var(--border)]
+        hover:border-[var(--primary-600)] hover:shadow-md hover:-translate-y-0.5
         transition-all duration-200
         ${className}
       `}
     >
       {/* Skill name as headline */}
-      <h4 className="text-sm font-semibold text-foreground mb-1">
+      <h4 className="text-sm font-semibold text-[var(--foreground)] mb-1">
         {name}
       </h4>
       
       {/* Metadata line: proficiency indicator + level label + years */}
       <div className="flex items-center gap-2 mb-1.5">
         <ProficiencyIndicator level={level} variant={indicatorVariant} />
-        <span className="text-xs font-medium text-gray-600">
+        <span className="text-xs font-medium text-[var(--foreground-muted)]">
           {levelLabel}
         </span>
         {yearsOfExperience !== undefined && yearsOfExperience > 0 && (
           <>
-            <span className="text-gray-300">·</span>
-            <span className="text-xs text-gray-500">
+            <span className="text-[var(--border)]">·</span>
+            <span className="text-xs text-[var(--foreground-subtle)]">
               {yearsOfExperience} {yearsOfExperience === 1 ? 'year' : 'years'}
             </span>
           </>
@@ -239,7 +239,7 @@ export function SkillItem({ skill, indicatorVariant = 'bars', className = '' }: 
       
       {/* Context as description */}
       {context && (
-        <p className="text-xs text-gray-500 leading-relaxed">
+        <p className="text-xs text-[var(--foreground-subtle)] leading-relaxed">
           {context}
         </p>
       )}
@@ -293,17 +293,17 @@ export function SkillCategoryCard({ category, indicatorVariant = 'bars', classNa
   return (
     <div
       className={`
-        bg-gray-50 rounded-xl p-5
+        bg-[var(--surface)] rounded-xl p-5
         ${className}
       `}
     >
       {/* Category header */}
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-foreground">
+        <h3 className="text-lg font-semibold text-[var(--foreground)]">
           {name}
         </h3>
         {description && (
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-[var(--foreground-muted)] mt-1">
             {description}
           </p>
         )}
@@ -321,7 +321,7 @@ export function SkillCategoryCard({ category, indicatorVariant = 'bars', classNa
           ))}
         </div>
       ) : (
-        <p className="text-sm text-gray-500 italic">
+        <p className="text-sm text-[var(--foreground-subtle)] italic">
           No skills listed in this category.
         </p>
       )}
@@ -375,13 +375,13 @@ export function SkillsSection({ skillCategories, indicatorVariant = 'bars', clas
         {/* Section heading - h2 for proper hierarchy under page h1 */}
         <h2
           id="skills-heading"
-          className="text-3xl md:text-4xl font-bold text-foreground mb-8"
+          className="text-3xl md:text-4xl font-bold text-[var(--foreground)] mb-8"
         >
           Skills
         </h2>
 
         {/* Proficiency legend */}
-        <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-600">
+        <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-[var(--foreground-muted)]">
           <span className="font-medium">Proficiency:</span>
           <div className="flex items-center gap-2">
             <ProficiencyIndicator level="expert" variant={indicatorVariant} />
@@ -409,7 +409,7 @@ export function SkillsSection({ skillCategories, indicatorVariant = 'bars', clas
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-[var(--foreground-muted)] text-center py-8">
             No skills available.
           </p>
         )}

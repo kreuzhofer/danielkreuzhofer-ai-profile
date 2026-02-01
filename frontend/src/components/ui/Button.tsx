@@ -32,15 +32,15 @@ type AnchorElementProps = ButtonProps & Omit<AnchorHTMLAttributes<HTMLAnchorElem
 function getVariantClasses(variant: ButtonProps['variant']): string {
   switch (variant) {
     case 'primary':
-      return 'bg-[var(--primary-500)] text-white hover:bg-[var(--primary-600)] focus:ring-[var(--primary-500)]';
+      return 'bg-[var(--primary-500)] text-white hover:bg-[var(--primary-400)] focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
     case 'secondary':
-      return 'bg-[var(--secondary-500)] text-white hover:bg-[var(--secondary-600)] focus:ring-[var(--secondary-500)]';
+      return 'bg-[var(--secondary-500)] text-white hover:bg-[var(--secondary-400)] focus:ring-[var(--secondary-500)] focus:ring-offset-[var(--background)]';
     case 'outline':
-      return 'border-2 border-[var(--primary-500)] text-[var(--primary-600)] hover:bg-[var(--primary-50)] focus:ring-[var(--primary-500)]';
+      return 'border-2 border-[var(--primary-500)] text-[var(--primary-400)] hover:bg-[var(--primary-500)]/20 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
     case 'ghost':
-      return 'text-[var(--primary-600)] hover:bg-[var(--primary-50)] focus:ring-[var(--primary-500)]';
+      return 'text-[var(--primary-400)] hover:bg-[var(--primary-500)]/20 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
     default:
-      return 'bg-[var(--primary-500)] text-white hover:bg-[var(--primary-600)] focus:ring-[var(--primary-500)]';
+      return 'bg-[var(--primary-500)] text-white hover:bg-[var(--primary-400)] focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
   }
 }
 

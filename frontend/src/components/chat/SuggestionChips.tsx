@@ -59,13 +59,13 @@ export function SuggestionChips({
             inline-flex items-center
             px-3 py-1.5
             text-sm
-            bg-[var(--primary-50)] text-[var(--primary-700)]
-            border border-[var(--primary-200)]
+            bg-[var(--primary-900)] text-[var(--primary-300)]
+            border border-[var(--primary-800)]
             rounded-full
             transition-all duration-150
-            hover:bg-[var(--primary-100)] hover:border-[var(--primary-300)]
+            hover:bg-[var(--primary-800)] hover:border-[var(--primary-700)]
             focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:ring-offset-1
-            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[var(--primary-50)]
+            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[var(--primary-900)]
             cursor-pointer
           `}
         >

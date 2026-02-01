@@ -57,7 +57,7 @@ interface EvidenceItemProps {
 const EvidenceItem: React.FC<EvidenceItemProps> = ({ evidence }) => {
   return (
     <div
-      className="flex items-start gap-2 p-2 bg-gray-50 rounded-md text-sm"
+      className="flex items-start gap-2 p-2 bg-[var(--surface-elevated)] rounded-md text-sm"
       data-testid="evidence-item"
     >
       <span className="flex-shrink-0" aria-hidden="true">
@@ -65,12 +65,12 @@ const EvidenceItem: React.FC<EvidenceItemProps> = ({ evidence }) => {
       </span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-medium text-gray-900">{evidence.title}</span>
-          <span className="text-xs px-1.5 py-0.5 bg-gray-200 rounded text-gray-600">
+          <span className="font-medium text-[var(--foreground)]">{evidence.title}</span>
+          <span className="text-xs px-1.5 py-0.5 bg-[var(--surface)] rounded text-[var(--foreground-muted)]">
             {getEvidenceLabel(evidence.type)}
           </span>
         </div>
-        <p className="text-gray-600 mt-1 italic">&ldquo;{evidence.excerpt}&rdquo;</p>
+        <p className="text-[var(--foreground-muted)] mt-1 italic">&ldquo;{evidence.excerpt}&rdquo;</p>
       </div>
     </div>
   );
@@ -86,23 +86,23 @@ interface AlignmentItemProps {
 const AlignmentItem: React.FC<AlignmentItemProps> = ({ alignment }) => {
   return (
     <li
-      className="border border-green-200 rounded-lg p-4 bg-green-50"
+      className="border border-[var(--success)]/30 rounded-lg p-4 bg-[var(--success)]/10"
       data-testid="alignment-item"
     >
       <div className="flex items-start gap-3">
         <span
-          className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-green-100 rounded-full text-green-600"
+          className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-[var(--success)]/20 rounded-full text-[var(--success)]"
           aria-hidden="true"
         >
           ✓
         </span>
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900">{alignment.title}</h4>
-          <p className="text-gray-700 mt-1">{alignment.description}</p>
+          <h4 className="font-semibold text-[var(--foreground)]">{alignment.title}</h4>
+          <p className="text-[var(--foreground-muted)] mt-1">{alignment.description}</p>
 
           {alignment.evidence.length > 0 && (
             <div className="mt-3 space-y-2">
-              <h5 className="text-sm font-medium text-gray-600">
+              <h5 className="text-sm font-medium text-[var(--foreground-muted)]">
                 Supporting Evidence ({alignment.evidence.length})
               </h5>
               <div className="space-y-2">
@@ -128,7 +128,7 @@ export const AlignmentList: React.FC<AlignmentListProps> = ({ items }) => {
   if (items.length === 0) {
     return (
       <div
-        className="text-gray-500 text-center py-4"
+        className="text-[var(--foreground-muted)] text-center py-4"
         data-testid="alignment-list-empty"
       >
         No specific alignment areas identified.
@@ -140,9 +140,9 @@ export const AlignmentList: React.FC<AlignmentListProps> = ({ items }) => {
     <section aria-labelledby="alignment-heading" data-testid="alignment-list">
       <h3
         id="alignment-heading"
-        className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2"
+        className="text-lg font-semibold text-[var(--foreground)] mb-3 flex items-center gap-2"
       >
-        <span className="text-green-600" aria-hidden="true">
+        <span className="text-[var(--success)]" aria-hidden="true">
           ✓
         </span>
         Strong Alignment Areas ({items.length})

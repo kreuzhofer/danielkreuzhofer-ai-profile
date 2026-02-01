@@ -43,31 +43,31 @@ const getRecommendationClasses = (type: RecommendationType): {
   switch (type) {
     case 'proceed':
       return {
-        border: 'border-green-300',
-        bg: 'bg-green-50',
-        headerBg: 'bg-green-100',
-        headerText: 'text-green-800',
+        border: 'border-[var(--success)]/30',
+        bg: 'bg-[var(--success)]/10',
+        headerBg: 'bg-[var(--success)]/20',
+        headerText: 'text-[var(--success)]',
       };
     case 'consider':
       return {
-        border: 'border-yellow-300',
-        bg: 'bg-yellow-50',
-        headerBg: 'bg-yellow-100',
-        headerText: 'text-yellow-800',
+        border: 'border-[var(--warning)]/30',
+        bg: 'bg-[var(--warning)]/10',
+        headerBg: 'bg-[var(--warning)]/20',
+        headerText: 'text-[var(--warning)]',
       };
     case 'reconsider':
       return {
-        border: 'border-red-300',
-        bg: 'bg-red-50',
-        headerBg: 'bg-red-100',
-        headerText: 'text-red-800',
+        border: 'border-[var(--error)]/30',
+        bg: 'bg-[var(--error)]/10',
+        headerBg: 'bg-[var(--error)]/20',
+        headerText: 'text-[var(--error)]',
       };
     default:
       return {
-        border: 'border-gray-300',
-        bg: 'bg-gray-50',
-        headerBg: 'bg-gray-100',
-        headerText: 'text-gray-800',
+        border: 'border-[var(--border)]',
+        bg: 'bg-[var(--surface)]',
+        headerBg: 'bg-[var(--surface-elevated)]',
+        headerText: 'text-[var(--foreground)]',
       };
   }
 };
@@ -108,13 +108,13 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
       {/* Content */}
       <div className={`${classes.bg} px-4 py-4`}>
         <p
-          className="text-lg font-medium text-gray-900 mb-2"
+          className="text-lg font-medium text-[var(--foreground)] mb-2"
           data-testid="recommendation-summary"
         >
           {recommendation.summary}
         </p>
         <p
-          className="text-gray-700"
+          className="text-[var(--foreground-muted)]"
           data-testid="recommendation-details"
         >
           {recommendation.details}

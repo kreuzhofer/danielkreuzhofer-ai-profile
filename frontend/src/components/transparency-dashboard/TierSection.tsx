@@ -68,15 +68,15 @@ function getSectionClasses(emphasis: 'high' | 'medium' | 'low'): string {
   switch (emphasis) {
     case 'high':
       // Core strengths: prominent styling with emerald accent
-      return `${baseClasses} bg-emerald-50/50 border-2 border-emerald-200`;
+      return `${baseClasses} bg-emerald-500/10 border-2 border-emerald-500/30`;
     case 'medium':
-      // Working knowledge: neutral styling with blue accent
-      return `${baseClasses} bg-blue-50/30 border border-blue-200`;
+      // Working knowledge: neutral styling with teal accent
+      return `${baseClasses} bg-[var(--primary-500)]/10 border border-[var(--primary-500)]/30`;
     case 'low':
       // Explicit gaps: subtle styling with slate accent
-      return `${baseClasses} bg-slate-50/50 border border-slate-200`;
+      return `${baseClasses} bg-slate-500/10 border border-slate-500/30`;
     default:
-      return `${baseClasses} bg-gray-50 border border-gray-200`;
+      return `${baseClasses} bg-[var(--surface)] border border-[var(--border)]`;
   }
 }
 
@@ -86,13 +86,13 @@ function getSectionClasses(emphasis: 'high' | 'medium' | 'low'): string {
 function getHeadingClasses(emphasis: 'high' | 'medium' | 'low'): string {
   switch (emphasis) {
     case 'high':
-      return 'text-2xl md:text-3xl font-bold text-emerald-900';
+      return 'text-2xl md:text-3xl font-bold text-emerald-400';
     case 'medium':
-      return 'text-xl md:text-2xl font-semibold text-blue-900';
+      return 'text-xl md:text-2xl font-semibold text-[var(--primary-400)]';
     case 'low':
-      return 'text-lg md:text-xl font-medium text-slate-700';
+      return 'text-lg md:text-xl font-medium text-slate-400';
     default:
-      return 'text-xl font-semibold text-gray-900';
+      return 'text-xl font-semibold text-[var(--foreground)]';
   }
 }
 
@@ -102,13 +102,13 @@ function getHeadingClasses(emphasis: 'high' | 'medium' | 'low'): string {
 function getDescriptionClasses(emphasis: 'high' | 'medium' | 'low'): string {
   switch (emphasis) {
     case 'high':
-      return 'text-base text-emerald-700';
+      return 'text-base text-emerald-300/80';
     case 'medium':
-      return 'text-sm text-blue-700';
+      return 'text-sm text-[var(--primary-300)]/80';
     case 'low':
-      return 'text-sm text-slate-600';
+      return 'text-sm text-slate-400/80';
     default:
-      return 'text-sm text-gray-600';
+      return 'text-sm text-[var(--foreground-muted)]';
   }
 }
 
@@ -201,15 +201,15 @@ export function TierSection({
                 // Placeholder for SkillCard (will be replaced when SkillCard is created)
                 <div
                   className={`
-                    p-3 md:p-4 rounded-lg bg-white shadow-sm border
-                    ${styling.emphasis === 'high' ? 'border-emerald-100' : ''}
-                    ${styling.emphasis === 'medium' ? 'border-blue-100' : ''}
-                    ${styling.emphasis === 'low' ? 'border-slate-100' : ''}
+                    p-3 md:p-4 rounded-lg bg-[var(--surface)] shadow-sm border
+                    ${styling.emphasis === 'high' ? 'border-emerald-500/30' : ''}
+                    ${styling.emphasis === 'medium' ? 'border-[var(--primary-500)]/30' : ''}
+                    ${styling.emphasis === 'low' ? 'border-slate-500/30' : ''}
                   `}
                   data-testid={`skill-placeholder-${skill.id}`}
                 >
-                  <div className="font-medium text-gray-900">{skill.name}</div>
-                  <div className="text-sm text-gray-600 mt-1">{skill.context}</div>
+                  <div className="font-medium text-[var(--foreground)]">{skill.name}</div>
+                  <div className="text-sm text-[var(--foreground-muted)] mt-1">{skill.context}</div>
                 </div>
               )}
             </div>
@@ -217,7 +217,7 @@ export function TierSection({
         </div>
       ) : (
         <div
-          className="text-center py-6 text-gray-500"
+          className="text-center py-6 text-[var(--foreground-muted)]"
           data-testid={`tier-empty-${tier}`}
         >
           <p>No skills in this tier yet.</p>

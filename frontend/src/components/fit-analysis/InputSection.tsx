@@ -153,7 +153,7 @@ export function InputSection({
         {/* Label for the textarea */}
         <label
           htmlFor={textareaId}
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-[var(--foreground-muted)]"
         >
           Job Description
         </label>
@@ -172,17 +172,18 @@ export function InputSection({
             className={`
               w-full px-4 py-3
               border rounded-lg
+              bg-[var(--surface-elevated)]
               resize-y
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-              disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
+              focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:border-transparent
+              disabled:bg-[var(--surface)] disabled:text-[var(--foreground-subtle)] disabled:cursor-not-allowed
               transition-colors duration-150
-              text-gray-900 placeholder-gray-500
+              text-[var(--foreground)] placeholder-[var(--foreground-subtle)]
               ${
                 errorMessage
-                  ? 'border-red-500 focus:ring-red-500'
+                  ? 'border-[var(--error)] focus:ring-[var(--error)]'
                   : warningMessage
-                    ? 'border-yellow-500 focus:ring-yellow-500'
-                    : 'border-gray-300'
+                    ? 'border-[var(--warning)] focus:ring-[var(--warning)]'
+                    : 'border-[var(--border)]'
               }
             `}
             style={{ minHeight: '200px' }}
@@ -201,7 +202,7 @@ export function InputSection({
             {errorMessage && (
               <p
                 id={errorId}
-                className="text-sm text-red-600 flex items-center gap-1"
+                className="text-sm text-[var(--error)] flex items-center gap-1"
                 role="alert"
                 data-testid="validation-error"
               >
@@ -227,7 +228,7 @@ export function InputSection({
             {!errorMessage && warningMessage && (
               <p
                 id={warningId}
-                className="text-sm text-yellow-600 flex items-center gap-1"
+                className="text-sm text-[var(--warning)] flex items-center gap-1"
                 role="status"
                 data-testid="validation-warning"
               >
@@ -257,10 +258,10 @@ export function InputSection({
               text-sm flex-shrink-0
               ${
                 isOverLimit
-                  ? 'text-red-600 font-medium'
+                  ? 'text-[var(--error)] font-medium'
                   : isNearLimit
-                    ? 'text-yellow-600'
-                    : 'text-gray-500'
+                    ? 'text-[var(--warning)]'
+                    : 'text-[var(--foreground-muted)]'
               }
             `}
             aria-live="polite"
@@ -274,8 +275,8 @@ export function InputSection({
         </div>
 
         {/* Keyboard shortcut hint */}
-        <p className="text-xs text-gray-400">
-          Press <kbd className="px-1 py-0.5 bg-gray-100 rounded text-gray-600 font-mono">Ctrl</kbd>+<kbd className="px-1 py-0.5 bg-gray-100 rounded text-gray-600 font-mono">Enter</kbd> to submit
+        <p className="text-xs text-[var(--foreground-subtle)]">
+          Press <kbd className="px-1 py-0.5 bg-[var(--surface-elevated)] rounded text-[var(--foreground-muted)] font-mono">Ctrl</kbd>+<kbd className="px-1 py-0.5 bg-[var(--surface-elevated)] rounded text-[var(--foreground-muted)] font-mono">Enter</kbd> to submit
         </p>
 
         {/* Submit button */}
@@ -290,11 +291,11 @@ export function InputSection({
               rounded-lg
               font-medium
               transition-colors duration-150
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+              focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] focus:ring-offset-2
               ${
                 !canSubmit
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800'
+                  ? 'bg-[var(--surface-elevated)] text-[var(--foreground-subtle)] cursor-not-allowed'
+                  : 'bg-[var(--primary-500)] text-[var(--background)] hover:bg-[var(--primary-400)] active:bg-[var(--primary-600)]'
               }
             `}
             aria-label={isDisabled ? 'Analyzing...' : 'Analyze fit'}

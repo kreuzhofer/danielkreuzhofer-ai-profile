@@ -25,7 +25,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
     >
       {/* Title */}
       <h1
-        className="text-3xl sm:text-4xl font-bold text-gray-900"
+        className="text-3xl sm:text-4xl font-bold text-[var(--foreground)]"
         data-testid="intro-title"
       >
         Fit Analysis
@@ -33,7 +33,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
 
       {/* Description */}
       <p
-        className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto"
+        className="mt-4 text-lg text-[var(--foreground-muted)] max-w-2xl mx-auto"
         data-testid="intro-description"
       >
         Curious if my experience aligns with your role? Paste a job description
@@ -42,21 +42,21 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
       </p>
 
       {/* Features list */}
-      <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-gray-500">
+      <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-[var(--foreground-muted)]">
         <div className="flex items-center gap-2">
-          <span className="text-green-500" aria-hidden="true">
+          <span className="text-[var(--success)]" aria-hidden="true">
             ✓
           </span>
           <span>Evidence-based alignment</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-yellow-500" aria-hidden="true">
+          <span className="text-[var(--warning)]" aria-hidden="true">
             ⚠
           </span>
           <span>Transparent gaps</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-blue-500" aria-hidden="true">
+          <span className="text-[var(--primary-400)]" aria-hidden="true">
             💡
           </span>
           <span>Honest recommendations</span>
@@ -65,13 +65,13 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ className = '' }) =>
 
       {/* Example prompts */}
       <div
-        className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200"
+        className="mt-8 p-4 bg-[var(--surface)] rounded-lg border border-[var(--border)]"
         data-testid="example-prompts"
       >
-        <h2 className="text-sm font-medium text-gray-700 mb-2">
+        <h2 className="text-sm font-medium text-[var(--foreground-muted)] mb-2">
           What kind of roles work best?
         </h2>
-        <ul className="text-sm text-gray-600 space-y-1">
+        <ul className="text-sm text-[var(--foreground-muted)] space-y-1">
           <li>• Solutions Architect or Technical Lead positions</li>
           <li>• Cloud architecture and AWS-focused roles</li>
           <li>• Full-stack development with TypeScript/React</li>
