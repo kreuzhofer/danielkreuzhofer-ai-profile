@@ -201,8 +201,8 @@ export function MobileMenu({
       {/* Backdrop overlay */}
       <div
         className={`
-          absolute inset-0 bg-black transition-opacity duration-300
-          ${isOpen ? 'bg-opacity-50' : 'bg-opacity-0'}
+          absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300
+          ${isOpen ? 'opacity-100' : 'opacity-0'}
         `}
         onClick={onClose}
         aria-hidden="true"
