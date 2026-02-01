@@ -1,3 +1,9 @@
+---
+experienceId: "aws-team-lead"
+title: "Team Lead Solutions Architecture - Deep Dive"
+language: "de"
+type: "role-reflection"
+---
 # Amazon Web Services (AWS)
 
 ## Rolle: Team Lead Solutions Architecture  

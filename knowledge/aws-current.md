@@ -1,3 +1,9 @@
+---
+experienceId: "aws-current"
+title: "Senior Solutions Architect - Deep Dive"
+language: "de"
+type: "role-reflection"
+---
 # Karrierestation: Senior Solutions Architect – Amazon Web Services (AWS)
 
 ## Zeitraum

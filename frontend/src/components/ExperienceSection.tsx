@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import type { Experience, ExperienceDepth as ExperienceDepthType, Decision, Outcome } from '@/types/content';
 import { Expandable } from './Expandable';
 import { useExpandable } from '@/hooks/useExpandable';
@@ -377,20 +377,22 @@ export interface ExperienceItemProps {
  */
 export function ExperienceItem({ experience, isExpanded, onToggle }: ExperienceItemProps) {
   return (
-    <Expandable
-      id={experience.id}
-      isExpanded={isExpanded}
-      onToggle={onToggle}
-      summaryContent={
-        <ExperienceSummary experience={experience} isExpanded={isExpanded} />
-      }
-      depthContent={
-        <ExperienceDepth depth={experience.depth} />
-      }
-      ariaLabel={`${experience.role} at ${experience.company}`}
-      className="border border-[var(--border)] bg-[var(--surface)] rounded-lg overflow-hidden mb-4 last:mb-0 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
-      buttonClassName="hover:bg-[var(--surface-elevated)]"
-    />
+    <div id={`experience-${experience.id}`}>
+      <Expandable
+        id={experience.id}
+        isExpanded={isExpanded}
+        onToggle={onToggle}
+        summaryContent={
+          <ExperienceSummary experience={experience} isExpanded={isExpanded} />
+        }
+        depthContent={
+          <ExperienceDepth depth={experience.depth} />
+        }
+        ariaLabel={`${experience.role} at ${experience.company}`}
+        className="border border-[var(--border)] bg-[var(--surface)] rounded-lg overflow-hidden mb-4 last:mb-0 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+        buttonClassName="hover:bg-[var(--surface-elevated)]"
+      />
+    </div>
   );
 }
 
@@ -568,6 +570,39 @@ export function ExperienceSection({ experiences, className = '', initialVisibleC
 
   // Ref for the show more/less button to scroll to after collapsing
   const showMoreButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Handle hash-based navigation to specific experiences
+  useEffect(() => {
+    const handleHashNavigation = () => {
+      const hash = window.location.hash;
+      if (!hash.startsWith('#experience-')) return;
+      
+      const experienceId = hash.replace('#experience-', '');
+      const experienceIndex = sortedExperiences.findIndex(exp => exp.id === experienceId);
+      
+      if (experienceIndex === -1) return;
+      
+      // If the experience is in the hidden part, expand the list
+      if (experienceIndex >= initialVisibleCount && !showAll) {
+        setShowAll(true);
+      }
+      
+      // Scroll to the element after a short delay to allow DOM update
+      setTimeout(() => {
+        const element = document.getElementById(`experience-${experienceId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    };
+
+    // Handle initial load
+    handleHashNavigation();
+    
+    // Handle hash changes
+    window.addEventListener('hashchange', handleHashNavigation);
+    return () => window.removeEventListener('hashchange', handleHashNavigation);
+  }, [sortedExperiences, initialVisibleCount, showAll]);
 
   // Handle show more/less toggle with scroll behavior
   const handleToggleShowAll = () => {
