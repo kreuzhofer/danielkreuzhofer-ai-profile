@@ -1,18 +1,19 @@
 /**
- * Fit Analysis API Route
+ * Fit Analysis API Route with Streaming Progress
  *
  * This API route handles job description analysis requests and returns
  * structured MatchAssessment responses using the LLM client.
+ * Supports SSE streaming for progress updates.
  *
  * @see Requirements 2.1, 2.6, 6.1, 6.3
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { buildAnalysisPrompt } from '@/lib/fit-analysis-prompt';
 import { parseAnalysisResponse } from '@/lib/fit-analysis-parser';
-import { getChatCompletion, LLMError, LLMErrorType } from '@/lib/llm-client';
+import { streamChatCompletion, LLMError, LLMErrorType } from '@/lib/llm-client';
 import { createLogger } from '@/lib/logger';
-import type { AnalyzeRequest, AnalyzeResponse } from '@/types/fit-analysis';
+import type { AnalyzeRequest, AnalysisPhase } from '@/types/fit-analysis';
 
 const log = createLogger('AnalyzeAPI');
 
@@ -22,8 +23,6 @@ const log = createLogger('AnalyzeAPI');
 
 /**
  * Timeout for analysis requests in milliseconds (60 seconds)
- * Increased from 30s to accommodate longer job descriptions and model response times
- * @see Requirement 6.1 - timeout handling
  */
 const ANALYSIS_TIMEOUT_MS = 60000;
 
@@ -41,9 +40,6 @@ const ERROR_CODES = {
 
 /**
  * User-friendly error messages mapped by error type
- * These messages are safe to display to users and never expose technical details
- *
- * @see Requirement 6.3 - User-friendly error messages
  */
 const USER_FRIENDLY_ERROR_MESSAGES: Record<LLMErrorType, string> = {
   network: 'Unable to connect. Please check your connection and try again.',
@@ -54,30 +50,29 @@ const USER_FRIENDLY_ERROR_MESSAGES: Record<LLMErrorType, string> = {
   api_key_missing: 'Something went wrong on our end. Please try again.',
 };
 
+/**
+ * Phase detection markers in the LLM response
+ */
+const PHASE_MARKERS: { marker: string; phase: AnalysisPhase }[] = [
+  { marker: '"confidence"', phase: 'analyzing' },
+  { marker: '"alignments"', phase: 'finding_alignments' },
+  { marker: '"gaps"', phase: 'identifying_gaps' },
+  { marker: '"recommendation"', phase: 'generating_recommendation' },
+];
+
 // =============================================================================
 // Helper Functions
 // =============================================================================
 
 /**
- * Create an error response with consistent structure
+ * Create an SSE-formatted message
  */
-function createErrorResponse(
-  code: string,
-  message: string,
-  status: number
-): NextResponse<AnalyzeResponse> {
-  return NextResponse.json(
-    {
-      success: false,
-      error: { code, message },
-    },
-    { status }
-  );
+function createSSEMessage(data: object): string {
+  return `data: ${JSON.stringify(data)}\n\n`;
 }
 
 /**
  * Get a user-friendly error message for an LLM error type
- * Never exposes technical details or API keys
  */
 function getUserFriendlyErrorMessage(errorType: LLMErrorType): string {
   return USER_FRIENDLY_ERROR_MESSAGES[errorType] || 'An unexpected error occurred. Please try again.';
@@ -90,7 +85,6 @@ function validateRequest(body: unknown): body is AnalyzeRequest {
   if (!body || typeof body !== 'object') {
     return false;
   }
-
   const request = body as AnalyzeRequest;
   return typeof request.jobDescription === 'string';
 }
@@ -103,50 +97,19 @@ function isEmptyJobDescription(jobDescription: string): boolean {
 }
 
 /**
- * Execute analysis with timeout handling
- * @see Requirement 6.1 - timeout handling
+ * Detect the current analysis phase based on accumulated response content
  */
-async function executeAnalysisWithTimeout(
-  jobDescription: string
-): Promise<string> {
-  const endTiming = log.time('Analysis execution');
+function detectPhase(content: string, currentPhase: AnalysisPhase): AnalysisPhase {
+  // Check markers in order - return the latest matching phase
+  let detectedPhase = currentPhase;
   
-  log.info('Building analysis prompt', { 
-    jobDescriptionLength: jobDescription.length 
-  });
+  for (const { marker, phase } of PHASE_MARKERS) {
+    if (content.includes(marker)) {
+      detectedPhase = phase;
+    }
+  }
   
-  // Build the analysis prompt with portfolio context
-  const promptStartTime = Date.now();
-  const prompt = await buildAnalysisPrompt(jobDescription);
-  log.debug('Prompt built', { 
-    promptLength: prompt.length,
-    buildTimeMs: Date.now() - promptStartTime 
-  });
-
-  // Create a promise that rejects after timeout
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => {
-      log.warn('Analysis timeout reached', { timeoutMs: ANALYSIS_TIMEOUT_MS });
-      reject(new LLMError('timeout', `Analysis timed out after ${ANALYSIS_TIMEOUT_MS / 1000} seconds`, true));
-    }, ANALYSIS_TIMEOUT_MS);
-  });
-
-  log.info('Calling LLM for analysis');
-  
-  // Race between the LLM call and timeout
-  // Use getChatCompletion for non-streaming response
-  const analysisPromise = getChatCompletion(
-    prompt,
-    [{ role: 'user', content: 'Please analyze this job description and provide your assessment in the JSON format specified.' }],
-    { timeout: ANALYSIS_TIMEOUT_MS }
-  );
-
-  const result = await Promise.race([analysisPromise, timeoutPromise]);
-  
-  endTiming();
-  log.info('LLM response received', { responseLength: result.length });
-  
-  return result;
+  return detectedPhase;
 }
 
 // =============================================================================
@@ -156,149 +119,164 @@ async function executeAnalysisWithTimeout(
 /**
  * POST /api/analyze
  *
- * Accepts a job description and returns a structured MatchAssessment.
+ * Accepts a job description and returns a streaming response with progress
+ * updates followed by the final MatchAssessment.
  *
- * Request body:
- * - jobDescription: string (required, non-empty)
- *
- * Response:
- * - success: true, assessment: MatchAssessment (on success)
- * - success: false, error: { code, message } (on error)
- *
- * Error codes:
- * - INVALID_REQUEST (400): Invalid request format
- * - EMPTY_JOB_DESCRIPTION (400): Empty or whitespace-only job description
- * - TIMEOUT (504): Analysis took longer than 30 seconds
- * - LLM_ERROR (500): LLM service error
- * - PARSE_ERROR (500): Failed to parse LLM response
- * - INTERNAL_ERROR (500): Unexpected server error
- *
- * @see Requirement 2.1 - Process request and generate MatchAssessment
- * @see Requirement 2.6 - Complete analysis within time limit
- * @see Requirement 6.1 - 30 second timeout handling
- * @see Requirement 6.3 - User-friendly error messages
+ * SSE Message Types:
+ * - { type: 'progress', phase: string, message: string, percent: number }
+ * - { type: 'complete', assessment: MatchAssessment }
+ * - { type: 'error', code: string, message: string }
  */
-export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeResponse>> {
+export async function POST(request: NextRequest): Promise<Response> {
   const requestId = Math.random().toString(36).substring(7);
   log.info('Analysis request received', { requestId });
-  
+
+  // Parse and validate request
+  let body: unknown;
   try {
-    // Parse request body
-    let body: unknown;
-    try {
-      body = await request.json();
-    } catch {
-      log.warn('JSON parse error', { requestId });
-      return createErrorResponse(
-        ERROR_CODES.INVALID_REQUEST,
-        'Invalid request format',
-        400
-      );
-    }
-
-    // Validate request structure
-    if (!validateRequest(body)) {
-      log.warn('Invalid request structure', { requestId });
-      return createErrorResponse(
-        ERROR_CODES.INVALID_REQUEST,
-        'Invalid request format. Expected { jobDescription: string }',
-        400
-      );
-    }
-
-    const { jobDescription } = body;
-
-    // Validate job description is not empty
-    // @see Requirement 2.3 - Prevent submission of empty/whitespace-only input
-    if (isEmptyJobDescription(jobDescription)) {
-      log.warn('Empty job description submitted', { requestId });
-      return createErrorResponse(
-        ERROR_CODES.EMPTY_JOB_DESCRIPTION,
-        'Please enter a job description to analyze.',
-        400
-      );
-    }
-
-    log.info('Starting analysis', { 
-      requestId, 
-      jobDescriptionLength: jobDescription.length 
-    });
-
-    // Execute analysis with timeout handling
-    let llmResponse: string;
-    try {
-      llmResponse = await executeAnalysisWithTimeout(jobDescription);
-    } catch (error) {
-      if (error instanceof LLMError) {
-        // Handle timeout specifically
-        // @see Requirement 6.1 - timeout handling
-        if (error.type === 'timeout') {
-          log.error('Analysis timeout', error, { requestId });
-          return createErrorResponse(
-            ERROR_CODES.TIMEOUT,
-            'The analysis is taking too long. Please try again.',
-            504
-          );
-        }
-
-        // Handle other LLM errors
-        // @see Requirement 6.3 - User-friendly error messages
-        log.error(`LLM error [${error.type}]`, error, { requestId });
-        return createErrorResponse(
-          ERROR_CODES.LLM_ERROR,
-          getUserFriendlyErrorMessage(error.type),
-          500
-        );
-      }
-
-      // Handle unexpected errors
-      log.error('Unexpected error during LLM call', error, { requestId });
-      return createErrorResponse(
-        ERROR_CODES.INTERNAL_ERROR,
-        'Something went wrong on our end. Please try again.',
-        500
-      );
-    }
-
-    // Parse the LLM response into MatchAssessment
-    log.debug('Parsing LLM response', { requestId, responseLength: llmResponse.length });
-    const parseResult = parseAnalysisResponse(llmResponse, { jobDescription });
-
-    if (!parseResult.success) {
-      log.error('Parse error', new Error(parseResult.error), { 
-        requestId,
-        responsePreview: llmResponse.substring(0, 200) 
-      });
-      return createErrorResponse(
-        ERROR_CODES.PARSE_ERROR,
-        'Received an unexpected response. Please try again.',
-        500
-      );
-    }
-
-    log.info('Analysis completed successfully', { 
-      requestId,
-      confidence: parseResult.assessment.confidenceScore,
-      alignmentsCount: parseResult.assessment.alignmentAreas.length,
-      gapsCount: parseResult.assessment.gapAreas.length
-    });
-
-    // Return successful response
-    // @see Requirement 2.1 - Generate MatchAssessment
-    return NextResponse.json({
-      success: true,
-      assessment: parseResult.assessment,
-    });
-
-  } catch (error) {
-    // Handle any unexpected errors
-    // SECURITY: Log for debugging but return generic message to client
-    log.error('Unexpected error', error, { requestId });
-
-    return createErrorResponse(
-      ERROR_CODES.INTERNAL_ERROR,
-      'Something went wrong on our end. Please try again.',
-      500
+    body = await request.json();
+  } catch {
+    log.warn('JSON parse error', { requestId });
+    return new Response(
+      createSSEMessage({ type: 'error', code: ERROR_CODES.INVALID_REQUEST, message: 'Invalid request format' }),
+      { status: 400, headers: { 'Content-Type': 'text/event-stream' } }
     );
   }
+
+  if (!validateRequest(body)) {
+    log.warn('Invalid request structure', { requestId });
+    return new Response(
+      createSSEMessage({ type: 'error', code: ERROR_CODES.INVALID_REQUEST, message: 'Invalid request format. Expected { jobDescription: string }' }),
+      { status: 400, headers: { 'Content-Type': 'text/event-stream' } }
+    );
+  }
+
+  const { jobDescription } = body;
+
+  if (isEmptyJobDescription(jobDescription)) {
+    log.warn('Empty job description submitted', { requestId });
+    return new Response(
+      createSSEMessage({ type: 'error', code: ERROR_CODES.EMPTY_JOB_DESCRIPTION, message: 'Please enter a job description to analyze.' }),
+      { status: 400, headers: { 'Content-Type': 'text/event-stream' } }
+    );
+  }
+
+  log.info('Starting streaming analysis', { requestId, jobDescriptionLength: jobDescription.length });
+
+  // Create streaming response
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder();
+      let currentPhase: AnalysisPhase = 'preparing';
+      let accumulatedContent = '';
+
+      const sendProgress = (phase: AnalysisPhase) => {
+        const phaseConfig: Record<AnalysisPhase, { message: string; percent: number }> = {
+          preparing: { message: 'Preparing analysis...', percent: 5 },
+          analyzing: { message: 'Analyzing fit...', percent: 20 },
+          finding_alignments: { message: 'Finding alignments...', percent: 40 },
+          identifying_gaps: { message: 'Identifying gaps...', percent: 60 },
+          generating_recommendation: { message: 'Generating recommendation...', percent: 80 },
+          finalizing: { message: 'Finalizing results...', percent: 95 },
+        };
+        
+        const config = phaseConfig[phase];
+        controller.enqueue(encoder.encode(
+          createSSEMessage({ type: 'progress', phase, message: config.message, percent: config.percent })
+        ));
+      };
+
+      try {
+        // Send initial progress
+        sendProgress('preparing');
+
+        // Build the analysis prompt
+        const endPromptTiming = log.time('Prompt building');
+        const prompt = await buildAnalysisPrompt(jobDescription);
+        endPromptTiming();
+
+        log.info('Calling LLM for streaming analysis', { requestId });
+
+        // Stream the LLM response and detect phases
+        const messages = [{ 
+          role: 'user' as const, 
+          content: 'Please analyze this job description and provide your assessment in the JSON format specified.' 
+        }];
+
+        for await (const chunk of streamChatCompletion(prompt, messages, { timeout: ANALYSIS_TIMEOUT_MS })) {
+          accumulatedContent += chunk;
+          
+          // Detect phase changes
+          const newPhase = detectPhase(accumulatedContent, currentPhase);
+          if (newPhase !== currentPhase) {
+            currentPhase = newPhase;
+            sendProgress(currentPhase);
+            log.debug('Phase changed', { requestId, phase: currentPhase });
+          }
+        }
+
+        // Send finalizing progress
+        sendProgress('finalizing');
+
+        log.info('LLM response complete, parsing', { requestId, responseLength: accumulatedContent.length });
+
+        // Parse the complete response
+        const parseResult = parseAnalysisResponse(accumulatedContent, { jobDescription });
+
+        if (!parseResult.success) {
+          log.error('Parse error', new Error(parseResult.error), { 
+            requestId,
+            responsePreview: accumulatedContent.substring(0, 200) 
+          });
+          controller.enqueue(encoder.encode(
+            createSSEMessage({ type: 'error', code: ERROR_CODES.PARSE_ERROR, message: 'Received an unexpected response. Please try again.' })
+          ));
+          controller.close();
+          return;
+        }
+
+        log.info('Analysis completed successfully', { 
+          requestId,
+          confidence: parseResult.assessment!.confidenceScore,
+          alignmentsCount: parseResult.assessment!.alignmentAreas.length,
+          gapsCount: parseResult.assessment!.gapAreas.length
+        });
+
+        // Send the complete assessment
+        controller.enqueue(encoder.encode(
+          createSSEMessage({ type: 'complete', assessment: parseResult.assessment })
+        ));
+        controller.close();
+
+      } catch (error) {
+        log.error('Analysis error', error, { requestId });
+
+        let errorCode: string = ERROR_CODES.INTERNAL_ERROR;
+        let errorMessage = 'Something went wrong on our end. Please try again.';
+
+        if (error instanceof LLMError) {
+          if (error.type === 'timeout') {
+            errorCode = ERROR_CODES.TIMEOUT;
+            errorMessage = 'The analysis is taking too long. Please try again.';
+          } else {
+            errorCode = ERROR_CODES.LLM_ERROR;
+            errorMessage = getUserFriendlyErrorMessage(error.type);
+          }
+        }
+
+        controller.enqueue(encoder.encode(
+          createSSEMessage({ type: 'error', code: errorCode, message: errorMessage })
+        ));
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  });
 }

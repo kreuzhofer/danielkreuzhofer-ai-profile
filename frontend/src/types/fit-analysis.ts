@@ -9,6 +9,42 @@
  */
 
 // =============================================================================
+// Analysis Progress Types
+// =============================================================================
+
+/**
+ * Phases of the analysis process for progress tracking
+ */
+export type AnalysisPhase = 
+  | 'preparing'
+  | 'analyzing'
+  | 'finding_alignments'
+  | 'identifying_gaps'
+  | 'generating_recommendation'
+  | 'finalizing';
+
+/**
+ * Progress update sent during streaming analysis
+ */
+export interface AnalysisProgress {
+  phase: AnalysisPhase;
+  message: string;
+  percent: number;
+}
+
+/**
+ * Display configuration for analysis phases
+ */
+export const ANALYSIS_PHASE_DISPLAY: Record<AnalysisPhase, { message: string; percent: number }> = {
+  preparing: { message: 'Preparing analysis...', percent: 5 },
+  analyzing: { message: 'Analyzing fit...', percent: 20 },
+  finding_alignments: { message: 'Finding alignments...', percent: 40 },
+  identifying_gaps: { message: 'Identifying gaps...', percent: 60 },
+  generating_recommendation: { message: 'Generating recommendation...', percent: 80 },
+  finalizing: { message: 'Finalizing results...', percent: 95 },
+};
+
+// =============================================================================
 // Confidence Level Types
 // =============================================================================
 
@@ -238,6 +274,8 @@ export interface FitAnalysisContextValue {
   analysisHistory: AnalysisHistoryItem[];
   /** Current error, if any */
   error: FitAnalysisError | null;
+  /** Current analysis progress, if analyzing */
+  analysisProgress: AnalysisProgress | null;
 
   // Actions
   /** Update the job description text */

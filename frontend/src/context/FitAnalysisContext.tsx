@@ -27,11 +27,13 @@ import type {
   AnalysisHistoryItem,
   StoredFitAnalysisSession,
   SerializedAnalysisItem,
-  AnalyzeResponse,
+  AnalysisProgress,
+  AnalysisPhase,
 } from '@/types/fit-analysis';
 import {
   FIT_ANALYSIS_STORAGE_KEY,
   MAX_HISTORY_ITEMS,
+  ANALYSIS_PHASE_DISPLAY,
 } from '@/types/fit-analysis';
 
 // =============================================================================
@@ -171,6 +173,8 @@ interface FitAnalysisState {
   currentResult: MatchAssessment | null;
   analysisHistory: AnalysisHistoryItem[];
   error: FitAnalysisError | null;
+  // Progress tracking
+  analysisProgress: AnalysisProgress | null;
   // Internal state for history management
   serializedHistory: SerializedAnalysisItem[];
   lastFailedJobDescription: string | null;
@@ -186,6 +190,7 @@ const initialFitAnalysisState: FitAnalysisState = {
   currentResult: null,
   analysisHistory: [],
   error: null,
+  analysisProgress: null,
   serializedHistory: [],
   lastFailedJobDescription: null,
 };
@@ -197,6 +202,7 @@ const initialFitAnalysisState: FitAnalysisState = {
 type FitAnalysisAction =
   | { type: 'SET_JOB_DESCRIPTION'; payload: string }
   | { type: 'START_ANALYSIS' }
+  | { type: 'UPDATE_PROGRESS'; payload: AnalysisProgress }
   | { type: 'ANALYSIS_SUCCESS'; payload: { assessment: MatchAssessment; jobDescriptionFull: string } }
   | { type: 'ANALYSIS_ERROR'; payload: FitAnalysisError }
   | { type: 'CLEAR_CURRENT_RESULT' }
@@ -227,7 +233,14 @@ function fitAnalysisReducer(
         ...state,
         isAnalyzing: true,
         error: null,
+        analysisProgress: { phase: 'preparing', message: 'Preparing analysis...', percent: 5 },
         lastFailedJobDescription: state.jobDescription,
+      };
+
+    case 'UPDATE_PROGRESS':
+      return {
+        ...state,
+        analysisProgress: action.payload,
       };
 
     case 'ANALYSIS_SUCCESS': {
@@ -253,6 +266,7 @@ function fitAnalysisReducer(
         analysisHistory: newAnalysisHistory,
         serializedHistory: newSerializedHistory,
         error: null,
+        analysisProgress: null,
         lastFailedJobDescription: null,
       };
     }
@@ -262,6 +276,7 @@ function fitAnalysisReducer(
         ...state,
         isAnalyzing: false,
         error: action.payload,
+        analysisProgress: null,
         // Keep the job description for retry (preserved via lastFailedJobDescription)
       };
 
@@ -354,7 +369,7 @@ export function FitAnalysisProvider({ children }: FitAnalysisProviderProps) {
     dispatch({ type: 'SET_JOB_DESCRIPTION', payload: text });
   }, []);
 
-  // Action: Submit analysis
+  // Action: Submit analysis with streaming progress
   const submitAnalysis = useCallback(async (): Promise<void> => {
     const trimmedDescription = state.jobDescription.trim();
     
@@ -374,7 +389,7 @@ export function FitAnalysisProvider({ children }: FitAnalysisProviderProps) {
     try {
       // Create AbortController for timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      const timeoutId = setTimeout(() => controller.abort(), 90000); // 90s total timeout
 
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -387,49 +402,84 @@ export function FitAnalysisProvider({ children }: FitAnalysisProviderProps) {
 
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        let errorType: FitAnalysisErrorType = 'server';
-        let errorMessage = 'Something went wrong. Please try again.';
-
-        if (response.status === 429) {
-          errorType = 'server';
-          errorMessage = 'Too many requests. Please wait a moment and try again.';
-        } else if (response.status >= 500) {
-          errorType = 'server';
-          errorMessage = 'Something went wrong. Please try again.';
-        }
-
-        const error: FitAnalysisError = {
-          type: errorType,
-          message: errorMessage,
-          retryable: true,
-        };
-        dispatch({ type: 'ANALYSIS_ERROR', payload: error });
-        return;
-      }
-
-      const data: AnalyzeResponse = await response.json();
-
-      if (!data.success || !data.assessment) {
+      if (!response.ok || !response.body) {
         const error: FitAnalysisError = {
           type: 'server',
-          message: data.error?.message || 'Received an unexpected response. Please try again.',
+          message: 'Something went wrong. Please try again.',
           retryable: true,
         };
         dispatch({ type: 'ANALYSIS_ERROR', payload: error });
         return;
       }
 
-      // Transform the assessment to ensure proper Date object
-      const assessment: MatchAssessment = {
-        ...data.assessment,
-        timestamp: new Date(data.assessment.timestamp),
-      };
+      // Process SSE stream
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
 
-      dispatch({
-        type: 'ANALYSIS_SUCCESS',
-        payload: { assessment, jobDescriptionFull: trimmedDescription },
-      });
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+        
+        buffer += decoder.decode(value, { stream: true });
+        
+        // Process complete SSE messages
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        
+        for (const line of lines) {
+          const trimmedLine = line.trim();
+          if (!trimmedLine || !trimmedLine.startsWith('data: ')) continue;
+          
+          try {
+            const data = JSON.parse(trimmedLine.slice(6));
+            
+            if (data.type === 'progress') {
+              dispatch({
+                type: 'UPDATE_PROGRESS',
+                payload: {
+                  phase: data.phase,
+                  message: data.message,
+                  percent: data.percent,
+                },
+              });
+            } else if (data.type === 'complete') {
+              // Transform the assessment to ensure proper Date object
+              const assessment: MatchAssessment = {
+                ...data.assessment,
+                timestamp: new Date(data.assessment.timestamp),
+              };
+              
+              dispatch({
+                type: 'ANALYSIS_SUCCESS',
+                payload: { assessment, jobDescriptionFull: trimmedDescription },
+              });
+              return;
+            } else if (data.type === 'error') {
+              const error: FitAnalysisError = {
+                type: data.code === 'TIMEOUT' ? 'timeout' : 'server',
+                message: data.message,
+                retryable: true,
+              };
+              dispatch({ type: 'ANALYSIS_ERROR', payload: error });
+              return;
+            }
+          } catch {
+            // Skip malformed JSON
+            continue;
+          }
+        }
+      }
+
+      // If we get here without a complete message, something went wrong
+      const error: FitAnalysisError = {
+        type: 'server',
+        message: 'The analysis was interrupted. Please try again.',
+        retryable: true,
+      };
+      dispatch({ type: 'ANALYSIS_ERROR', payload: error });
+
     } catch (error) {
       let errorType: FitAnalysisErrorType = 'unknown';
       let errorMessage = 'Something went wrong. Please try again.';
@@ -507,6 +557,7 @@ export function FitAnalysisProvider({ children }: FitAnalysisProviderProps) {
       currentResult: state.currentResult,
       analysisHistory: state.analysisHistory,
       error: state.error,
+      analysisProgress: state.analysisProgress,
       // Actions
       setJobDescription,
       submitAnalysis,
@@ -521,6 +572,7 @@ export function FitAnalysisProvider({ children }: FitAnalysisProviderProps) {
       state.currentResult,
       state.analysisHistory,
       state.error,
+      state.analysisProgress,
       setJobDescription,
       submitAnalysis,
       clearCurrentResult,

@@ -112,6 +112,67 @@ function renderWithProvider(ui?: React.ReactNode) {
   return { ...result, getContext: () => contextValue! };
 }
 
+/**
+ * Helper to create a mock SSE streaming response
+ */
+function createSSEResponse(assessment: MatchAssessment) {
+  const progressMessages = [
+    { type: 'progress', phase: 'preparing', message: 'Preparing analysis...', percent: 5 },
+    { type: 'progress', phase: 'analyzing', message: 'Analyzing fit...', percent: 20 },
+    { type: 'complete', assessment: { ...assessment, timestamp: assessment.timestamp.toISOString() } },
+  ];
+  
+  const sseData = progressMessages.map(msg => `data: ${JSON.stringify(msg)}\n\n`).join('');
+  const encoder = new TextEncoder();
+  const encoded = encoder.encode(sseData);
+  
+  let position = 0;
+  const mockReader = {
+    read: jest.fn().mockImplementation(() => {
+      if (position === 0) {
+        position++;
+        return Promise.resolve({ done: false, value: encoded });
+      }
+      return Promise.resolve({ done: true, value: undefined });
+    }),
+  };
+  
+  return {
+    ok: true,
+    body: {
+      getReader: () => mockReader,
+    },
+  };
+}
+
+/**
+ * Helper to create a mock SSE error response
+ */
+function createSSEErrorResponse(code: string, message: string) {
+  const errorMessage = { type: 'error', code, message };
+  const sseData = `data: ${JSON.stringify(errorMessage)}\n\n`;
+  const encoder = new TextEncoder();
+  const encoded = encoder.encode(sseData);
+  
+  let position = 0;
+  const mockReader = {
+    read: jest.fn().mockImplementation(() => {
+      if (position === 0) {
+        position++;
+        return Promise.resolve({ done: false, value: encoded });
+      }
+      return Promise.resolve({ done: true, value: undefined });
+    }),
+  };
+  
+  return {
+    ok: true,
+    body: {
+      getReader: () => mockReader,
+    },
+  };
+}
+
 // =============================================================================
 // Mock Session Storage
 // =============================================================================
@@ -736,16 +797,7 @@ describe('FitAnalysisProvider', () => {
 
     it('calls API with job description on valid input', async () => {
       const mockAssessment = createMockAssessment();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            ...mockAssessment,
-            timestamp: mockAssessment.timestamp.toISOString(),
-          },
-        }),
-      });
+      (global.fetch as jest.Mock).mockResolvedValueOnce(createSSEResponse(mockAssessment));
 
       const { getContext } = renderWithProvider();
 
@@ -767,16 +819,7 @@ describe('FitAnalysisProvider', () => {
 
     it('updates currentResult on successful analysis', async () => {
       const mockAssessment = createMockAssessment();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            ...mockAssessment,
-            timestamp: mockAssessment.timestamp.toISOString(),
-          },
-        }),
-      });
+      (global.fetch as jest.Mock).mockResolvedValueOnce(createSSEResponse(mockAssessment));
 
       const { getContext } = renderWithProvider();
 
@@ -794,16 +837,7 @@ describe('FitAnalysisProvider', () => {
 
     it('adds result to history on success', async () => {
       const mockAssessment = createMockAssessment();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            ...mockAssessment,
-            timestamp: mockAssessment.timestamp.toISOString(),
-          },
-        }),
-      });
+      (global.fetch as jest.Mock).mockResolvedValueOnce(createSSEResponse(mockAssessment));
 
       const { getContext } = renderWithProvider();
 
@@ -822,6 +856,7 @@ describe('FitAnalysisProvider', () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
         status: 500,
+        body: null,
       });
 
       const { getContext } = renderWithProvider();
@@ -842,6 +877,7 @@ describe('FitAnalysisProvider', () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
         status: 500,
+        body: null,
       });
 
       const { getContext } = renderWithProvider();
@@ -877,16 +913,7 @@ describe('FitAnalysisProvider', () => {
   describe('clearCurrentResult action', () => {
     it('clears result and job description', async () => {
       const mockAssessment = createMockAssessment();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            ...mockAssessment,
-            timestamp: mockAssessment.timestamp.toISOString(),
-          },
-        }),
-      });
+      (global.fetch as jest.Mock).mockResolvedValueOnce(createSSEResponse(mockAssessment));
 
       const { getContext } = renderWithProvider();
 
@@ -914,16 +941,7 @@ describe('FitAnalysisProvider', () => {
   describe('loadHistoryItem action', () => {
     it('restores previous analysis from history', async () => {
       const mockAssessment = createMockAssessment();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            ...mockAssessment,
-            timestamp: mockAssessment.timestamp.toISOString(),
-          },
-        }),
-      });
+      (global.fetch as jest.Mock).mockResolvedValueOnce(createSSEResponse(mockAssessment));
 
       const { getContext } = renderWithProvider();
 
@@ -969,16 +987,7 @@ describe('FitAnalysisProvider', () => {
   describe('clearHistory action', () => {
     it('removes all history items', async () => {
       const mockAssessment = createMockAssessment();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            ...mockAssessment,
-            timestamp: mockAssessment.timestamp.toISOString(),
-          },
-        }),
-      });
+      (global.fetch as jest.Mock).mockResolvedValueOnce(createSSEResponse(mockAssessment));
 
       const { getContext } = renderWithProvider();
 
@@ -1003,16 +1012,7 @@ describe('FitAnalysisProvider', () => {
 
     it('clears session storage', async () => {
       const mockAssessment = createMockAssessment();
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            ...mockAssessment,
-            timestamp: mockAssessment.timestamp.toISOString(),
-          },
-        }),
-      });
+      (global.fetch as jest.Mock).mockResolvedValueOnce(createSSEResponse(mockAssessment));
 
       const { getContext } = renderWithProvider();
 

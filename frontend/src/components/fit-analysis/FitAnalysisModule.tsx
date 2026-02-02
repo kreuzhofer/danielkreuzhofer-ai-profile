@@ -39,6 +39,7 @@ export const FitAnalysisModule: React.FC<FitAnalysisModuleProps> = ({
     currentResult,
     analysisHistory,
     error,
+    analysisProgress,
     clearCurrentResult,
     loadHistoryItem,
     clearHistory,
@@ -82,7 +83,7 @@ export const FitAnalysisModule: React.FC<FitAnalysisModuleProps> = ({
         )}
 
         {/* Loading State */}
-        {isAnalyzing && <LoadingState />}
+        {isAnalyzing && <LoadingState progress={analysisProgress} />}
 
         {/* Results Section - shown when we have results */}
         {currentResult && !isAnalyzing && (
