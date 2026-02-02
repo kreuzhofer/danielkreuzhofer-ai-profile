@@ -3,7 +3,6 @@
 import React, { useState, useCallback } from 'react';
 import { Navigation, MobileMenuButton, MobileMenu, DEFAULT_SECTIONS } from './Navigation';
 import { useActiveSection, useScrollProgress, useReducedMotion } from '../hooks';
-import { FloatingContactButton } from './FloatingContactButton';
 
 /**
  * Props for the Layout component
@@ -174,8 +173,6 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
         </div>
       </footer>
 
-      {/* Floating contact button - persistent contact option (Requirement 8.3) */}
-      <FloatingContactButton />
     </div>
   );
 }
