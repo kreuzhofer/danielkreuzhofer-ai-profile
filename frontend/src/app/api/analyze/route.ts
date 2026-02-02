@@ -14,6 +14,11 @@ import { parseAnalysisResponse } from '@/lib/fit-analysis-parser';
 import { streamChatCompletion, LLMError, LLMErrorType } from '@/lib/llm-client';
 import { createLogger } from '@/lib/logger';
 import type { AnalyzeRequest, AnalysisPhase } from '@/types/fit-analysis';
+import {
+  GuardrailsService,
+  FIT_ANALYSIS_GUARDRAIL_CONFIG,
+} from '@/lib/guardrails/guardrails-service';
+import { createAnonymizedRequestId } from '@/lib/guardrails/security-logger';
 
 const log = createLogger('AnalyzeAPI');
 
@@ -36,6 +41,7 @@ const ERROR_CODES = {
   LLM_ERROR: 'LLM_ERROR',
   PARSE_ERROR: 'PARSE_ERROR',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
+  GUARDRAIL_BLOCKED: 'GUARDRAIL_BLOCKED',
 } as const;
 
 /**
@@ -159,6 +165,31 @@ export async function POST(request: NextRequest): Promise<Response> {
       createSSEMessage({ type: 'error', code: ERROR_CODES.EMPTY_JOB_DESCRIPTION, message: 'Please enter a job description to analyze.' }),
       { status: 400, headers: { 'Content-Type': 'text/event-stream' } }
     );
+  }
+
+  // Validate input against guardrails
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (apiKey) {
+    const guardrailsService = new GuardrailsService(apiKey, 'fit_analysis');
+    const anonymizedRequestId = createAnonymizedRequestId(request);
+    
+    const validationResult = await guardrailsService.validateInput(
+      jobDescription,
+      FIT_ANALYSIS_GUARDRAIL_CONFIG,
+      anonymizedRequestId
+    );
+
+    if (!validationResult.passed) {
+      log.warn('Guardrails blocked input', { requestId, failedCheck: validationResult.failedCheck });
+      return new Response(
+        createSSEMessage({ 
+          type: 'error', 
+          code: ERROR_CODES.GUARDRAIL_BLOCKED, 
+          message: validationResult.userMessage 
+        }),
+        { status: 400, headers: { 'Content-Type': 'text/event-stream' } }
+      );
+    }
   }
 
   log.info('Starting streaming analysis', { requestId, jobDescriptionLength: jobDescription.length });

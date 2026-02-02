@@ -11,6 +11,11 @@ import { NextRequest } from 'next/server';
 import { loadAndCompileKnowledge } from '@/lib/knowledge-loader';
 import { streamChatCompletion, LLMError, LLMErrorType } from '@/lib/llm-client';
 import type { ChatAPIRequest, ConversationMessage } from '@/types/chat';
+import {
+  GuardrailsService,
+  CHAT_GUARDRAIL_CONFIG,
+} from '@/lib/guardrails/guardrails-service';
+import { createAnonymizedRequestId } from '@/lib/guardrails/security-logger';
 
 /**
  * User-friendly error messages mapped by error type
@@ -100,6 +105,55 @@ export async function POST(request: NextRequest) {
           headers: { 'Content-Type': 'application/json' },
         }
       );
+    }
+
+    // Get the latest user message for guardrails validation
+    const latestUserMessage = messages.filter((m: ConversationMessage) => m.role === 'user').pop();
+    
+    if (latestUserMessage) {
+      // Initialize guardrails service
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (apiKey) {
+        const guardrailsService = new GuardrailsService(apiKey, 'chat');
+        const requestId = createAnonymizedRequestId(request);
+        
+        // Validate input against guardrails
+        const validationResult = await guardrailsService.validateInput(
+          latestUserMessage.content,
+          CHAT_GUARDRAIL_CONFIG,
+          requestId
+        );
+
+        if (!validationResult.passed) {
+          // Return rejection message via SSE without calling LLM
+          const stream = new ReadableStream({
+            start(controller) {
+              controller.enqueue(
+                new TextEncoder().encode(
+                  createSSEMessage({ 
+                    type: 'chunk', 
+                    content: validationResult.userMessage 
+                  })
+                )
+              );
+              controller.enqueue(
+                new TextEncoder().encode(
+                  createSSEMessage({ type: 'done' })
+                )
+              );
+              controller.close();
+            },
+          });
+
+          return new Response(stream, {
+            headers: {
+              'Content-Type': 'text/event-stream',
+              'Cache-Control': 'no-cache',
+              'Connection': 'keep-alive',
+            },
+          });
+        }
+      }
     }
 
     // Load and compile knowledge context
