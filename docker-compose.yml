@@ -34,6 +34,11 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       target: production
+      args:
+        # Optional: Provide these to fetch private knowledge repo at build time
+        # KNOWLEDGE_REPO format: github.com/username/repo.git (no https://)
+        - KNOWLEDGE_REPO=${KNOWLEDGE_REPO:-}
+        - GITHUB_TOKEN=${GITHUB_TOKEN:-}
     container_name: portfolio-frontend-prod
     ports:
       - "${PORT:-8087}:${PORT:-8087}"

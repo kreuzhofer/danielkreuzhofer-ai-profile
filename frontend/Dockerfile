@@ -6,7 +6,7 @@
 FROM node:20-alpine AS base
 
 # Install dependencies only when needed
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat git
 
 WORKDIR /app
 
@@ -55,14 +55,31 @@ FROM base AS builder
 
 WORKDIR /app
 
+# Build args for private knowledge repo (optional)
+# KNOWLEDGE_REPO: Full repo URL, e.g., github.com/username/private-knowledge.git
+# GITHUB_TOKEN: Fine-grained access token with read access to the repo
+ARG KNOWLEDGE_REPO=""
+ARG GITHUB_TOKEN=""
+
 # Copy node_modules from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 
 # Copy source code (from frontend/ since context is repo root)
 COPY frontend/ ./
 
-# Copy knowledge directory for AI chatbot context
+# Copy knowledge directory (may be empty if submodule not initialized)
 COPY knowledge/ ./knowledge/
+
+# Fetch private knowledge repo if credentials provided
+RUN if [ -n "$GITHUB_TOKEN" ] && [ -n "$KNOWLEDGE_REPO" ]; then \
+      echo "Fetching private knowledge from $KNOWLEDGE_REPO..." && \
+      rm -rf ./knowledge && \
+      REPO_URL=$(echo "$KNOWLEDGE_REPO" | sed 's|^https://||') && \
+      git clone --depth 1 "https://${GITHUB_TOKEN}@${REPO_URL}" ./knowledge && \
+      rm -rf ./knowledge/.git; \
+    else \
+      echo "No GITHUB_TOKEN/KNOWLEDGE_REPO provided, using existing knowledge directory"; \
+    fi
 
 # Set environment variable for production build
 ENV NEXT_TELEMETRY_DISABLED=1

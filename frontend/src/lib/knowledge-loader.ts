@@ -31,6 +31,7 @@ import type {
 // Directory paths
 const CONTENT_DIR = path.join(process.cwd(), "content");
 const KNOWLEDGE_DIR = path.join(process.cwd(), "knowledge");
+const KNOWLEDGE_EXAMPLES_DIR = path.join(process.cwd(), "..", "knowledge-examples");
 
 // =============================================================================
 // MDX Parsing Utilities
@@ -261,18 +262,33 @@ function loadAbout(): AboutContent {
 
 /**
  * Load raw knowledge files from the knowledge/ directory
+ * Falls back to knowledge-examples/ if knowledge/ is empty or missing
  */
 function loadRawKnowledge(): string[] {
-  if (!fs.existsSync(KNOWLEDGE_DIR)) {
+  // Try primary knowledge directory first
+  let knowledgeDir = KNOWLEDGE_DIR;
+  let files: string[] = [];
+
+  if (fs.existsSync(KNOWLEDGE_DIR)) {
+    files = fs
+      .readdirSync(KNOWLEDGE_DIR)
+      .filter((file) => file.endsWith(".md"));
+  }
+
+  // Fall back to knowledge-examples if knowledge/ is empty or missing
+  if (files.length === 0 && fs.existsSync(KNOWLEDGE_EXAMPLES_DIR)) {
+    knowledgeDir = KNOWLEDGE_EXAMPLES_DIR;
+    files = fs
+      .readdirSync(KNOWLEDGE_EXAMPLES_DIR)
+      .filter((file) => file.endsWith(".md") && file !== "README.md");
+  }
+
+  if (files.length === 0) {
     return [];
   }
 
-  const files = fs
-    .readdirSync(KNOWLEDGE_DIR)
-    .filter((file) => file.endsWith(".md"));
-
   return files.map((file) => {
-    const filePath = path.join(KNOWLEDGE_DIR, file);
+    const filePath = path.join(knowledgeDir, file);
     const content = fs.readFileSync(filePath, "utf8");
     // Remove YAML frontmatter if present
     const { content: bodyContent } = matter(content);
