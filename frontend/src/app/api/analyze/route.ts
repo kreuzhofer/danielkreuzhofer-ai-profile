@@ -11,17 +11,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { buildAnalysisPrompt } from '@/lib/fit-analysis-prompt';
 import { parseAnalysisResponse } from '@/lib/fit-analysis-parser';
 import { getChatCompletion, LLMError, LLMErrorType } from '@/lib/llm-client';
+import { createLogger } from '@/lib/logger';
 import type { AnalyzeRequest, AnalyzeResponse } from '@/types/fit-analysis';
+
+const log = createLogger('AnalyzeAPI');
 
 // =============================================================================
 // Constants
 // =============================================================================
 
 /**
- * Timeout for analysis requests in milliseconds (30 seconds)
- * @see Requirement 6.1 - 30 second timeout
+ * Timeout for analysis requests in milliseconds (60 seconds)
+ * Increased from 30s to accommodate longer job descriptions and model response times
+ * @see Requirement 6.1 - timeout handling
  */
-const ANALYSIS_TIMEOUT_MS = 30000;
+const ANALYSIS_TIMEOUT_MS = 60000;
 
 /**
  * Error codes for API responses
@@ -100,21 +104,35 @@ function isEmptyJobDescription(jobDescription: string): boolean {
 
 /**
  * Execute analysis with timeout handling
- * @see Requirement 6.1 - 30 second timeout
+ * @see Requirement 6.1 - timeout handling
  */
 async function executeAnalysisWithTimeout(
   jobDescription: string
 ): Promise<string> {
+  const endTiming = log.time('Analysis execution');
+  
+  log.info('Building analysis prompt', { 
+    jobDescriptionLength: jobDescription.length 
+  });
+  
   // Build the analysis prompt with portfolio context
+  const promptStartTime = Date.now();
   const prompt = await buildAnalysisPrompt(jobDescription);
+  log.debug('Prompt built', { 
+    promptLength: prompt.length,
+    buildTimeMs: Date.now() - promptStartTime 
+  });
 
   // Create a promise that rejects after timeout
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => {
-      reject(new LLMError('timeout', 'Analysis timed out after 30 seconds', true));
+      log.warn('Analysis timeout reached', { timeoutMs: ANALYSIS_TIMEOUT_MS });
+      reject(new LLMError('timeout', `Analysis timed out after ${ANALYSIS_TIMEOUT_MS / 1000} seconds`, true));
     }, ANALYSIS_TIMEOUT_MS);
   });
 
+  log.info('Calling LLM for analysis');
+  
   // Race between the LLM call and timeout
   // Use getChatCompletion for non-streaming response
   const analysisPromise = getChatCompletion(
@@ -123,7 +141,12 @@ async function executeAnalysisWithTimeout(
     { timeout: ANALYSIS_TIMEOUT_MS }
   );
 
-  return Promise.race([analysisPromise, timeoutPromise]);
+  const result = await Promise.race([analysisPromise, timeoutPromise]);
+  
+  endTiming();
+  log.info('LLM response received', { responseLength: result.length });
+  
+  return result;
 }
 
 // =============================================================================
@@ -156,13 +179,16 @@ async function executeAnalysisWithTimeout(
  * @see Requirement 6.3 - User-friendly error messages
  */
 export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeResponse>> {
+  const requestId = Math.random().toString(36).substring(7);
+  log.info('Analysis request received', { requestId });
+  
   try {
     // Parse request body
     let body: unknown;
     try {
       body = await request.json();
     } catch {
-      console.error('Analyze API JSON parse error');
+      log.warn('JSON parse error', { requestId });
       return createErrorResponse(
         ERROR_CODES.INVALID_REQUEST,
         'Invalid request format',
@@ -172,6 +198,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeRe
 
     // Validate request structure
     if (!validateRequest(body)) {
+      log.warn('Invalid request structure', { requestId });
       return createErrorResponse(
         ERROR_CODES.INVALID_REQUEST,
         'Invalid request format. Expected { jobDescription: string }',
@@ -184,12 +211,18 @@ export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeRe
     // Validate job description is not empty
     // @see Requirement 2.3 - Prevent submission of empty/whitespace-only input
     if (isEmptyJobDescription(jobDescription)) {
+      log.warn('Empty job description submitted', { requestId });
       return createErrorResponse(
         ERROR_CODES.EMPTY_JOB_DESCRIPTION,
         'Please enter a job description to analyze.',
         400
       );
     }
+
+    log.info('Starting analysis', { 
+      requestId, 
+      jobDescriptionLength: jobDescription.length 
+    });
 
     // Execute analysis with timeout handling
     let llmResponse: string;
@@ -198,9 +231,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeRe
     } catch (error) {
       if (error instanceof LLMError) {
         // Handle timeout specifically
-        // @see Requirement 6.1 - 30 second timeout
+        // @see Requirement 6.1 - timeout handling
         if (error.type === 'timeout') {
-          console.error('Analyze API timeout');
+          log.error('Analysis timeout', error, { requestId });
           return createErrorResponse(
             ERROR_CODES.TIMEOUT,
             'The analysis is taking too long. Please try again.',
@@ -210,7 +243,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeRe
 
         // Handle other LLM errors
         // @see Requirement 6.3 - User-friendly error messages
-        console.error(`Analyze API LLM error [${error.type}]:`, error.message);
+        log.error(`LLM error [${error.type}]`, error, { requestId });
         return createErrorResponse(
           ERROR_CODES.LLM_ERROR,
           getUserFriendlyErrorMessage(error.type),
@@ -219,7 +252,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeRe
       }
 
       // Handle unexpected errors
-      console.error('Analyze API unexpected error during LLM call:', error);
+      log.error('Unexpected error during LLM call', error, { requestId });
       return createErrorResponse(
         ERROR_CODES.INTERNAL_ERROR,
         'Something went wrong on our end. Please try again.',
@@ -228,16 +261,27 @@ export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeRe
     }
 
     // Parse the LLM response into MatchAssessment
+    log.debug('Parsing LLM response', { requestId, responseLength: llmResponse.length });
     const parseResult = parseAnalysisResponse(llmResponse, { jobDescription });
 
     if (!parseResult.success) {
-      console.error('Analyze API parse error:', parseResult.error);
+      log.error('Parse error', new Error(parseResult.error), { 
+        requestId,
+        responsePreview: llmResponse.substring(0, 200) 
+      });
       return createErrorResponse(
         ERROR_CODES.PARSE_ERROR,
         'Received an unexpected response. Please try again.',
         500
       );
     }
+
+    log.info('Analysis completed successfully', { 
+      requestId,
+      confidence: parseResult.assessment.confidenceScore,
+      alignmentsCount: parseResult.assessment.alignmentAreas.length,
+      gapsCount: parseResult.assessment.gapAreas.length
+    });
 
     // Return successful response
     // @see Requirement 2.1 - Generate MatchAssessment
@@ -249,7 +293,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AnalyzeRe
   } catch (error) {
     // Handle any unexpected errors
     // SECURITY: Log for debugging but return generic message to client
-    console.error('Analyze API error:', error instanceof Error ? error.message : 'Unknown error');
+    log.error('Unexpected error', error, { requestId });
 
     return createErrorResponse(
       ERROR_CODES.INTERNAL_ERROR,

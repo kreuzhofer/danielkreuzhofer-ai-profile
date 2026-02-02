@@ -18,6 +18,24 @@ jest.mock('@/lib/fit-analysis-prompt', () => ({
   buildAnalysisPrompt: jest.fn().mockResolvedValue('Test analysis prompt with portfolio context'),
 }));
 
+// Mock the logger to avoid console output during tests
+jest.mock('@/lib/logger', () => ({
+  createLogger: () => ({
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    time: () => jest.fn(),
+  }),
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    time: () => jest.fn(),
+  },
+}));
+
 // Mock the LLM client
 const mockGetChatCompletion = jest.fn();
 jest.mock('@/lib/llm-client', () => ({
@@ -226,7 +244,7 @@ describe('POST /api/analyze', () => {
         expect.arrayContaining([
           expect.objectContaining({ role: 'user' }),
         ]),
-        expect.objectContaining({ timeout: 30000 })
+        expect.objectContaining({ timeout: 60000 })
       );
     });
 
@@ -347,7 +365,7 @@ describe('POST /api/analyze', () => {
       const { LLMError } = require('@/lib/llm-client');
       
       mockGetChatCompletion.mockRejectedValue(
-        new LLMError('timeout', 'Analysis timed out after 30 seconds', true)
+        new LLMError('timeout', 'Analysis timed out after 60 seconds', true)
       );
 
       const requestBody: AnalyzeRequest = {

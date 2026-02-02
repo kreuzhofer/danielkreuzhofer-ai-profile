@@ -8,6 +8,9 @@
  */
 
 import type { ConversationMessage } from '@/types/chat';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('LLMClient');
 
 // =============================================================================
 // Configuration
@@ -23,7 +26,7 @@ export interface LLMConfig {
   model?: string;
   /** Temperature for response generation (default: 0.7) */
   temperature?: number;
-  /** Maximum tokens in response (default: 1024) */
+  /** Maximum tokens in response (default: 4096) */
   maxTokens?: number;
   /** Request timeout in milliseconds (default: 30000) */
   timeout?: number;
@@ -155,6 +158,13 @@ export async function* streamChatCompletion(
 ): AsyncGenerator<string, void, unknown> {
   const fullConfig = buildConfig(config);
   
+  log.debug('Starting chat completion', {
+    model: fullConfig.model,
+    messageCount: messages.length,
+    systemPromptLength: systemPrompt.length,
+    timeout: fullConfig.timeout
+  });
+  
   // Build the messages array for OpenAI
   const openAIMessages: OpenAIMessage[] = [
     { role: 'system', content: systemPrompt },
@@ -180,6 +190,9 @@ export async function* streamChatCompletion(
       ? { max_completion_tokens: fullConfig.maxTokens }
       : { max_tokens: fullConfig.maxTokens };
 
+    log.info('Calling OpenAI API', { model: fullConfig.model });
+    const startTime = Date.now();
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -196,12 +209,20 @@ export async function* streamChatCompletion(
       signal: controller.signal,
     });
     
+    log.debug('OpenAI API response received', { 
+      status: response.status,
+      latencyMs: Date.now() - startTime 
+    });
+    
     clearTimeout(timeoutId);
     
     // Handle HTTP errors
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error('OpenAI API error response:', response.status, errorBody);
+      log.error('OpenAI API error', new Error(`HTTP ${response.status}`), {
+        status: response.status,
+        errorBody: errorBody.substring(0, 500)
+      });
       
       if (response.status === 429) {
         throw new LLMError(
@@ -247,6 +268,7 @@ export async function* streamChatCompletion(
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
+    let chunkCount = 0;
     
     while (true) {
       const { done, value } = await reader.read();
@@ -276,6 +298,7 @@ export async function* streamChatCompletion(
           
           // Check for stream end
           if (data === '[DONE]') {
+            log.debug('Stream completed', { chunkCount });
             return;
           }
           
@@ -284,6 +307,7 @@ export async function* streamChatCompletion(
             const content = chunk.choices[0]?.delta?.content;
             
             if (content) {
+              chunkCount++;
               yield content;
             }
           } catch {
@@ -293,11 +317,14 @@ export async function* streamChatCompletion(
         }
       }
     }
+    
+    log.debug('Stream finished', { chunkCount });
   } catch (error) {
     clearTimeout(timeoutId);
     
     // Handle abort (timeout)
     if (error instanceof Error && error.name === 'AbortError') {
+      log.warn('Request aborted due to timeout', { timeout: fullConfig.timeout });
       throw new LLMError(
         'timeout',
         'The response is taking too long. Please try again.',
@@ -312,6 +339,7 @@ export async function* streamChatCompletion(
     
     // Handle network errors
     if (error instanceof TypeError && error.message.includes('fetch')) {
+      log.error('Network error', error);
       throw new LLMError(
         'network',
         'Unable to connect to the AI service. Please check your connection.',
@@ -320,6 +348,7 @@ export async function* streamChatCompletion(
     }
     
     // Handle other errors
+    log.error('Unexpected error in streamChatCompletion', error);
     throw new LLMError(
       'server',
       'An unexpected error occurred. Please try again.',

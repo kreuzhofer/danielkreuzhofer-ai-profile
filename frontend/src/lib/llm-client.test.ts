@@ -7,6 +7,24 @@
  * @jest-environment node
  */
 
+// Mock the logger before importing the module under test
+jest.mock('@/lib/logger', () => ({
+  createLogger: () => ({
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    time: () => jest.fn(),
+  }),
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    time: () => jest.fn(),
+  },
+}));
+
 import {
   getApiKey,
   getModel,
@@ -78,7 +96,7 @@ describe('LLM Client', () => {
       expect(config.apiKey).toBe('test-key');
       expect(config.model).toBe('gpt-4o-mini');
       expect(config.temperature).toBe(0.7);
-      expect(config.maxTokens).toBe(1024);
+      expect(config.maxTokens).toBe(4096);
       expect(config.timeout).toBe(30000);
     });
 
@@ -102,7 +120,7 @@ describe('LLM Client', () => {
       expect(config.apiKey).toBe('test-key');
       expect(config.model).toBe('gpt-4o-mini');
       expect(config.temperature).toBe(0.9);
-      expect(config.maxTokens).toBe(1024);
+      expect(config.maxTokens).toBe(4096);
     });
 
     it('should use environment model when not in config', () => {

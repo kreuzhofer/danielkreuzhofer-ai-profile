@@ -21,6 +21,8 @@ services:
       - NODE_ENV=${NODE_ENV:-development}
       - PORT=${PORT:-8087}
       - HOSTNAME=${HOSTNAME:-0.0.0.0}
+      # Logging level (debug, info, warn, error)
+      - LOG_LEVEL=${LOG_LEVEL:-info}
       # AI Chatbot - OpenAI Configuration
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
@@ -46,6 +48,8 @@ services:
       - NODE_ENV=production
       - PORT=${PORT:-8087}
       - HOSTNAME=${HOSTNAME:-0.0.0.0}
+      # Logging level (debug, info, warn, error) - defaults to warn in production
+      - LOG_LEVEL=${LOG_LEVEL:-info}
       # AI Chatbot - OpenAI Configuration
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
