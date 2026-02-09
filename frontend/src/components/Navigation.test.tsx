@@ -2,6 +2,16 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Navigation, NavLink, MobileMenuButton, MobileMenu, DEFAULT_SECTIONS } from './Navigation';
 
+// Mock next/navigation — usePathname() is used by Navigation and MobileMenu
+const mockUsePathname = jest.fn(() => '/');
+jest.mock('next/navigation', () => ({
+  usePathname: () => mockUsePathname(),
+}));
+
+beforeEach(() => {
+  mockUsePathname.mockReturnValue('/');
+});
+
 describe('NavLink Component', () => {
   describe('Rendering', () => {
     it('renders link with correct href and label', () => {
@@ -28,7 +38,7 @@ describe('NavLink Component', () => {
       );
 
       const link = screen.getByRole('link', { name: 'Experience' });
-      expect(link).toHaveClass('text-gray-600');
+      expect(link).toHaveClass('text-[var(--foreground-muted)]');
       expect(link).not.toHaveAttribute('aria-current');
     });
 
@@ -42,7 +52,7 @@ describe('NavLink Component', () => {
       );
 
       const link = screen.getByRole('link', { name: 'Experience' });
-      expect(link).toHaveClass('text-foreground');
+      expect(link).toHaveClass('text-[var(--foreground)]');
     });
   });
 
@@ -125,6 +135,7 @@ describe('Navigation Component', () => {
       expect(screen.getByRole('link', { name: 'Projects' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Skills' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Contact' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Blog' })).toBeInTheDocument();
     });
 
     it('renders navigation with proper aria-label', () => {
@@ -291,6 +302,9 @@ describe('Navigation Component', () => {
 
       await user.tab();
       expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
+
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
     });
   });
 });
@@ -316,8 +330,14 @@ describe('DEFAULT_SECTIONS', () => {
     expect(sectionHrefs).toContain('#contact');
   });
 
-  it('has exactly 5 sections', () => {
-    expect(DEFAULT_SECTIONS).toHaveLength(5);
+  it('has exactly 6 sections (including Blog)', () => {
+    expect(DEFAULT_SECTIONS).toHaveLength(6);
+  });
+
+  it('contains Blog entry with /blog href', () => {
+    const blogSection = DEFAULT_SECTIONS.find(s => s.label === 'Blog');
+    expect(blogSection).toBeDefined();
+    expect(blogSection!.href).toBe('/blog');
   });
 });
 
@@ -476,6 +496,7 @@ describe('MobileMenu Component', () => {
       expect(screen.getByRole('link', { name: 'Projects' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Skills' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Contact' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Blog' })).toBeInTheDocument();
     });
 
     it('is hidden on desktop (md:hidden)', () => {
@@ -679,8 +700,8 @@ describe('MobileMenu Component', () => {
         />
       );
 
-      // Click on the backdrop (the element with bg-black class)
-      const backdrop = document.querySelector('.bg-black');
+      // Click on the backdrop (the element with bg-black/30 class)
+      const backdrop = document.querySelector('.bg-black\\/30');
       expect(backdrop).toBeInTheDocument();
       await user.click(backdrop!);
 
@@ -754,6 +775,9 @@ describe('MobileMenu Component', () => {
 
       await user.tab();
       expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
+
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
     });
   });
 });

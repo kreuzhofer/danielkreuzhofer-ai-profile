@@ -263,3 +263,31 @@ export interface ContentLoader {
   getSkillCategories(): Promise<SkillCategory[]>;
   getContact(): Promise<Contact>;
 }
+
+// =============================================================================
+// Blog Section
+// =============================================================================
+
+/**
+ * Blog post frontmatter metadata parsed from MDX files.
+ * All fields are required — posts with missing fields are excluded from listings.
+ */
+export interface BlogPostFrontmatter {
+  title: string;
+  date: string;       // ISO date string, e.g. "2025-01-15"
+  excerpt: string;
+  tags: string[];
+  slug: string;
+}
+
+/**
+ * Full blog post including frontmatter fields and MDX body content.
+ */
+export interface BlogPost {
+  title: string;
+  date: string;       // ISO date string, e.g. "2025-01-15"
+  excerpt: string;
+  tags: string[];
+  slug: string;
+  content: string;    // Raw MDX body content
+}

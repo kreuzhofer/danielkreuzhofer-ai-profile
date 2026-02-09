@@ -10,6 +10,8 @@ import path from "path";
 import matter from "gray-matter";
 import type {
   About,
+  BlogPost,
+  BlogPostFrontmatter,
   Contact,
   Experience,
   ExperienceFrontmatter,
@@ -181,6 +183,69 @@ export function getContact(): Contact {
     subtext: frontmatter.subtext || "",
     options: frontmatter.options || [],
   };
+}
+
+/**
+ * Get all blog posts, sorted by date descending (newest first).
+ * Skips files with missing required frontmatter fields.
+ * Returns empty array if the blog content directory doesn't exist.
+ */
+export function getBlogPosts(): BlogPost[] {
+  const blogDir = path.join(CONTENT_DIR, "blog");
+
+  if (!fs.existsSync(blogDir)) {
+    return [];
+  }
+
+  const files = fs
+    .readdirSync(blogDir)
+    .filter((file) => file.endsWith(".mdx"));
+
+  const posts: BlogPost[] = [];
+
+  for (const file of files) {
+    try {
+      const filePath = path.join(blogDir, file);
+      const { frontmatter, content } =
+        parseMarkdownFile<BlogPostFrontmatter>(filePath);
+
+      // Validate all required frontmatter fields are present
+      if (
+        !frontmatter.title ||
+        !frontmatter.date ||
+        !frontmatter.excerpt ||
+        !Array.isArray(frontmatter.tags) ||
+        !frontmatter.slug
+      ) {
+        continue;
+      }
+
+      posts.push({
+        title: frontmatter.title,
+        date: frontmatter.date,
+        excerpt: frontmatter.excerpt,
+        tags: frontmatter.tags,
+        slug: frontmatter.slug,
+        content,
+      });
+    } catch {
+      // Skip files with malformed YAML or other parse errors
+      continue;
+    }
+  }
+
+  // Sort by date descending (newest first)
+  return posts.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+}
+
+/**
+ * Get a single blog post by slug.
+ * Returns undefined if no post matches the given slug.
+ */
+export function getBlogPost(slug: string): BlogPost | undefined {
+  return getBlogPosts().find((post) => post.slug === slug);
 }
 
 /**

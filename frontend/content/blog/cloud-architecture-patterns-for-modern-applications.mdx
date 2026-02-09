@@ -1,0 +1,62 @@
+---
+title: "Cloud Architecture Patterns for Modern Applications"
+date: "2025-06-15"
+excerpt: "Exploring proven cloud architecture patterns that help teams build scalable, resilient, and cost-effective applications on AWS."
+tags:
+  - "cloud"
+  - "architecture"
+  - "aws"
+  - "serverless"
+slug: "cloud-architecture-patterns-for-modern-applications"
+---
+
+## Why Architecture Patterns Matter
+
+When building modern applications in the cloud, choosing the right architecture pattern is one of the most impactful decisions a team can make. The pattern you select influences everything from development velocity to operational costs, and changing course later can be expensive.
+
+Over the past decade working with enterprise customers at AWS, I've seen teams succeed — and struggle — with various approaches. Here are the patterns I recommend most often, along with the trade-offs that come with each.
+
+## Event-Driven Architecture
+
+Event-driven architecture (EDA) decouples producers from consumers, allowing systems to scale independently and respond to changes in near real-time. Services communicate through events rather than direct API calls, which improves resilience and flexibility.
+
+**When to use it:**
+- Systems with variable or unpredictable workloads
+- Workflows that span multiple services or bounded contexts
+- Scenarios where loose coupling is more important than immediate consistency
+
+**Key AWS services:** Amazon EventBridge, Amazon SNS, Amazon SQS, AWS Lambda
+
+The biggest misconception about EDA is that it's only for "big" systems. Even small applications benefit from event-driven patterns when they need to react to state changes across boundaries.
+
+## The Strangler Fig Pattern
+
+For teams modernizing legacy systems, the strangler fig pattern remains one of the most practical approaches. Rather than attempting a risky big-bang rewrite, you incrementally replace components of the legacy system with new services.
+
+**How it works:**
+1. Identify a bounded context in the legacy system
+2. Build the replacement service alongside the existing system
+3. Route traffic to the new service using an API gateway or load balancer
+4. Decommission the legacy component once the new service is stable
+
+This pattern reduces risk dramatically. Each migration step is small, testable, and reversible.
+
+## Cell-Based Architecture
+
+Cell-based architecture is a pattern I've been recommending more frequently for applications that require high availability. The idea is to partition your system into independent cells, each serving a subset of users or tenants.
+
+**Benefits:**
+- Blast radius containment — a failure in one cell doesn't affect others
+- Independent scaling per cell
+- Simplified capacity planning
+
+**Trade-offs:**
+- Increased operational complexity
+- Cross-cell operations require careful coordination
+- Higher baseline infrastructure cost
+
+## Choosing the Right Pattern
+
+There's no universal "best" pattern. The right choice depends on your team's experience, your application's requirements, and your organization's operational maturity. Start with the simplest architecture that meets your needs, and evolve as you learn more about your system's actual behavior in production.
+
+The most successful teams I've worked with share one trait: they make architecture decisions based on measured constraints rather than anticipated ones.

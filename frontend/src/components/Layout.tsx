@@ -17,7 +17,9 @@ interface LayoutProps {
 }
 
 /** Section IDs for scroll-based active section detection */
-const SECTION_IDS = DEFAULT_SECTIONS.map((section) => section.href.replace('#', ''));
+const SECTION_IDS = DEFAULT_SECTIONS
+  .filter((section) => section.href.startsWith('#'))
+  .map((section) => section.href.replace('#', ''));
 
 /**
  * Base Layout component providing semantic HTML structure with proper landmarks.

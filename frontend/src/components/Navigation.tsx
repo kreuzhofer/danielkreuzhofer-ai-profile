@@ -3,12 +3,13 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 /**
  * Props for the NavLink component
  */
 export interface NavLinkProps {
-  /** Anchor link (e.g., "#experience") */
+  /** Anchor link (e.g., "#experience") or route href (e.g., "/blog") */
   href: string;
   /** Display text */
   label: string;
@@ -117,6 +118,7 @@ export interface MobileMenuProps {
  * - Closes on backdrop click or Escape key
  * - Traps focus within menu when open
  * - Uses createPortal for proper stacking context
+ * - Supports route-based links (e.g., /blog) alongside anchor links
  * 
  * @example
  * ```tsx
@@ -136,6 +138,7 @@ export function MobileMenu({
   currentSection,
   onNavigate,
 }: MobileMenuProps) {
+  const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
@@ -171,7 +174,7 @@ export function MobileMenu({
   }, [isOpen]);
 
   /**
-   * Handle navigation click - closes menu and calls onNavigate
+   * Handle navigation click for anchor links - closes menu and calls onNavigate
    */
   const handleClick = (href: string) => (_e: React.MouseEvent<HTMLAnchorElement>) => {
     const sectionId = href.replace('#', '');
@@ -182,6 +185,19 @@ export function MobileMenu({
     
     // Close the menu after navigation
     onClose();
+  };
+
+  /**
+   * Determine if a section link is active.
+   * Route-based links use pathname matching.
+   * Anchor-based links use currentSection matching.
+   */
+  const isLinkActive = (href: string): boolean => {
+    if (!href.startsWith('#')) {
+      return pathname.startsWith(href);
+    }
+    const sectionId = href.replace('#', '');
+    return currentSection === sectionId;
   };
 
   // Don't render anything if not open (for SSR compatibility)
@@ -258,29 +274,43 @@ export function MobileMenu({
         {/* Navigation links */}
         <ul className="py-4">
           {sections.map((section, index) => {
-            const sectionId = section.href.replace('#', '');
-            const isActive = currentSection === sectionId;
+            const isRouteLink = !section.href.startsWith('#');
+            const isActive = isLinkActive(section.href);
+
+            const linkClassName = `
+              block px-6 py-3 min-h-[44px]
+              text-base font-medium
+              transition-colors duration-200
+              focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--primary-500)]
+              ${isActive
+                ? 'text-[var(--foreground)] bg-[var(--surface-elevated)] border-l-4 border-[var(--primary-500)]'
+                : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)]'
+              }
+            `;
 
             return (
               <li key={section.href}>
-                <a
-                  ref={index === 0 ? firstLinkRef : undefined}
-                  href={section.href}
-                  onClick={handleClick(section.href)}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`
-                    block px-6 py-3 min-h-[44px]
-                    text-base font-medium
-                    transition-colors duration-200
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--primary-500)]
-                    ${isActive
-                      ? 'text-[var(--foreground)] bg-[var(--surface-elevated)] border-l-4 border-[var(--primary-500)]'
-                      : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)]'
-                    }
-                  `}
-                >
-                  {section.label}
-                </a>
+                {isRouteLink ? (
+                  <Link
+                    ref={index === 0 ? firstLinkRef : undefined}
+                    href={section.href}
+                    onClick={onClose}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={linkClassName}
+                  >
+                    {section.label}
+                  </Link>
+                ) : (
+                  <a
+                    ref={index === 0 ? firstLinkRef : undefined}
+                    href={section.href}
+                    onClick={handleClick(section.href)}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={linkClassName}
+                  >
+                    {section.label}
+                  </a>
+                )}
               </li>
             );
           })}
@@ -363,6 +393,8 @@ export function MobileMenu({
  * - `aria-current="page"` for screen readers when active
  * - Keyboard accessible (focusable, Enter/Space to activate)
  * - Visible focus indicators for accessibility
+ * - Renders Next.js `<Link>` for route-based hrefs (not starting with `#`)
+ * - Renders `<a>` for anchor-based hrefs (starting with `#`)
  * 
  * @example
  * ```tsx
@@ -375,30 +407,52 @@ export function MobileMenu({
  * ```
  */
 export function NavLink({ href, label, isActive, onClick }: NavLinkProps) {
+  const isRouteLink = !href.startsWith('#');
+
+  const className = `
+    relative px-3 py-2 text-sm font-medium transition-colors duration-200
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)] focus:rounded-md
+    ${isActive
+      ? 'text-[var(--foreground)]'
+      : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+    }
+  `;
+
+  const underline = (
+    <span
+      className={`
+        absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--primary-500)]
+        transform origin-left transition-transform duration-200 ease-out
+        ${isActive ? 'scale-x-100' : 'scale-x-0'}
+      `}
+      aria-hidden="true"
+    />
+  );
+
+  if (isRouteLink) {
+    return (
+      <Link
+        href={href}
+        aria-current={isActive ? 'page' : undefined}
+        className={className}
+      >
+        {label}
+        {/* Animated underline indicator */}
+        {underline}
+      </Link>
+    );
+  }
+
   return (
     <a
       href={href}
       onClick={onClick}
       aria-current={isActive ? 'page' : undefined}
-      className={`
-        relative px-3 py-2 text-sm font-medium transition-colors duration-200
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)] focus:rounded-md
-        ${isActive
-          ? 'text-[var(--foreground)]'
-          : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
-        }
-      `}
+      className={className}
     >
       {label}
       {/* Animated underline indicator */}
-      <span
-        className={`
-          absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--primary-500)]
-          transform origin-left transition-transform duration-200 ease-out
-          ${isActive ? 'scale-x-100' : 'scale-x-0'}
-        `}
-        aria-hidden="true"
-      />
+      {underline}
     </a>
   );
 }
@@ -424,6 +478,7 @@ export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
   { href: '#projects', label: 'Projects' },
   { href: '#skills', label: 'Skills' },
   { href: '#contact', label: 'Contact' },
+  { href: '/blog', label: 'Blog' },
 ];
 
 /**
@@ -435,6 +490,8 @@ export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
  * - Indicates current active section (Requirement 1.5)
  * - Keyboard navigable with visible focus states
  * - Includes Fit Analysis CTA button
+ * - Supports route-based links (e.g., /blog) alongside anchor links
+ * - Determines active state for route links via pathname
  * 
  * @example
  * ```tsx
@@ -450,6 +507,8 @@ export function Navigation({
   currentSection,
   onNavigate,
 }: NavigationProps) {
+  const pathname = usePathname();
+
   /**
    * Handle navigation click - extracts section ID from href and calls onNavigate
    */
@@ -465,6 +524,21 @@ export function Navigation({
     // Allow default anchor behavior for smooth scrolling
   };
 
+  /**
+   * Determine if a section link is active.
+   * Route-based links (e.g., /blog) use pathname matching.
+   * Anchor-based links (e.g., #about) use currentSection matching.
+   */
+  const isLinkActive = (href: string): boolean => {
+    if (!href.startsWith('#')) {
+      // Route-based link: check if current pathname starts with the href
+      return pathname.startsWith(href);
+    }
+    // Anchor-based link: check against currentSection
+    const sectionId = href.replace('#', '');
+    return currentSection === sectionId;
+  };
+
   return (
     <nav
       role="navigation"
@@ -472,8 +546,7 @@ export function Navigation({
       className="hidden md:flex md:items-center md:space-x-1"
     >
       {sections.map((section) => {
-        const sectionId = section.href.replace('#', '');
-        const isActive = currentSection === sectionId;
+        const isActive = isLinkActive(section.href);
         
         return (
           <NavLink

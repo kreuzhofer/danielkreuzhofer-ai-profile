@@ -28,6 +28,11 @@ import { Expandable } from './Expandable';
 import { ExperienceFilter } from './ExperienceSection';
 import type { About, Contact, ContactOption } from '@/types/content';
 
+// Mock next/navigation — usePathname() is used by Navigation and MobileMenu
+jest.mock('next/navigation', () => ({
+  usePathname: () => '/',
+}));
+
 // Mock matchMedia for useReducedMotion and useScrollProgress hooks
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -424,7 +429,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
   });
 
   describe('Focus Indicator Contrast', () => {
-    it('focus indicators use ring-foreground for sufficient contrast', () => {
+    it('focus indicators use ring color for sufficient contrast', () => {
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
@@ -432,14 +437,15 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
         />
       );
 
-      // Get only the section navigation links (not the Fit Analysis CTA button)
+      // Get only the section navigation links (not the CTA buttons)
       const sectionLinks = DEFAULT_SECTIONS.map(section => 
         screen.getByRole('link', { name: section.label })
       );
       
       sectionLinks.forEach(link => {
-        // Using ring-foreground ensures contrast against background
-        expect(link).toHaveClass('focus:ring-foreground');
+        // Using ring with primary color ensures contrast against background
+        expect(link).toHaveClass('focus:ring-2');
+        expect(link).toHaveClass('focus:ring-[var(--primary-500)]');
       });
     });
 
@@ -453,7 +459,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
 
       const fitAnalysisLink = screen.getByRole('link', { name: 'Fit Analysis' });
       expect(fitAnalysisLink).toHaveClass('focus:ring-2');
-      expect(fitAnalysisLink).toHaveClass('focus:ring-blue-600');
+      expect(fitAnalysisLink).toHaveClass('focus:ring-[var(--secondary-500)]');
     });
 
     it('focus indicators use ring-offset for visibility', () => {
@@ -488,9 +494,9 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
 
       // 2. Logo link
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Portfolio - Go to top of page' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to top of page' })).toHaveFocus();
 
-      // 3-7. Navigation links (About, Experience, Projects, Skills, Contact)
+      // 3-8. Navigation links (About, Experience, Projects, Skills, Contact, Blog)
       await user.tab();
       expect(screen.getByRole('link', { name: 'About' })).toHaveFocus();
 
@@ -506,19 +512,22 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       await user.tab();
       expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
 
-      // 8. Skills Transparency CTA button
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
+
+      // 9. Skills Transparency CTA button
       await user.tab();
       expect(screen.getByRole('link', { name: 'Skills Transparency' })).toHaveFocus();
 
-      // 9. Fit Analysis CTA button
+      // 10. Fit Analysis CTA button
       await user.tab();
       expect(screen.getByRole('link', { name: 'Fit Analysis' })).toHaveFocus();
 
-      // 10. Mobile menu button (visible in DOM even if hidden on desktop)
+      // 11. Mobile menu button (visible in DOM even if hidden on desktop)
       await user.tab();
       expect(screen.getByRole('button', { name: /open menu/i })).toHaveFocus();
 
-      // 11. Content area elements
+      // 12. Content area elements
       await user.tab();
       expect(screen.getByTestId('content-button')).toHaveFocus();
     });
