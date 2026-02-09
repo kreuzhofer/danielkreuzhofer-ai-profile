@@ -37,7 +37,7 @@ export interface LLMConfig {
 /**
  * Default configuration values
  */
-const DEFAULT_CONFIG: Required<Omit<LLMConfig, 'apiKey'>> = {
+const DEFAULT_CONFIG: Required<Omit<LLMConfig, 'apiKey' | 'responseFormat'>> = {
   model: 'gpt-4o-mini',
   temperature: 0.7,
   maxTokens: 4096,
@@ -125,14 +125,14 @@ export function getModel(): string {
 /**
  * Build the full configuration from partial config and environment
  */
-export function buildConfig(partialConfig?: Partial<LLMConfig>): Required<LLMConfig> {
+export function buildConfig(partialConfig?: Partial<LLMConfig>): Required<Omit<LLMConfig, 'responseFormat'>> & Pick<LLMConfig, 'responseFormat'> {
   return {
     apiKey: partialConfig?.apiKey || getApiKey(),
     model: partialConfig?.model || getModel(),
     temperature: partialConfig?.temperature ?? DEFAULT_CONFIG.temperature,
     maxTokens: partialConfig?.maxTokens ?? DEFAULT_CONFIG.maxTokens,
     timeout: partialConfig?.timeout ?? DEFAULT_CONFIG.timeout,
-    responseFormat: partialConfig?.responseFormat ?? undefined as unknown as 'json_object',
+    responseFormat: partialConfig?.responseFormat,
   };
 }
 
