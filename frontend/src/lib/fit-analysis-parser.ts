@@ -452,10 +452,16 @@ export function parseAnalysisResponse(
 ): ParseResult {
   const generateId = options.generateId ?? generateUniqueId;
 
-  // Step 1: Parse JSON
+  // Step 1: Strip markdown code fences if present, then parse JSON
+  let cleanedText = responseText.trim();
+  const codeFenceMatch = cleanedText.match(/^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/);
+  if (codeFenceMatch) {
+    cleanedText = codeFenceMatch[1].trim();
+  }
+
   let data: unknown;
   try {
-    data = JSON.parse(responseText);
+    data = JSON.parse(cleanedText);
   } catch (e) {
     return {
       success: false,

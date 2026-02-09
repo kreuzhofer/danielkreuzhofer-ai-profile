@@ -30,6 +30,8 @@ export interface LLMConfig {
   maxTokens?: number;
   /** Request timeout in milliseconds (default: 30000) */
   timeout?: number;
+  /** Response format - set to 'json_object' to enforce JSON output */
+  responseFormat?: 'json_object';
 }
 
 /**
@@ -130,6 +132,7 @@ export function buildConfig(partialConfig?: Partial<LLMConfig>): Required<LLMCon
     temperature: partialConfig?.temperature ?? DEFAULT_CONFIG.temperature,
     maxTokens: partialConfig?.maxTokens ?? DEFAULT_CONFIG.maxTokens,
     timeout: partialConfig?.timeout ?? DEFAULT_CONFIG.timeout,
+    responseFormat: partialConfig?.responseFormat ?? undefined as unknown as 'json_object',
   };
 }
 
@@ -190,6 +193,10 @@ export async function* streamChatCompletion(
       ? { max_completion_tokens: fullConfig.maxTokens }
       : { max_tokens: fullConfig.maxTokens };
 
+    const responseFormatParam = fullConfig.responseFormat 
+      ? { response_format: { type: fullConfig.responseFormat } }
+      : {};
+
     log.info('Calling OpenAI API', { model: fullConfig.model });
     const startTime = Date.now();
 
@@ -204,6 +211,7 @@ export async function* streamChatCompletion(
         messages: openAIMessages,
         temperature: fullConfig.temperature,
         ...tokenParam,
+        ...responseFormatParam,
         stream: true,
       }),
       signal: controller.signal,

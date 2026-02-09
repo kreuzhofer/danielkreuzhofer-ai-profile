@@ -55,7 +55,9 @@ CONTEXT ({ownerFirstName}'s Background):
 JOB DESCRIPTION TO ANALYZE:
 {jobDescription}
 
-Provide your analysis in the following JSON format:
+RESPONSE FORMAT:
+Respond with raw JSON only. Do NOT wrap the response in markdown code fences, backticks, or any other formatting. Output must start with { and end with } — nothing else.
+
 {
   "confidence": "strong" | "partial" | "limited",
   "alignments": [

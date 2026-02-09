@@ -234,7 +234,7 @@ export async function POST(request: NextRequest): Promise<Response> {
           content: 'Please analyze this job description and provide your assessment in the JSON format specified.' 
         }];
 
-        for await (const chunk of streamChatCompletion(prompt, messages, { timeout: ANALYSIS_TIMEOUT_MS })) {
+        for await (const chunk of streamChatCompletion(prompt, messages, { timeout: ANALYSIS_TIMEOUT_MS, responseFormat: 'json_object' })) {
           accumulatedContent += chunk;
           
           // Detect phase changes
