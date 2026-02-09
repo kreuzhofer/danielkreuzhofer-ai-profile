@@ -262,6 +262,43 @@ function loadAbout(): AboutContent {
 // =============================================================================
 
 /**
+ * Recursively format frontmatter data as readable context for the LLM.
+ * Converts nested YAML structures into labeled text sections.
+ */
+function formatFrontmatterAsContext(
+  data: Record<string, unknown>,
+  prefix = ""
+): string {
+  const lines: string[] = [];
+
+  for (const [key, value] of Object.entries(data)) {
+    const label = prefix ? `${prefix} > ${key}` : key;
+
+    if (Array.isArray(value)) {
+      // Array of objects (e.g., languages, certifications)
+      if (value.length > 0 && typeof value[0] === "object") {
+        lines.push(
+          `${label}:`,
+          ...value.map((item) =>
+            Object.entries(item as Record<string, unknown>)
+              .map(([k, v]) => `${k}: ${v}`)
+              .join(", ")
+          ).map((line) => `  - ${line}`)
+        );
+      } else {
+        lines.push(`${label}: ${value.join(", ")}`);
+      }
+    } else if (typeof value === "object" && value !== null) {
+      lines.push(formatFrontmatterAsContext(value as Record<string, unknown>, label));
+    } else {
+      lines.push(`${label}: ${value}`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
+/**
  * Load raw knowledge files from the knowledge/ directory
  * Falls back to knowledge-examples/ if knowledge/ is empty or missing
  */
@@ -291,9 +328,17 @@ function loadRawKnowledge(): string[] {
   return files.map((file) => {
     const filePath = path.join(knowledgeDir, file);
     const content = fs.readFileSync(filePath, "utf8");
-    // Remove YAML frontmatter if present
-    const { content: bodyContent } = matter(content);
-    return bodyContent.trim();
+    const { data: frontmatter, content: bodyContent } = matter(content);
+
+    // Include frontmatter as structured context if present
+    const parts: string[] = [];
+    if (frontmatter && Object.keys(frontmatter).length > 0) {
+      parts.push(formatFrontmatterAsContext(frontmatter));
+    }
+    if (bodyContent.trim()) {
+      parts.push(bodyContent.trim());
+    }
+    return parts.join("\n\n");
   });
 }
 
