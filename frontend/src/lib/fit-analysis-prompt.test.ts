@@ -97,9 +97,13 @@ describe("fit-analysis-prompt", () => {
 
       expect(template).toContain("{context}");
       expect(template).toContain("{jobDescription}");
+      expect(template).toContain("{ownerName}");
+      expect(template).toContain("{ownerFirstName}");
+      expect(template).toContain("{ownerRole}");
       expect(template).toContain("PERSONALITY:");
       expect(template).toContain("ANALYSIS RULES:");
       expect(template).toContain("radically transparent");
+      expect(template).toContain("VOICE & PERSPECTIVE:");
     });
 
     it("includes JSON format instructions", () => {
@@ -155,6 +159,26 @@ describe("fit-analysis-prompt", () => {
       expect(prompt).not.toContain("{jobDescription}");
     });
 
+    it("replaces owner placeholders with portfolio owner identity", async () => {
+      const prompt = await buildAnalysisPrompt(sampleJobDescription);
+
+      expect(prompt).not.toContain("{ownerName}");
+      expect(prompt).not.toContain("{ownerFirstName}");
+      expect(prompt).not.toContain("{ownerRole}");
+      expect(prompt).not.toContain("{ownerEmployer}");
+      expect(prompt).toContain("Daniel Kreuzhofer");
+      expect(prompt).toContain("Senior Solutions Architect");
+      expect(prompt).toContain("Amazon Web Services");
+    });
+
+    it("uses third-person voice instructions", async () => {
+      const prompt = await buildAnalysisPrompt(sampleJobDescription);
+
+      expect(prompt).toContain("VOICE & PERSPECTIVE:");
+      expect(prompt).toContain("Write in third person");
+      expect(prompt).toContain('never "you" or "your"');
+    });
+
     it("includes analysis personality instructions", async () => {
       const prompt = await buildAnalysisPrompt(sampleJobDescription);
 
@@ -189,7 +213,7 @@ describe("fit-analysis-prompt", () => {
 
       // Should still build a valid prompt structure
       expect(prompt).toContain("JOB DESCRIPTION TO ANALYZE:");
-      expect(prompt).toContain("CONTEXT (Portfolio Owner's Background):");
+      expect(prompt).toContain("CONTEXT (Daniel's Background):");
     });
 
     it("handles job description with special characters", async () => {

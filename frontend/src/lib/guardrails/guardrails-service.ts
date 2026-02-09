@@ -19,6 +19,7 @@ import {
 import { getRejectionMessage } from './messages';
 import { logSecurityEvent } from './security-logger';
 import { createLogger } from '../logger';
+import { PORTFOLIO_OWNER } from '../portfolio-owner';
 
 const log = createLogger('GuardrailsService');
 
@@ -38,7 +39,7 @@ export const CHAT_GUARDRAIL_CONFIG: GuardrailConfig = {
       'contact information',
     ],
     description:
-      "Questions about Daniel Kreuzhofer's professional background, experience, skills, and projects",
+      `Questions about ${PORTFOLIO_OWNER.name}'s professional background, experience, skills, and projects`,
   },
   blockThreshold: 0.8,
   validateOutput: true,

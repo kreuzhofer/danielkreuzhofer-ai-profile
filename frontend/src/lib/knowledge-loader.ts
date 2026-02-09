@@ -21,6 +21,7 @@ import type {
   ContextSection,
 } from "@/types/knowledge";
 import { SYSTEM_PROMPT_TEMPLATE } from "@/types/knowledge";
+import { PORTFOLIO_OWNER } from "./portfolio-owner";
 import type {
   ExperienceFrontmatter,
   ProjectFrontmatter,
@@ -385,7 +386,7 @@ function formatSkillsSection(skills: SkillContent[]): string {
  */
 function formatAboutSection(about: AboutContent): string {
   return [
-    `## About Daniel Kreuzhofer`,
+    `## About ${PORTFOLIO_OWNER.name}`,
     `Headline: ${about.headline}`,
     `Bio: ${about.bio}`,
     `Value Proposition: ${about.valueProposition}`,
@@ -461,7 +462,11 @@ export function compileKnowledgeContext(
     .join("\n\n---\n\n");
 
   // Build system prompt using the template
-  const systemPrompt = SYSTEM_PROMPT_TEMPLATE.replace("{context}", contextString);
+  const systemPrompt = SYSTEM_PROMPT_TEMPLATE
+    .replace(/{ownerName}/g, PORTFOLIO_OWNER.name)
+    .replace(/{ownerRole}/g, PORTFOLIO_OWNER.role)
+    .replace(/{ownerEmployer}/g, PORTFOLIO_OWNER.employer)
+    .replace("{context}", contextString);
 
   // Estimate total tokens
   const totalTokenEstimate = estimateTokens(systemPrompt);

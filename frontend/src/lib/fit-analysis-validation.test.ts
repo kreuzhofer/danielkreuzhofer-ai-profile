@@ -115,7 +115,7 @@ describe('validateJobDescription', () => {
   });
 
   describe('valid input above minimum (Requirements 2.4, 1.3)', () => {
-    it('should return isValid: true with no warning for 51+ characters up to 5000', () => {
+    it('should return isValid: true with no warning for 51+ characters up to 10000', () => {
       const input100Chars = 'a'.repeat(100);
       expect(input100Chars.length).toBe(100);
 

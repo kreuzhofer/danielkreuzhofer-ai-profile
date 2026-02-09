@@ -9,18 +9,28 @@
  */
 
 import { loadAllContent, compileKnowledgeContext } from "./knowledge-loader";
+import { PORTFOLIO_OWNER } from "./portfolio-owner";
 
 /**
  * Analysis prompt template for honest fit assessment.
  * 
+ * Uses {ownerName}, {ownerFirstName}, and {ownerRole} placeholders
+ * filled from PORTFOLIO_OWNER config.
+ *
  * The template instructs the LLM to:
+ * - Write in third person for recruiter/HM audience
  * - Be radically transparent about alignment and gaps
  * - Only claim alignment for documented skills/experience
  * - Cite specific evidence from the portfolio
  * - Provide honest recommendations including "may not be the right fit"
  */
 const ANALYSIS_PROMPT_TEMPLATE = `
-You are analyzing a job description against a professional portfolio to provide an honest fit assessment.
+You are analyzing a job description against {ownerName}'s professional portfolio to provide an honest fit assessment for a recruiter or hiring manager.
+
+VOICE & PERSPECTIVE:
+- Write in third person, referring to the candidate as "{ownerFirstName}" or "they" — never "you" or "your"
+- Frame the analysis as a briefing for a recruiter or hiring manager evaluating {ownerFirstName}'s fit
+- Example: "{ownerFirstName}'s AWS experience aligns well with..." not "Your AWS experience aligns well with..."
 
 PERSONALITY:
 - Be radically transparent - honesty builds trust
@@ -28,14 +38,18 @@ PERSONALITY:
 - Provide evidence for alignment claims
 - Use peer tone - confident but not arrogant
 
+CANDIDATE PROFILE:
+- Name: {ownerName}
+- Current Role: {ownerRole} at {ownerEmployer}
+
 ANALYSIS RULES:
 1. Only claim alignment for skills/experience explicitly documented in the context
 2. Cite specific projects, roles, or decisions as evidence
-3. Identify gaps honestly - it's okay to say "this may not be the right fit"
+3. Identify gaps honestly - it's okay to say "{ownerFirstName} may not be the right fit"
 4. Consider both technical skills and domain experience
 5. Weight recent experience more heavily than older experience
 
-CONTEXT (Portfolio Owner's Background):
+CONTEXT ({ownerFirstName}'s Background):
 {context}
 
 JOB DESCRIPTION TO ANALYZE:
@@ -47,7 +61,7 @@ Provide your analysis in the following JSON format:
   "alignments": [
     {
       "area": "skill or requirement name",
-      "explanation": "why this aligns",
+      "explanation": "why this aligns (use third person: {ownerFirstName}/they)",
       "evidence": [
         { "source": "project/role name", "detail": "specific relevant detail" }
       ]
@@ -56,14 +70,14 @@ Provide your analysis in the following JSON format:
   "gaps": [
     {
       "area": "requirement name",
-      "explanation": "why this is a gap",
+      "explanation": "why this is a gap (use third person: {ownerFirstName}/they)",
       "severity": "minor" | "moderate" | "significant"
     }
   ],
   "recommendation": {
     "verdict": "proceed" | "consider" | "reconsider",
-    "summary": "one sentence recommendation",
-    "reasoning": "brief explanation of the recommendation"
+    "summary": "one sentence recommendation (use third person: {ownerFirstName}/they)",
+    "reasoning": "brief explanation of the recommendation (use third person: {ownerFirstName}/they)"
   }
 }
 `;
@@ -96,10 +110,13 @@ export async function buildAnalysisPrompt(
     .join("\n\n---\n\n");
 
   // Build the prompt by replacing placeholders
-  const prompt = ANALYSIS_PROMPT_TEMPLATE.replace(
-    "{context}",
-    contextString
-  ).replace("{jobDescription}", jobDescription);
+  const prompt = ANALYSIS_PROMPT_TEMPLATE
+    .replace(/{ownerName}/g, PORTFOLIO_OWNER.name)
+    .replace(/{ownerFirstName}/g, PORTFOLIO_OWNER.firstName)
+    .replace(/{ownerRole}/g, PORTFOLIO_OWNER.role)
+    .replace(/{ownerEmployer}/g, PORTFOLIO_OWNER.employer)
+    .replace("{context}", contextString)
+    .replace("{jobDescription}", jobDescription);
 
   return prompt;
 }

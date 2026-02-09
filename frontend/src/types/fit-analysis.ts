@@ -398,7 +398,7 @@ export const FIT_ANALYSIS_KEYBOARD_SHORTCUTS = {
  */
 export const JOB_DESCRIPTION_CONSTRAINTS = {
   /** Maximum allowed characters */
-  MAX_LENGTH: 5000,
+  MAX_LENGTH: 10000,
   /** Minimum characters for quality warning */
   MIN_LENGTH_WARNING: 50,
 } as const;
