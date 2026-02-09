@@ -138,12 +138,12 @@ describe('validateJobDescription', () => {
     });
   });
 
-  describe('boundary: exactly 5000 characters (Requirement 1.3)', () => {
-    it('should return isValid: true for exactly 5000 characters', () => {
-      const input5000Chars = 'a'.repeat(5000);
-      expect(input5000Chars.length).toBe(5000);
+  describe('boundary: exactly 10000 characters (Requirement 1.3)', () => {
+    it('should return isValid: true for exactly 10000 characters', () => {
+      const input10000Chars = 'a'.repeat(10000);
+      expect(input10000Chars.length).toBe(10000);
 
-      const result = validateJobDescription(input5000Chars);
+      const result = validateJobDescription(input10000Chars);
 
       expect(result.isValid).toBe(true);
       expect(result.errorMessage).toBeNull();
@@ -152,11 +152,11 @@ describe('validateJobDescription', () => {
   });
 
   describe('exceeds maximum length (Requirement 1.3)', () => {
-    it('should return isValid: false with error for 5001+ characters', () => {
-      const input5001Chars = 'a'.repeat(5001);
-      expect(input5001Chars.length).toBe(5001);
+    it('should return isValid: false with error for 10001+ characters', () => {
+      const input10001Chars = 'a'.repeat(10001);
+      expect(input10001Chars.length).toBe(10001);
 
-      const result = validateJobDescription(input5001Chars);
+      const result = validateJobDescription(input10001Chars);
 
       expect(result.isValid).toBe(false);
       expect(result.errorMessage).toBe(
@@ -166,9 +166,9 @@ describe('validateJobDescription', () => {
     });
 
     it('should return isValid: false for significantly over maximum', () => {
-      const input10000Chars = 'a'.repeat(10000);
+      const input20000Chars = 'a'.repeat(20000);
 
-      const result = validateJobDescription(input10000Chars);
+      const result = validateJobDescription(input20000Chars);
 
       expect(result.isValid).toBe(false);
       expect(result.errorMessage).toBe(
@@ -225,10 +225,8 @@ describe('validateJobDescription', () => {
     });
 
     it('should reject when trimmed content exceeds max length', () => {
-      // Content that is exactly at max after trimming would pass,
-      // but content over max after trimming should fail
-      const inputOverMax = '  ' + 'a'.repeat(5001) + '  ';
-      expect(inputOverMax.trim().length).toBe(5001);
+      const inputOverMax = '  ' + 'a'.repeat(10001) + '  ';
+      expect(inputOverMax.trim().length).toBe(10001);
 
       const result = validateJobDescription(inputOverMax);
 
@@ -241,7 +239,7 @@ describe('validateJobDescription', () => {
 
   describe('constraint values verification', () => {
     it('should use correct MAX_LENGTH constraint value', () => {
-      expect(JOB_DESCRIPTION_CONSTRAINTS.MAX_LENGTH).toBe(5000);
+      expect(JOB_DESCRIPTION_CONSTRAINTS.MAX_LENGTH).toBe(10000);
     });
 
     it('should use correct MIN_LENGTH_WARNING constraint value', () => {
