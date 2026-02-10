@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { BlogPost } from '@/types/content';
 
 /**
@@ -25,47 +26,56 @@ export function formatBlogDate(dateStr: string): string {
 }
 
 /**
- * PostPreviewCard component - displays a clickable blog post preview card.
+ * PostPreviewCard component - displays a clickable blog post preview card
+ * with header image on the left and content on the right.
  *
  * Features:
+ * - Horizontal row layout: image left, content right
  * - Clickable card linking to the full blog post at `/blog/[slug]`
  * - Displays post title, formatted publication date, excerpt, and tag badges
+ * - Responsive: stacks vertically on mobile, horizontal on md+
  * - Uses existing design tokens and Tailwind classes for consistent styling
- * - Hover effect with shadow and slight lift
  *
  * **Validates: Requirements 2.3, 2.4**
- * - 2.3: THE Post_Preview_Card SHALL display the post title, publication date, excerpt, and tags
- * - 2.4: WHEN a visitor clicks a Post_Preview_Card, THE Blog_Section SHALL navigate to the corresponding Blog_Post page
- *
- * @example
- * ```tsx
- * <PostPreviewCard post={blogPost} />
- * ```
  */
 export function PostPreviewCard({ post }: PostPreviewCardProps) {
-  const { title, date, excerpt, tags, slug } = post;
+  const { title, date, excerpt, tags, slug, headerImage } = post;
 
   return (
     <Link
       href={`/blog/${slug}`}
-      className="block border border-[var(--border)] bg-[var(--surface)] rounded-lg overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+      className="group flex flex-col md:flex-row border border-[var(--border)] bg-[var(--surface)] rounded-lg overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
     >
-      <div className="p-6">
-        {/* Post title */}
-        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
-          {title}
-        </h3>
+      {/* Header image - left side */}
+      {headerImage && (
+        <div className="relative w-full md:w-72 lg:w-80 flex-shrink-0 aspect-[16/9] md:aspect-auto">
+          <Image
+            src={headerImage}
+            alt={title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 320px"
+          />
+        </div>
+      )}
 
+      {/* Content - right side */}
+      <div className="flex flex-col justify-center p-6 flex-1 min-w-0">
         {/* Publication date */}
         <time
           dateTime={date}
-          className="text-sm text-[var(--foreground-muted)]"
+          className="text-sm text-[var(--foreground-muted)] mb-1"
         >
           {formatBlogDate(date)}
         </time>
 
+        {/* Post title */}
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2 group-hover:text-[var(--primary-400)] transition-colors duration-200">
+          {title}
+        </h3>
+
         {/* Excerpt */}
-        <p className="mt-3 text-sm md:text-base text-[var(--foreground-muted)] leading-relaxed">
+        <p className="text-sm md:text-base text-[var(--foreground-muted)] leading-relaxed line-clamp-3">
           {excerpt}
         </p>
 

@@ -226,6 +226,7 @@ export function getBlogPosts(): BlogPost[] {
         excerpt: frontmatter.excerpt,
         tags: frontmatter.tags,
         slug: frontmatter.slug,
+        headerImage: frontmatter.headerImage,
         content,
       });
     } catch {

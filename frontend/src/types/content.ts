@@ -278,6 +278,7 @@ export interface BlogPostFrontmatter {
   excerpt: string;
   tags: string[];
   slug: string;
+  headerImage?: string; // Path to header image in /public/blog/
 }
 
 /**
@@ -289,5 +290,6 @@ export interface BlogPost {
   excerpt: string;
   tags: string[];
   slug: string;
+  headerImage?: string; // Path to header image in /public/blog/
   content: string;    // Raw MDX body content
 }

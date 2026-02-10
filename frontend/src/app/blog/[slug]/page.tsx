@@ -200,6 +200,21 @@ export default async function BlogPostPage({
                 </strong>
               ),
               em: ({ children }) => <em className="italic">{children}</em>,
+              img: ({ src, alt }) => (
+                <figure className="my-8">
+                  <img
+                    src={src}
+                    alt={alt || ''}
+                    className="w-full rounded-lg border border-[var(--border)]"
+                    loading="lazy"
+                  />
+                  {alt && (
+                    <figcaption className="mt-2 text-center text-sm text-[var(--foreground-muted)] italic">
+                      {alt}
+                    </figcaption>
+                  )}
+                </figure>
+              ),
               hr: () => (
                 <hr className="border-[var(--border)] my-8" />
               ),

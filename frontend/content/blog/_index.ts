@@ -5,5 +5,6 @@
 
 // Blog post entries - listed in order of appearance (most recent first)
 export const blogFiles: string[] = [
-  'cloud-architecture-patterns-for-modern-applications.mdx',
+  'does-your-ai-know-how-you-write-code.mdx',
+  'resumes-flatten-you-i-built-something-that-doesnt.mdx',
 ];

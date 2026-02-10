@@ -1,0 +1,133 @@
+---
+title: "Does Your AI Know How You Write Code?"
+date: "2026-02-10"
+excerpt: "What I've Built with Kiro #2: From months of spec-driven development to a shareable set of battle-tested engineering rules. Why telling an AI what to build is the easy part — and how coding standards bridge the gap."
+tags:
+  - "kiro"
+  - "ai"
+  - "coding-standards"
+  - "spec-driven-development"
+  - "engineering"
+slug: "does-your-ai-know-how-you-write-code"
+headerImage: "/blog/linkedin-article-kiro-power-v2.png"
+---
+
+*What I've Built with Kiro #2: From months of spec-driven development to a shareable set of battle-tested engineering rules*
+
+---
+
+## It Started with Vibe Coding — And Mixed Feelings
+
+Here's something I learned the hard way over the past three months: telling an AI *what* to build is the easy part. Telling it *how* — your engineering standards, your testing philosophy, your error handling conventions — is what separates a prototype from a product. And if you don't write those standards down explicitly, the AI will make different decisions every single session. Not bad decisions, necessarily. Just inconsistent ones. And inconsistency, at scale, is its own kind of technical debt.
+
+I picked up AI-assisted coding in November 2025 with Windsurf. Impressive at first — the AI followed instructions and code appeared like magic. But the pattern quickly emerged: confident bursts of productivity followed by dead ends and rollbacks. I'd revert, re-prompt, get different code, hit another wall. I was making progress, but steering the AI felt like the real challenge — not the coding itself.
+
+Then Kiro launched toward the end of November. Their pitch framed the exact tension I was feeling: vibe coding versus spec-driven development. Instead of loose prompts and hoping for the best, you'd define a vision, break it into requirements, design the solution, create tasks, and *then* let the AI build — with full context of what you're building and why. I signed up, burned through the 500 welcome credits on day one, and signed up for the paid plan that same evening.
+
+Over the next six weeks I built [trackmysales.app](https://trackmysales.app) — a lead tracking application that started as a simple URL shortener and grew into a 30+ spec project. The spec-driven approach delivered results that were *predictably good*. Not perfect every time, but consistent enough that I switched to Opus 4.5 only, upgraded to the Power plan, and was paying overages by mid-January — all from evenings-and-weekends coding alongside my day job.
+
+But here's the thing: specs solved *what* to build. They didn't solve *how*. Without explicit rules, every session was still a negotiation. No tests written for a feature. A different framework than the rest of the project. Skipped error handling. None of these were catastrophic, but each one cost me time to notice, correct, and re-explain.
+
+That's where coding standards for your AI become essential. Not because the AI can't figure it out — today's models are genuinely impressive. Because *you* shouldn't have to tell it every time.
+
+---
+
+## But Does It Scale Beyond You?
+
+Before I dive into the rules themselves, let me address the question I keep hearing: *isn't all this process overkill?*
+
+Peter Steinberger — the creator of OpenClaw and former PSPDFKit founder — recently wrote a post called [Shipping at Inference Speed](https://steipete.me/posts/2025/shipping-at-inference-speed) that makes the strongest case for the opposite end of the spectrum. He ships code he never reads. Commits directly to main. Works on multiple projects simultaneously. Skips issue trackers entirely. His argument: with models like GPT-5.2 Codex, the iteration loop is so fast that you don't need the overhead.
+
+And honestly? He's right — *for his context.* He's an extremely experienced solo developer building his own products. The feedback loop is tight, the blast radius is small, and the speed is genuinely impressive. For an MVP, a prototype, a weekend hack — fewer rules and more speed wins.
+
+But here's what I keep coming back to: that workflow works because it's one person, one brain, one context.
+
+The moment you add a second developer, the dynamics change fundamentally. When a teammate picks up a feature you built last week, they can't ask the AI "what were the conventions we agreed on?" unless those conventions are written down. When a new team member joins, they can't absorb your coding style through osmosis — not with an AI that starts fresh in every session. An LLM will happily write code in three different styles for three different people on the same project — unless you give it shared rules.
+
+In an enterprise context, you also need trust — not just that code works, but that it's maintainable, reviewable, and auditable. When a CTO asks "how do we know the AI isn't introducing security vulnerabilities?" you need a better answer than "the models are really good now." You need to point to concrete rules, enforcement mechanisms, and a test suite that validates them.
+
+Speed without consistency creates debt. And in a team, that debt compounds fast. That's why I built the rules I'm about to show you — not because vibe coding doesn't work, but because it doesn't scale.
+
+---
+
+## Steering Files: How AI Coding Tools Handle Standards
+
+Every AI coding tool has solved this problem differently — and the differences matter more than you'd think. Claude Code has `CLAUDE.md`. OpenAI's Codex has `AGENTS.md`. These are files where you write down your project conventions, and the AI reads them at the start of every conversation. Simple and effective.
+
+Kiro's version is called steering files — same core idea, but with a key difference in *how* they get loaded.
+
+With `CLAUDE.md` or `AGENTS.md`, everything goes into the context window every time. Your full set of rules is always present, always consuming tokens, whether or not it's relevant to the current task. That's fine when you have a handful of guidelines. It gets expensive — and noisy — when you have a dozen detailed engineering rules with code examples.
+
+Kiro loads steering files contextually. You can configure each file to be included always, only when working on files matching a certain pattern (say, `*.test.ts` for your testing rules), or manually when you reference them. This means Kiro pulls in only the rules that matter for what you're doing right now.
+
+There's a real tradeoff. The upside: your context window stays lean and you can have a much larger library of rules without drowning the model in instructions. The downside: a rule that isn't loaded can't be followed. If your TDD rule only triggers on test files, the AI might not think about testability when writing production code. You have to be intentional about what's "always on" versus what's situational.
+
+I ended up keeping my core engineering principles on "always" inclusion. The more specific rules load contextually. It took experimentation to find the right balance, but once I did, it felt like the AI was finally working *with* my engineering brain instead of next to it.
+
+Steering files aren't just configuration. They're your engineering culture, written down in a way a machine can follow. The difference between unwritten rules and written ones? Written ones get enforced.
+
+---
+
+## The Rules: What Two Months of Iteration Produced
+
+Most of my steering rules exist because the AI did something that cost me an hour to fix. You don't sit down and write a dozen engineering rules in one afternoon. They emerge, one frustration at a time.
+
+**The Foundation: TDD**
+
+I started with test-driven development as a non-negotiable. Write a failing test first, implement the minimal code to make it pass, refactor, re-run. Never claim a task is done with failing tests. And crucially — never delete a failing test to make the suite green.
+
+This alone transformed the quality. When an AI agent knows it *cannot move on* with a red test suite, it thinks smaller, tests edge cases, and actually reads existing tests before modifying code.
+
+**The Guardrails**
+
+Next came the rules the AI kept making me write because it kept making the same mistakes. *Fail fast, no silent fallbacks* — validate inputs at boundaries, use typed errors, log every caught exception. No more empty catch blocks. *Small, reversible, observable changes* — one logical change per step, never combine a refactor with a behavior change. *Minimize complexity* — implement the simplest solution that meets current requirements. If there's no test or requirement for it, don't build it.
+
+**The Nuanced Ones**
+
+These took longer to get right because they're not black and white.
+
+*DRY with restraint* — partially inspired by a [LinkedIn post from Matthias Jung](https://www.linkedin.com/feed/update/urn:li:activity:7424837822479769600/), an ex-colleague and former manager of mine at AWS. The naive version of DRY leads to terrible abstractions. Two pieces of code that look similar but serve different domains aren't duplication — they're coincidence. Tolerate some duplication if it keeps code simple. Extract only when shared logic is stable and appears three or more times in the same domain.
+
+*Confidence-gated autonomy* — probably my favorite, and the one I haven't seen elsewhere. The AI should scale its autonomy based on how confident it is. High confidence? Proceed end-to-end. Medium? Narrow scope, explain reasoning first. Low — touching auth, payments, DB schemas? Stop and ask. This maps surprisingly well to how good senior engineers work. You don't ask permission for every line of code. But you also don't YOLO a database migration without talking to someone first.
+
+*Ask, don't assume* — if requirements are ambiguous, ask. If "add validation" could mean five different things, don't pick one and hope.
+
+---
+
+## Packaging It: From Personal Notes to a Kiro Power
+
+You know a system is working when you stop thinking about it and start copy-pasting it everywhere. After months of refining, I had roughly a dozen steering files following me from project to project. Same files, same rules, every time.
+
+Then Kiro introduced Powers — reusable packages of steering files you can install from a Git repository and share with others. So I packaged mine up: **[Daniel's Kiro Coding Best Practices](https://github.com/kreuzhofer/danielkreuzhofer-kiro-coding-best-practices)**.
+
+The power includes three categories:
+
+**Core Engineering Rules** — TDD, small changes, fail fast, minimize complexity, DRY with restraint, ask don't assume, confidence-gated autonomy, security by default, don't break contracts, and risk-scaled rigor.
+
+**Testing & Workflow** — Property-based testing guidelines and a test execution workflow that mandates running tests, analyzing logs, and cleaning up after every change.
+
+**Conventions** — Numbered spec naming (`NNN-kebab-name` pattern) and Mermaid diagrams for all design documents. No ASCII art. Clean, version-controllable documentation.
+
+The moment I decided to publish these, something interesting happened: I had to make them understandable to someone who isn't me. That forced me to remove jargon, add code examples, explain the *why* behind every rule. The published version is dramatically better than my private notes ever were. Sharing forces clarity.
+
+---
+
+## Where Do You Start?
+
+I started this article with a claim: telling an AI *what* to build is the easy part. After three months, 30+ specs, and more credits than I'd like to admit, I'm more convinced of that than ever. The "what" scales beautifully with better models. The "how" only scales if you write it down.
+
+You don't need my specific rules. You need *yours*. And the fastest way to find them is to pay attention to the next time your AI does something that makes you stop and course-correct. That frustration? That's a steering rule waiting to be written.
+
+If you want a starting point, the power is open source:
+
+**[Daniel's Kiro Coding Best Practices](https://github.com/kreuzhofer/danielkreuzhofer-kiro-coding-best-practices)**
+
+Fork it, strip out what doesn't fit, add what does. The value isn't in copying someone else's rules — it's in having rules at all.
+
+If you missed my first article in this series — where I built an AI-powered portfolio that proves expertise instead of claiming it — that one covers the spec-driven workflow in detail. And up next, I'll be exploring how these practices translate into real business value for teams and organizations, not just individual developers.
+
+But for now, I'll leave you with this: the AI doesn't care about your coding standards. It will follow whatever rules you give it — or make up its own if you don't. The question is whether you're comfortable with that.
+
+---
+
+*What are your non-negotiable engineering rules — the ones you'd want every AI agent to follow? I'd love to hear them in the comments.*
