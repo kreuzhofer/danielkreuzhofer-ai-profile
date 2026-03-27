@@ -279,6 +279,7 @@ export interface BlogPostFrontmatter {
   tags: string[];
   slug: string;
   headerImage?: string; // Path to header image in /public/blog/
+  linkedinUrl?: string; // URL to the LinkedIn article
 }
 
 /**
@@ -291,5 +292,6 @@ export interface BlogPost {
   tags: string[];
   slug: string;
   headerImage?: string; // Path to header image in /public/blog/
+  linkedinUrl?: string; // URL to the LinkedIn article
   content: string;    // Raw MDX body content
 }

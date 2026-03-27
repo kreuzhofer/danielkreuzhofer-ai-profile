@@ -84,6 +84,22 @@ export interface AboutContent {
 // =============================================================================
 
 /**
+ * Blog post content for the knowledge base
+ */
+export interface BlogContent {
+  /** Blog post title */
+  title: string;
+  /** Publication date */
+  date: string;
+  /** Brief excerpt/summary */
+  excerpt: string;
+  /** Tags for categorization */
+  tags: string[];
+  /** URL slug */
+  slug: string;
+}
+
+/**
  * Complete knowledge content loaded from the portfolio
  */
 export interface KnowledgeContent {
@@ -95,6 +111,8 @@ export interface KnowledgeContent {
   skills: SkillContent[];
   /** About section content */
   about: AboutContent;
+  /** Blog posts demonstrating thought leadership */
+  blogPosts: BlogContent[];
   /** Raw knowledge strings for additional context */
   rawKnowledge: string[];
 }
@@ -106,7 +124,7 @@ export interface KnowledgeContent {
 /**
  * Type of context section
  */
-export type ContextSectionType = 'experience' | 'project' | 'skill' | 'about' | 'raw';
+export type ContextSectionType = 'experience' | 'project' | 'skill' | 'about' | 'blog' | 'raw';
 
 /**
  * A section of context for the LLM prompt

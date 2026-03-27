@@ -17,6 +17,7 @@ import type {
   ProjectContent,
   SkillContent,
   AboutContent,
+  BlogContent,
   CompiledKnowledge,
   ContextSection,
 } from "@/types/knowledge";
@@ -25,6 +26,7 @@ import { PORTFOLIO_OWNER } from "./portfolio-owner";
 import type {
   ExperienceFrontmatter,
   ProjectFrontmatter,
+  BlogPostFrontmatter,
   SkillCategory,
   About,
 } from "@/types/content";
@@ -343,6 +345,48 @@ function loadRawKnowledge(): string[] {
 }
 
 // =============================================================================
+// Blog Loading
+// =============================================================================
+
+/**
+ * Load blog posts and convert to knowledge format.
+ * Includes title, date, excerpt, and tags for thought leadership context.
+ */
+function loadBlogPosts(): BlogContent[] {
+  const blogDir = path.join(CONTENT_DIR, "blog");
+
+  if (!fs.existsSync(blogDir)) {
+    return [];
+  }
+
+  const files = fs
+    .readdirSync(blogDir)
+    .filter((file) => file.endsWith(".mdx"));
+
+  const posts: BlogContent[] = [];
+
+  for (const file of files) {
+    const filePath = path.join(blogDir, file);
+    const { frontmatter } = parseMarkdownFile<BlogPostFrontmatter>(filePath);
+
+    if (!frontmatter.title || !frontmatter.date || !frontmatter.excerpt || !frontmatter.slug) {
+      continue;
+    }
+
+    posts.push({
+      title: frontmatter.title,
+      date: frontmatter.date,
+      excerpt: frontmatter.excerpt,
+      tags: frontmatter.tags || [],
+      slug: frontmatter.slug,
+    });
+  }
+
+  // Sort by date descending (newest first)
+  return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+// =============================================================================
 // Main Loading Functions
 // =============================================================================
 
@@ -356,6 +400,7 @@ export async function loadAllContent(): Promise<KnowledgeContent> {
     projects: loadProjects(),
     skills: loadSkills(),
     about: loadAbout(),
+    blogPosts: loadBlogPosts(),
     rawKnowledge: loadRawKnowledge(),
   };
 }
@@ -427,6 +472,18 @@ function formatSkillsSection(skills: SkillContent[]): string {
 }
 
 /**
+ * Format blog post content for LLM context
+ */
+function formatBlogSection(post: BlogContent): string {
+  return [
+    `## Published Article: ${post.title}`,
+    `Date: ${post.date}`,
+    `Tags: ${post.tags.join(", ")}`,
+    `Summary: ${post.excerpt}`,
+  ].join("\n");
+}
+
+/**
  * Format about content for LLM context
  */
 function formatAboutSection(about: AboutContent): string {
@@ -487,6 +544,16 @@ export function compileKnowledgeContext(
       priority: 6,
     });
   }
+
+  // Add blog post sections (thought leadership context)
+  knowledge.blogPosts.forEach((post, index) => {
+    contextSections.push({
+      type: "blog",
+      title: `Blog: ${post.title}`,
+      content: formatBlogSection(post),
+      priority: 5.5 - index * 0.1,
+    });
+  });
 
   // Add raw knowledge sections (lower priority but still valuable)
   knowledge.rawKnowledge.forEach((content, index) => {

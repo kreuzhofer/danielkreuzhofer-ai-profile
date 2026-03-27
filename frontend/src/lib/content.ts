@@ -227,6 +227,7 @@ export function getBlogPosts(): BlogPost[] {
         tags: frontmatter.tags,
         slug: frontmatter.slug,
         headerImage: frontmatter.headerImage,
+        linkedinUrl: frontmatter.linkedinUrl,
         content,
       });
     } catch {

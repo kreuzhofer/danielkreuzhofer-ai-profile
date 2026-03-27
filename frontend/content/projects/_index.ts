@@ -5,6 +5,7 @@
 
 // Project entries - listed in order of appearance (most impactful first)
 export const projectFiles: string[] = [
+  'chat3d.mdx',
   'crosslink-channel.mdx',
   'portfolio-site.mdx',
 ];

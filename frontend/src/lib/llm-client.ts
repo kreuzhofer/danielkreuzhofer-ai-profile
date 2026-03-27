@@ -329,7 +329,7 @@ export async function* streamChatCompletion(
     log.debug('Stream finished', { chunkCount });
   } catch (error) {
     clearTimeout(timeoutId);
-    
+
     // Handle abort (timeout)
     if (error instanceof Error && error.name === 'AbortError') {
       log.warn('Request aborted due to timeout', { timeout: fullConfig.timeout });

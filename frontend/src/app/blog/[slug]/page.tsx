@@ -20,6 +20,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { PageHeader } from '@/components/PageHeader';
 import { getBlogPost, getBlogPosts } from '@/lib/content';
 import { formatBlogDate } from '@/components/blog/PostPreviewCard';
@@ -123,9 +124,27 @@ export default async function BlogPostPage({
           )}
         </header>
 
+        {/* LinkedIn badge if linkedinUrl is present */}
+        {post.linkedinUrl && (
+          <div className="max-w-prose mb-8">
+            <a
+              href={post.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#0A66C2] hover:bg-[#004182] text-white text-sm font-medium transition-colors"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+              Read on LinkedIn
+            </a>
+          </div>
+        )}
+
         {/* MDX body content with prose typography (Requirements 3.1, 3.5) */}
         <article className="max-w-prose blog-prose">
           <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
             components={{
               h1: ({ children }) => (
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground mt-10 mb-4">
@@ -217,6 +236,32 @@ export default async function BlogPostPage({
               ),
               hr: () => (
                 <hr className="border-[var(--border)] my-8" />
+              ),
+              table: ({ children }) => (
+                <div className="overflow-x-auto my-6">
+                  <table className="min-w-full border-collapse text-sm text-[var(--foreground-muted)]">
+                    {children}
+                  </table>
+                </div>
+              ),
+              thead: ({ children }) => (
+                <thead className="border-b border-[var(--border)] text-foreground">
+                  {children}
+                </thead>
+              ),
+              tbody: ({ children }) => (
+                <tbody className="divide-y divide-[var(--border)]">
+                  {children}
+                </tbody>
+              ),
+              tr: ({ children }) => (
+                <tr className="hover:bg-[var(--surface)]">{children}</tr>
+              ),
+              th: ({ children }) => (
+                <th className="px-3 py-2 text-left font-semibold">{children}</th>
+              ),
+              td: ({ children }) => (
+                <td className="px-3 py-2">{children}</td>
               ),
             }}
           >
