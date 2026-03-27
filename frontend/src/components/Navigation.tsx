@@ -276,6 +276,9 @@ export function MobileMenu({
           {sections.map((section, index) => {
             const isRouteLink = !section.href.startsWith('#');
             const isActive = isLinkActive(section.href);
+            // When on a non-home page, anchor links navigate to home first
+            const needsRouteNav = !isRouteLink && !pathname.startsWith('/#') && pathname !== '/';
+            const resolvedHref = needsRouteNav ? `/${section.href}` : section.href;
 
             const linkClassName = `
               block px-6 py-3 min-h-[44px]
@@ -290,10 +293,10 @@ export function MobileMenu({
 
             return (
               <li key={section.href}>
-                {isRouteLink ? (
+                {(isRouteLink || needsRouteNav) ? (
                   <Link
                     ref={index === 0 ? firstLinkRef : undefined}
-                    href={section.href}
+                    href={resolvedHref}
                     onClick={onClose}
                     aria-current={isActive ? 'page' : undefined}
                     className={linkClassName}
@@ -407,7 +410,11 @@ export function MobileMenu({
  * ```
  */
 export function NavLink({ href, label, isActive, onClick }: NavLinkProps) {
+  const pathname = usePathname();
   const isRouteLink = !href.startsWith('#');
+  // When on a non-home page, anchor links need to navigate to home first
+  const resolvedHref = !isRouteLink && pathname !== '/' ? `/${href}` : href;
+  const needsRouteNav = !isRouteLink && pathname !== '/';
 
   const className = `
     relative px-3 py-2 text-sm font-medium transition-colors duration-200
@@ -429,15 +436,15 @@ export function NavLink({ href, label, isActive, onClick }: NavLinkProps) {
     />
   );
 
-  if (isRouteLink) {
+  // Route links and anchor links that need to navigate home use Next.js Link
+  if (isRouteLink || needsRouteNav) {
     return (
       <Link
-        href={href}
+        href={resolvedHref}
         aria-current={isActive ? 'page' : undefined}
         className={className}
       >
         {label}
-        {/* Animated underline indicator */}
         {underline}
       </Link>
     );
@@ -451,7 +458,6 @@ export function NavLink({ href, label, isActive, onClick }: NavLinkProps) {
       className={className}
     >
       {label}
-      {/* Animated underline indicator */}
       {underline}
     </a>
   );

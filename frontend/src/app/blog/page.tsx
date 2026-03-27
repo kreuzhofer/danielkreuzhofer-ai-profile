@@ -1,21 +1,16 @@
 /**
  * Blog Listing Page
  *
- * Server component that displays all blog posts in a grid layout.
- * Uses PageHeader for consistent navigation and PostPreviewCard for each post.
- *
- * Features:
- * - Loads all blog posts via getBlogPosts() (sorted by date descending)
- * - Renders a responsive grid of PostPreviewCard components
- * - Shows empty state message when no posts exist
- * - Page metadata for SEO
+ * Server component that displays all blog posts with scroll-in animations.
+ * Uses BlogLayout for consistent navigation with the main page (header, nav,
+ * scroll progress, footer).
  *
  * @see Requirements 2.1, 2.2, 2.5
  */
 
 import { Metadata } from 'next';
-import { PageHeader } from '@/components/PageHeader';
-import { PostPreviewCard } from '@/components/blog/PostPreviewCard';
+import { BlogLayout } from '@/components/blog/BlogLayout';
+import { AnimatedBlogCard } from '@/components/blog/AnimatedBlogCard';
 import { getBlogPosts } from '@/lib/content';
 
 export const metadata: Metadata = {
@@ -34,9 +29,8 @@ export default function BlogListingPage() {
   const posts = getBlogPosts();
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <BlogLayout>
+      <div className="max-w-4xl mx-auto">
         {/* Page title and description */}
         <div className="mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -48,11 +42,11 @@ export default function BlogListingPage() {
           </p>
         </div>
 
-        {/* Blog posts grid or empty state */}
+        {/* Blog posts with scroll-in animations */}
         {posts.length > 0 ? (
           <div className="flex flex-col gap-6">
-            {posts.map((post) => (
-              <PostPreviewCard key={post.slug} post={post} />
+            {posts.map((post, index) => (
+              <AnimatedBlogCard key={post.slug} post={post} index={index} />
             ))}
           </div>
         ) : (
@@ -62,7 +56,7 @@ export default function BlogListingPage() {
             </p>
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </BlogLayout>
   );
 }

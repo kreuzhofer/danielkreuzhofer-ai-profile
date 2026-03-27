@@ -2,16 +2,8 @@
  * Individual Blog Post Page
  *
  * Server component that displays a single blog post by slug.
- * Uses PageHeader for consistent navigation and renders MDX body content
- * with readable prose typography.
- *
- * Features:
- * - Loads a single blog post via getBlogPost(slug)
- * - Returns 404 via notFound() if slug doesn't match any post
- * - Renders post title, formatted date, tags, and MDX body content
- * - Includes back link to /blog listing
- * - Uses generateStaticParams() for static generation of all post slugs
- * - Prose typography styles for readable long-form content
+ * Uses BlogLayout for consistent navigation with the main page (header, nav,
+ * scroll progress, footer). Content is centered with max-w-4xl.
  *
  * @see Requirements 3.1, 3.2, 3.3, 3.4, 3.5
  */
@@ -21,13 +13,12 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { PageHeader } from '@/components/PageHeader';
+import { BlogLayout } from '@/components/blog/BlogLayout';
 import { getBlogPost, getBlogPosts } from '@/lib/content';
 import { formatBlogDate } from '@/components/blog/PostPreviewCard';
 
 /**
  * Generate static params for all blog post slugs.
- * Enables static generation of all blog post pages at build time.
  */
 export function generateStaticParams() {
   const posts = getBlogPosts();
@@ -68,9 +59,6 @@ export async function generateMetadata({
 
 /**
  * BlogPostPage component
- *
- * Renders a full blog post with metadata header and MDX body content.
- * Calls notFound() if the slug doesn't match any post (Requirement 3.4).
  */
 export default async function BlogPostPage({
   params,
@@ -80,27 +68,25 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const post = getBlogPost(slug);
 
-  // Return 404 if slug doesn't match any post (Requirement 3.4)
   if (!post) {
     notFound();
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Back link to blog listing (Requirement 3.3) */}
+    <BlogLayout>
+      <div className="max-w-4xl mx-auto">
+        {/* Back link to blog listing */}
         <div className="mb-8">
           <Link
             href="/blog"
-            className="text-sm text-[var(--foreground-muted)] hover:text-[var(--primary-600)] transition-colors"
+            className="text-sm text-[var(--foreground-muted)] hover:text-[var(--primary-400)] transition-colors"
           >
             ← Back to Blog
           </Link>
         </div>
 
-        {/* Post metadata: title, date, tags (Requirement 3.2) */}
-        <header className="mb-10 max-w-prose">
+        {/* Post metadata: title, date, tags */}
+        <header className="mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
             {post.title}
           </h1>
@@ -126,7 +112,7 @@ export default async function BlogPostPage({
 
         {/* LinkedIn badge if linkedinUrl is present */}
         {post.linkedinUrl && (
-          <div className="max-w-prose mb-8">
+          <div className="mb-8">
             <a
               href={post.linkedinUrl}
               target="_blank"
@@ -141,8 +127,8 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* MDX body content with prose typography (Requirements 3.1, 3.5) */}
-        <article className="max-w-prose blog-prose">
+        {/* MDX body content with prose typography */}
+        <article className="blog-prose">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -268,7 +254,7 @@ export default async function BlogPostPage({
             {post.content}
           </ReactMarkdown>
         </article>
-      </main>
-    </div>
+      </div>
+    </BlogLayout>
   );
 }
