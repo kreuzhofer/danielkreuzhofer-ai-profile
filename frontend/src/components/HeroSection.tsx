@@ -4,6 +4,7 @@ import React from 'react';
 import { useReducedMotion } from '@/hooks';
 import { useChat } from '@/context/ChatContext';
 import { Button } from './ui/Button';
+import { ParticleConstellation } from './ParticleConstellation';
 
 /**
  * Chat bubble icon component - matches the floating chat button icon
@@ -113,12 +114,11 @@ export function HeroSection({
       `}
       aria-label="Hero section"
     >
-      {/* Animated gradient overlay (subtle) */}
+      {/* Particle constellation background */}
       {!prefersReducedMotion && (
-        <div
-          className="absolute inset-0 opacity-30 pointer-events-none animate-gradient-shift"
-          aria-hidden="true"
-        />
+        <div className="absolute inset-0 opacity-100 pointer-events-auto" aria-hidden="true">
+          <ParticleConstellation />
+        </div>
       )}
 
       {/* Content container - centered with flex-grow to push scroll indicator down */}
