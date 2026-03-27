@@ -1,0 +1,54 @@
+---
+id: "nebius-slurm-ml-demo"
+title: "Distributed ML Training & Inference on GPU Clusters"
+description: "End-to-end demo of fine-tuning and serving LLMs (Qwen3-8B to 235B) on a 16x H100 GPU cluster using Slurm, PyTorch FSDP, LoRA, vLLM, and Ray."
+technologies:
+  - "Slurm"
+  - "Ray"
+  - "vLLM"
+  - "PyTorch FSDP"
+  - "LoRA/PEFT"
+  - "HuggingFace"
+  - "Terraform"
+  - "Nebius Cloud"
+  - "H100 GPUs"
+order: 2
+links:
+  - type: "github"
+    url: "https://github.com/kreuzhofer/nebius-slurm-ml-training-and-inference-demo"
+    label: "View on GitHub"
+createdAt: "2025-06-01T00:00:00.000Z"
+updatedAt: "2026-03-01T00:00:00.000Z"
+depth:
+  problem: "Enterprises need practical guidance on distributed LLM fine-tuning and inference at scale. Setting up multi-node GPU training with Slurm, FSDP, and multi-node inference with vLLM + Ray involves significant operational complexity around GPU communication, memory management, and job orchestration."
+  approach: "Built a production-grade demo on Nebius Cloud with 2 worker nodes (16x H100 80GB GPUs). Fine-tuned Qwen3-8B (full SFT), Qwen3-32B (LoRA), and served Qwen3-235B-A22B across all 16 GPUs using tensor parallelism within nodes (NVLink) and pipeline parallelism across nodes (InfiniBand + GPUDirect RDMA). Infrastructure provisioned with Terraform using Nebius Soperator (Slurm-on-Kubernetes)."
+  tradeoffs:
+    - decision: "Full fine-tuning vs LoRA for 32B model"
+      alternatives:
+        - "Full SFT (all parameters)"
+        - "LoRA with 1% of parameters"
+      reasoning: "Full fine-tuning of 32B OOMs even on 16x H100s due to optimizer state memory. LoRA achieves 84% accuracy (vs 88% for full SFT on 8B) while training only ~1% of parameters and saving ~20GB GPU memory per rank."
+    - decision: "Parallelism strategy for 235B model"
+      alternatives:
+        - "Tensor parallelism only (single node)"
+        - "TP=8 within node + PP=2 across nodes"
+      reasoning: "235B model (470GB weights) exceeds single-node memory. TP=8 keeps all-reduce on fast NVLink (~900GB/s), PP=2 uses InfiniBand for cross-node communication (~400Gb/s), minimizing slower inter-node traffic."
+    - decision: "Local SSD vs shared NFS for checkpoints"
+      alternatives:
+        - "Shared NFS for all I/O"
+        - "Local SSD for checkpoints and caches"
+      reasoning: "Local SSD delivered 38% faster checkpoint I/O and eliminated Triton kernel cache race conditions that occurred on shared NFS."
+  outcomes:
+    - metric: "Accuracy improvement (8B)"
+      value: "2% → 88%"
+      context: "Qwen3-8B SQL generation accuracy after 1 epoch of training (13 minutes on 16 GPUs)"
+    - metric: "Training throughput"
+      value: "93.5 samples/sec"
+      context: "Across 16 H100 GPUs with >80% utilization during distributed training"
+    - metric: "LoRA efficiency (32B)"
+      value: "84% accuracy with 1% params"
+      context: "Qwen3-32B LoRA fine-tuning achieving near full-SFT quality at fraction of compute"
+  reflections: "The biggest lessons were operational: FSDP dataset race conditions on shared NFS, all-gather timeouts on model save, Ray link-local IP filtering, and Slurm task slot exhaustion. These are the real-world issues that matter when moving from single-GPU experiments to multi-node production. The demo provides a reproducible reference for anyone facing these challenges."
+---
+
+{/* Additional project content */}

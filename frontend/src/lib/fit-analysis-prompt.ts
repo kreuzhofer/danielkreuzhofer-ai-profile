@@ -48,6 +48,7 @@ ANALYSIS RULES:
 3. Identify gaps honestly - it's okay to say "{ownerFirstName} may not be the right fit"
 4. Consider both technical skills and domain experience
 5. Weight recent experience more heavily than older experience
+6. Job descriptions often contain typos or informal names for tools. When you encounter a term that closely resembles a well-known tool (e.g., "Cloud Code" likely means "Claude Code", "Chat GPT" means "ChatGPT"), interpret charitably and match against the candidate's actual experience with the likely intended tool. Note the probable typo in your analysis.
 
 CONTEXT ({ownerFirstName}'s Background):
 {context}
