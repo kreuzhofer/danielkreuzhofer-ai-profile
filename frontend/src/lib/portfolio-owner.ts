@@ -12,7 +12,7 @@ export const PORTFOLIO_OWNER = {
   /** First name (for casual references) */
   firstName: 'Daniel',
   /** Professional title / role */
-  role: 'Senior Solutions Architect',
+  role: 'Senior AI Solutions Architect',
   /** Current employer */
   employer: 'Amazon Web Services',
 } as const;
