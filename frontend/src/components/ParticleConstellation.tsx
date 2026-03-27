@@ -11,16 +11,20 @@ interface Particle {
   opacity: number;
 }
 
-const PARTICLE_COUNT = 60;
 const CONNECTION_DISTANCE = 150;
 const PARTICLE_SPEED = 0.3;
 const BASE_OPACITY = 0.15;
+
+function getParticleCount() {
+  if (typeof window === 'undefined') return 40;
+  return window.innerWidth < 768 ? 30 : 60;
+}
 
 export function ParticleConstellation() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number>(0);
-  const mouseRef = useRef({ x: -1000, y: -1000 });
+  const pointerRef = useRef({ x: -1000, y: -1000 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,7 +43,8 @@ export function ParticleConstellation() {
 
     const initParticles = () => {
       const rect = canvas.getBoundingClientRect();
-      particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => ({
+      const count = getParticleCount();
+      particlesRef.current = Array.from({ length: count }, () => ({
         x: Math.random() * rect.width,
         y: Math.random() * rect.height,
         vx: (Math.random() - 0.5) * PARTICLE_SPEED,
@@ -57,14 +62,13 @@ export function ParticleConstellation() {
       ctx.clearRect(0, 0, w, h);
 
       const particles = particlesRef.current;
-      const mouse = mouseRef.current;
+      const pointer = pointerRef.current;
 
       // Update positions
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
 
-        // Wrap around edges
         if (p.x < 0) p.x = w;
         if (p.x > w) p.x = 0;
         if (p.y < 0) p.y = h;
@@ -89,9 +93,9 @@ export function ParticleConstellation() {
           }
         }
 
-        // Mouse proximity — brighter connections near cursor
-        const mdx = particles[i].x - mouse.x;
-        const mdy = particles[i].y - mouse.y;
+        // Pointer proximity — brighter connections near cursor/touch
+        const mdx = particles[i].x - pointer.x;
+        const mdy = particles[i].y - pointer.y;
         const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
         if (mDist < 200) {
           const alpha = (1 - mDist / 200) * 0.25;
@@ -99,7 +103,7 @@ export function ParticleConstellation() {
           ctx.lineWidth = 0.8;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(mouse.x, mouse.y);
+          ctx.lineTo(pointer.x, pointer.y);
           ctx.stroke();
         }
       }
@@ -115,34 +119,45 @@ export function ParticleConstellation() {
       animationRef.current = requestAnimationFrame(draw);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const updatePointer = (clientX: number, clientY: number) => {
       const rect = canvas.getBoundingClientRect();
-      mouseRef.current = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
+      pointerRef.current = {
+        x: clientX - rect.left,
+        y: clientY - rect.top,
       };
     };
 
-    const handleMouseLeave = () => {
-      mouseRef.current = { x: -1000, y: -1000 };
+    const handleMouseMove = (e: MouseEvent) => updatePointer(e.clientX, e.clientY);
+    const handleMouseLeave = () => { pointerRef.current = { x: -1000, y: -1000 }; };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+    const handleTouchEnd = () => { pointerRef.current = { x: -1000, y: -1000 }; };
+
+    const handleResize = () => {
+      resize();
+      initParticles();
     };
 
     resize();
     initParticles();
     draw();
 
-    window.addEventListener('resize', () => {
-      resize();
-      initParticles();
-    });
+    window.addEventListener('resize', handleResize);
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseleave', handleMouseLeave);
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: true });
+    canvas.addEventListener('touchend', handleTouchEnd);
 
     return () => {
       cancelAnimationFrame(animationRef.current);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
     };
   }, []);
 

@@ -77,7 +77,7 @@ export default async function BlogPostPage({
       {/* Hero banner — full bleed with title overlay */}
       {post.headerImage && (
         <div className="relative -mx-4 sm:-mx-6 lg:-mx-8 mb-10 overflow-hidden rounded-b-2xl">
-          <div className="relative aspect-[21/9] md:aspect-[3/1]">
+          <div className="relative aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9] lg:aspect-[3/1]">
             <img
               src={post.headerImage}
               alt=""
