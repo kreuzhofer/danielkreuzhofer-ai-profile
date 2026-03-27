@@ -74,57 +74,122 @@ export default async function BlogPostPage({
 
   return (
     <BlogLayout>
-      <div className="max-w-4xl mx-auto">
-        {/* Back link to blog listing */}
-        <div className="mb-8">
-          <Link
-            href="/blog"
-            className="text-sm text-[var(--foreground-muted)] hover:text-[var(--primary-400)] transition-colors"
-          >
-            ← Back to Blog
-          </Link>
-        </div>
-
-        {/* Post metadata: title, date, tags */}
-        <header className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-            {post.title}
-          </h1>
-          <time
-            dateTime={post.date}
-            className="text-sm text-[var(--foreground-muted)]"
-          >
-            {formatBlogDate(post.date)}
-          </time>
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-4">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--primary-900)] text-[var(--primary-300)]"
+      {/* Hero banner — full bleed with title overlay */}
+      {post.headerImage && (
+        <div className="relative -mx-4 sm:-mx-6 lg:-mx-8 mb-10 overflow-hidden rounded-b-2xl">
+          <div className="relative aspect-[21/9] md:aspect-[3/1]">
+            <img
+              src={post.headerImage}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            {/* Content overlay */}
+            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10 lg:p-14">
+              <div className="max-w-4xl mx-auto w-full">
+                <Link
+                  href="/blog"
+                  className="text-sm text-white/70 hover:text-white transition-colors mb-4 inline-block"
                 >
-                  {tag}
-                </span>
-              ))}
+                  ← Back to Blog
+                </Link>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 drop-shadow-lg">
+                  {post.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-3">
+                  <time
+                    dateTime={post.date}
+                    className="text-sm text-white/80"
+                  >
+                    {formatBlogDate(post.date)}
+                  </time>
+                  {post.linkedinUrl && (
+                    <>
+                      <span className="text-white/40">·</span>
+                      <a
+                        href={post.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm text-white/80 hover:text-white transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                        </svg>
+                        Read on LinkedIn
+                      </a>
+                    </>
+                  )}
+                </div>
+                {post.tags && post.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/15 text-white/90 backdrop-blur-sm"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </header>
-
-        {/* LinkedIn badge if linkedinUrl is present */}
-        {post.linkedinUrl && (
-          <div className="mb-8">
-            <a
-              href={post.linkedinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#0A66C2] hover:bg-[#004182] text-white text-sm font-medium transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-              </svg>
-              Read on LinkedIn
-            </a>
           </div>
+        </div>
+      )}
+
+      <div className="max-w-4xl mx-auto">
+        {/* Fallback header when no hero image */}
+        {!post.headerImage && (
+          <>
+            <div className="mb-8">
+              <Link
+                href="/blog"
+                className="text-sm text-[var(--foreground-muted)] hover:text-[var(--primary-400)] transition-colors"
+              >
+                ← Back to Blog
+              </Link>
+            </div>
+            <header className="mb-10">
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+                {post.title}
+              </h1>
+              <time
+                dateTime={post.date}
+                className="text-sm text-[var(--foreground-muted)]"
+              >
+                {formatBlogDate(post.date)}
+              </time>
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {post.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--primary-900)] text-[var(--primary-300)]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </header>
+            {post.linkedinUrl && (
+              <div className="mb-8">
+                <a
+                  href={post.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#0A66C2] hover:bg-[#004182] text-white text-sm font-medium transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  </svg>
+                  Read on LinkedIn
+                </a>
+              </div>
+            )}
+          </>
         )}
 
         {/* MDX body content with prose typography */}

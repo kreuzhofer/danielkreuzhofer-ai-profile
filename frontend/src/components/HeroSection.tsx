@@ -32,7 +32,8 @@ function ChatIcon({ className = '' }: { className?: string }) {
  */
 const HERO_TAGS = [
   'AWS',
-  'Microsoft',
+  'GenAI',
+  'LLM Agents',
   'Founder',
 ];
 
