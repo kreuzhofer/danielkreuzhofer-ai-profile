@@ -167,7 +167,7 @@ describe("fit-analysis-prompt", () => {
       expect(prompt).not.toContain("{ownerRole}");
       expect(prompt).not.toContain("{ownerEmployer}");
       expect(prompt).toContain("Daniel Kreuzhofer");
-      expect(prompt).toContain("Senior Solutions Architect");
+      expect(prompt).toContain("Senior AI Solutions Architect");
       expect(prompt).toContain("Amazon Web Services");
     });
 

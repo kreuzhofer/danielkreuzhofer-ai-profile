@@ -61,7 +61,7 @@ describe('loadAllContent', () => {
         (exp) => exp.id === 'aws-current'
       );
       expect(awsCurrent).toBeDefined();
-      expect(awsCurrent?.role).toBe('Senior Solutions Architect');
+      expect(awsCurrent?.role).toBe('Senior AI Solutions Architect');
       expect(awsCurrent?.company).toBe('Amazon Web Services (AWS)');
     });
   });
