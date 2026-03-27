@@ -17,3 +17,6 @@ Thumbs.db
 *.log
 .DS_Store
 .DS_Store
+
+# Claude Code local settings (keep skills tracked)
+.claude/settings.local.json
