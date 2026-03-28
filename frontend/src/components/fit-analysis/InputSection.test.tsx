@@ -117,19 +117,19 @@ describe('InputSection', () => {
     });
 
     it('shows warning color when near limit (>90%)', () => {
-      const nearLimitValue = 'a'.repeat(4600); // 92% of 5000
-      renderInputSection({ value: nearLimitValue, maxLength: 5000 });
+      const nearLimitValue = 'a'.repeat(9100); // 91% of 10000
+      renderInputSection({ value: nearLimitValue });
 
       const charCount = screen.getByTestId('character-count');
-      expect(charCount).toHaveClass('text-yellow-600');
+      expect(charCount.className).toContain('var(--warning)');
     });
 
     it('shows error color when over limit', () => {
-      const overLimitValue = 'a'.repeat(5100);
-      renderInputSection({ value: overLimitValue, maxLength: 5000 });
+      const overLimitValue = 'a'.repeat(10100);
+      renderInputSection({ value: overLimitValue });
 
       const charCount = screen.getByTestId('character-count');
-      expect(charCount).toHaveClass('text-red-600');
+      expect(charCount.className).toContain('var(--error)');
     });
   });
 
@@ -180,8 +180,8 @@ describe('InputSection', () => {
     });
 
     it('shows error message for input exceeding max length', () => {
-      const tooLongValue = 'a'.repeat(5001);
-      renderInputSection({ value: tooLongValue, maxLength: 5000 });
+      const tooLongValue = 'a'.repeat(10001);
+      renderInputSection({ value: tooLongValue });
 
       const errorMessage = screen.getByTestId('validation-error');
       expect(errorMessage).toBeInTheDocument();
@@ -230,8 +230,8 @@ describe('InputSection', () => {
     });
 
     it('disables submit button when input exceeds max length', () => {
-      const tooLongValue = 'a'.repeat(5001);
-      renderInputSection({ value: tooLongValue, maxLength: 5000 });
+      const tooLongValue = 'a'.repeat(10001);
+      renderInputSection({ value: tooLongValue });
 
       const submitButton = screen.getByTestId('submit-button');
       expect(submitButton).toBeDisabled();
@@ -322,8 +322,8 @@ describe('InputSection', () => {
 
     it('does not call onSubmit when input exceeds max length', async () => {
       const onSubmit = jest.fn();
-      const tooLongValue = 'a'.repeat(5001);
-      renderInputSection({ value: tooLongValue, maxLength: 5000, onSubmit });
+      const tooLongValue = 'a'.repeat(10001);
+      renderInputSection({ value: tooLongValue, onSubmit });
 
       const submitButton = screen.getByTestId('submit-button');
       await userEvent.click(submitButton);
@@ -477,18 +477,18 @@ describe('InputSection', () => {
       expect(screen.getByTestId('validation-warning')).toBeInTheDocument();
     });
 
-    it('handles exactly 5000 characters (valid)', () => {
-      const exactlyMax = 'a'.repeat(5000);
-      renderInputSection({ value: exactlyMax, maxLength: 5000 });
+    it('handles exactly 10000 characters (valid)', () => {
+      const exactlyMax = 'a'.repeat(10000);
+      renderInputSection({ value: exactlyMax });
 
       expect(screen.queryByTestId('validation-error')).not.toBeInTheDocument();
       const submitButton = screen.getByTestId('submit-button');
       expect(submitButton).not.toBeDisabled();
     });
 
-    it('handles exactly 5001 characters (invalid)', () => {
-      const overMax = 'a'.repeat(5001);
-      renderInputSection({ value: overMax, maxLength: 5000 });
+    it('handles exactly 10001 characters (invalid)', () => {
+      const overMax = 'a'.repeat(10001);
+      renderInputSection({ value: overMax });
 
       expect(screen.getByTestId('validation-error')).toBeInTheDocument();
       const submitButton = screen.getByTestId('submit-button');
