@@ -90,6 +90,7 @@ export const FitAnalysisModule: React.FC<FitAnalysisModuleProps> = ({
           <ResultsSection
             assessment={currentResult}
             onNewAnalysis={handleNewAnalysis}
+            jobDescriptionFull={jobDescription}
           />
         )}
 
