@@ -10,7 +10,7 @@
 import { Metadata } from 'next';
 import { FitAnalysisProvider } from '@/context/FitAnalysisContext';
 import { FitAnalysisModule } from '@/components/fit-analysis/FitAnalysisModule';
-import { PageHeader } from '@/components/PageHeader';
+import { BlogLayout } from '@/components/blog/BlogLayout';
 
 export const metadata: Metadata = {
   title: 'Fit Analysis | Daniel Kreuzhofer',
@@ -27,12 +27,9 @@ export const metadata: Metadata = {
 export default function FitAnalysisPage() {
   return (
     <FitAnalysisProvider>
-      <div className="min-h-screen bg-background">
-        <PageHeader />
-        <main>
-          <FitAnalysisModule />
-        </main>
-      </div>
+      <BlogLayout currentSection="fit-analysis">
+        <FitAnalysisModule />
+      </BlogLayout>
     </FitAnalysisProvider>
   );
 }

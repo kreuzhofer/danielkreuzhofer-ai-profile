@@ -6,9 +6,10 @@ import { useScrollProgress, useReducedMotion } from '../../hooks';
 
 interface BlogLayoutProps {
   children: React.ReactNode;
+  currentSection?: string;
 }
 
-export function BlogLayout({ children }: BlogLayoutProps) {
+export function BlogLayout({ children, currentSection = 'blog' }: BlogLayoutProps) {
   const { progress } = useScrollProgress();
   const prefersReducedMotion = useReducedMotion();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -63,7 +64,7 @@ export function BlogLayout({ children }: BlogLayoutProps) {
 
             <Navigation
               sections={DEFAULT_SECTIONS}
-              currentSection="blog"
+              currentSection={currentSection}
               onNavigate={handleNavigate}
             />
 
@@ -79,7 +80,7 @@ export function BlogLayout({ children }: BlogLayoutProps) {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         sections={DEFAULT_SECTIONS}
-        currentSection="blog"
+        currentSection={currentSection}
         onNavigate={handleNavigate}
       />
 

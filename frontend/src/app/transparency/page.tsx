@@ -17,7 +17,7 @@
 import { Metadata } from 'next';
 import { TransparencyDashboardProvider } from '@/context/TransparencyDashboardContext';
 import { TransparencyDashboard } from './TransparencyDashboard';
-import { PageHeader } from '@/components/PageHeader';
+import { BlogLayout } from '@/components/blog/BlogLayout';
 import { loadSkills } from '@/lib/transparency-dashboard-loader';
 
 export const metadata: Metadata = {
@@ -38,12 +38,9 @@ export default function TransparencyDashboardPage() {
 
   return (
     <TransparencyDashboardProvider initialSkills={skills} initialGaps={gaps}>
-      <div className="min-h-screen bg-background">
-        <PageHeader />
-        <main>
-          <TransparencyDashboard />
-        </main>
-      </div>
+      <BlogLayout currentSection="transparency">
+        <TransparencyDashboard />
+      </BlogLayout>
     </TransparencyDashboardProvider>
   );
 }
