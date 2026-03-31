@@ -489,11 +489,16 @@ export function parseAnalysisResponse(
     const gaps = parseGaps(llmResponse.gaps, generateId);
     const recommendation = parseRecommendation(llmResponse.recommendation);
 
+    // Use AI-generated job title if available, fall back to truncated preview
+    const jobTitle = typeof llmResponse.job_title === 'string' && llmResponse.job_title.trim()
+      ? llmResponse.job_title.trim()
+      : generatePreview(options.jobDescription);
+
     // Step 4: Build MatchAssessment
     const assessment: MatchAssessment = {
       id: generateId(),
       timestamp: new Date(),
-      jobDescriptionPreview: generatePreview(options.jobDescription),
+      jobDescriptionPreview: jobTitle,
       confidenceScore: CONFIDENCE_MAP[confidence],
       alignmentAreas: alignments,
       gapAreas: gaps,

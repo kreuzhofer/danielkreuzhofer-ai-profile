@@ -60,6 +60,7 @@ RESPONSE FORMAT:
 Respond with raw JSON only. Do NOT wrap the response in markdown code fences, backticks, or any other formatting. Output must start with { and end with } — nothing else.
 
 {
+  "job_title": "concise job title extracted from the posting, e.g. 'Senior Software Engineer, Backend — Acme Corp'",
   "confidence": "strong" | "partial" | "limited",
   "alignments": [
     {

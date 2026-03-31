@@ -323,6 +323,7 @@ export interface AnalyzeResponse {
  * Internal LLM response structure before transformation
  */
 export interface LLMAnalysisResponse {
+  job_title?: string;
   confidence: 'strong' | 'partial' | 'limited';
   alignments: Array<{
     area: string;

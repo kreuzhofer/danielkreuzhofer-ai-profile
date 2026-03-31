@@ -173,21 +173,38 @@ describe('generateResultsPdf', () => {
 });
 
 describe('buildExportFilename', () => {
-  it('builds markdown filename by default', () => {
+  it('includes job title and candidate name in markdown filename', () => {
     const filename = buildExportFilename(makeAssessment());
-    expect(filename).toBe('fit-analysis-2026-03-27-strong-match.md');
+    expect(filename).toBe(
+      'Fit Analysis - We are looking for a senior engineer - Daniel Kreuzhofer.md'
+    );
   });
 
   it('builds pdf filename when specified', () => {
     const filename = buildExportFilename(makeAssessment(), 'pdf');
-    expect(filename).toBe('fit-analysis-2026-03-27-strong-match.pdf');
+    expect(filename).toContain('.pdf');
+    expect(filename).toContain('Daniel Kreuzhofer');
   });
 
-  it('converts underscores to hyphens in confidence', () => {
+  it('sanitizes special characters from job title', () => {
     const filename = buildExportFilename(
-      makeAssessment({ confidenceScore: 'partial_match' })
+      makeAssessment({
+        jobDescriptionPreview: 'Sr. Engineer (Backend) @ Acme/Corp!',
+      })
     );
-    expect(filename).toContain('partial-match');
+    expect(filename).toBe(
+      'Fit Analysis - Sr Engineer Backend AcmeCorp - Daniel Kreuzhofer.md'
+    );
+  });
+
+  it('truncates very long job titles', () => {
+    const filename = buildExportFilename(
+      makeAssessment({
+        jobDescriptionPreview: 'A'.repeat(200),
+      })
+    );
+    // Job title portion should be capped at 80 chars
+    expect(filename.length).toBeLessThan(200);
   });
 });
 

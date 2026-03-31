@@ -511,7 +511,35 @@ describe('parseAnalysisResponse - Recommendation', () => {
 // =============================================================================
 
 describe('parseAnalysisResponse - Job Description Preview', () => {
-  it('should generate preview from short job description', () => {
+  it('should use AI-generated job_title when present', () => {
+    const llmResponse = {
+      ...createValidLLMResponse(),
+      job_title: 'Senior Software Engineer, Backend — Acme Corp',
+    };
+    const options = createParseOptions();
+
+    const result = parseAnalysisResponse(JSON.stringify(llmResponse), options);
+
+    expect(result.success).toBe(true);
+    expect(result.assessment?.jobDescriptionPreview).toBe(
+      'Senior Software Engineer, Backend — Acme Corp'
+    );
+  });
+
+  it('should trim whitespace from job_title', () => {
+    const llmResponse = {
+      ...createValidLLMResponse(),
+      job_title: '  ML Engineer at StartupCo  ',
+    };
+    const options = createParseOptions();
+
+    const result = parseAnalysisResponse(JSON.stringify(llmResponse), options);
+
+    expect(result.success).toBe(true);
+    expect(result.assessment?.jobDescriptionPreview).toBe('ML Engineer at StartupCo');
+  });
+
+  it('should fall back to truncated preview when job_title is missing', () => {
     const options = createParseOptions({
       jobDescription: 'Short description',
     });
@@ -525,7 +553,19 @@ describe('parseAnalysisResponse - Job Description Preview', () => {
     expect(result.assessment?.jobDescriptionPreview).toBe('Short description');
   });
 
-  it('should truncate long job descriptions to 100 characters', () => {
+  it('should fall back to truncated preview when job_title is empty', () => {
+    const llmResponse = { ...createValidLLMResponse(), job_title: '   ' };
+    const options = createParseOptions({
+      jobDescription: 'Fallback description',
+    });
+
+    const result = parseAnalysisResponse(JSON.stringify(llmResponse), options);
+
+    expect(result.success).toBe(true);
+    expect(result.assessment?.jobDescriptionPreview).toBe('Fallback description');
+  });
+
+  it('should truncate long job descriptions to 100 characters when no job_title', () => {
     const longDescription = 'A'.repeat(150);
     const options = createParseOptions({
       jobDescription: longDescription,
@@ -541,7 +581,7 @@ describe('parseAnalysisResponse - Job Description Preview', () => {
     expect(result.assessment?.jobDescriptionPreview?.endsWith('...')).toBe(true);
   });
 
-  it('should trim whitespace from job description', () => {
+  it('should trim whitespace from job description in fallback', () => {
     const options = createParseOptions({
       jobDescription: '  Trimmed description  ',
     });

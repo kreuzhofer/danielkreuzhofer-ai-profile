@@ -302,12 +302,21 @@ export function downloadAsFile(content: string, filename: string, mimeType: stri
 }
 
 /**
- * Build a filename for the download (without extension).
+ * Build a descriptive filename for the download.
+ * Format: "Fit Analysis - {Job Title} - {Candidate Name}.{ext}"
  */
 export function buildExportFilename(assessment: MatchAssessment, ext: string = 'md'): string {
-  const date = new Date(assessment.timestamp).toISOString().split('T')[0];
-  const confidence = assessment.confidenceScore.replace(/_/g, '-');
-  return `fit-analysis-${date}-${confidence}.${ext}`;
+  const jobTitle = slugify(assessment.jobDescriptionPreview);
+  const candidate = slugify(PORTFOLIO_OWNER.name);
+  return `Fit Analysis - ${jobTitle} - ${candidate}.${ext}`;
+}
+
+function slugify(text: string): string {
+  return text
+    .replace(/[^\w\s\-—]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .substring(0, 80);
 }
 
 function capitalize(s: string): string {
