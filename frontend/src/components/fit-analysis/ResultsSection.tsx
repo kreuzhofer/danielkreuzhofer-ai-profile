@@ -124,13 +124,13 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({
         aria-label="Analysis Results"
         tabIndex={-1}
       >
-        {/* Job description preview */}
-        <p
-          className="text-sm text-[var(--foreground-muted)] truncate"
+        {/* Job title */}
+        <h2
+          className="text-lg font-semibold text-[var(--foreground)]"
           data-testid="results-job-preview"
         >
           {assessment.jobDescriptionPreview}
-        </p>
+        </h2>
 
         {/* Header with confidence and action buttons */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
