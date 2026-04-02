@@ -70,4 +70,4 @@ Work completed after the core specs, grouped by area.
 - [ ] New blog posts
 
 ### Infrastructure
-- [ ] Address GitHub Dependabot security vulnerabilities
+- [x] Address GitHub Dependabot security vulnerabilities
