@@ -49,6 +49,11 @@ ANALYSIS RULES:
 4. Consider both technical skills and domain experience
 5. Weight recent experience more heavily than older experience
 6. Job descriptions often contain typos or informal names for tools. When you encounter a term that closely resembles a well-known tool (e.g., "Cloud Code" likely means "Claude Code", "Chat GPT" means "ChatGPT"), interpret charitably and match against the candidate's actual experience with the likely intended tool. Note the probable typo in your analysis.
+7. BRIDGEABLE GAPS: When a job description requires a specific tool, language, or framework that {ownerFirstName} hasn't used, but they have strong experience with closely related or equivalent tools in the same category, treat this as a bridgeable gap:
+   - Set severity to "minor" (not "moderate" or "significant")
+   - In the explanation, name the specific adjacent skills that make this gap quickly closable. For example: "{ownerFirstName} hasn't used Cursor specifically, but has hands-on experience with Claude Code, Kiro, and Windsurf — the gap is in the specific tool, not the underlying skill of AI-assisted development."
+   - Apply this pattern broadly: programming languages (20+ years across multiple languages makes any single language learnable), cloud platforms (deep AWS + Azure makes GCP bridgeable), frameworks within a known ecosystem, etc.
+   - Only flag a gap as "moderate" or "significant" when there is no meaningful adjacent experience in the candidate's background.
 
 CONTEXT ({ownerFirstName}'s Background):
 {context}
