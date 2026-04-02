@@ -18,7 +18,7 @@ import { useChat } from '@/context/ChatContext';
 import { ChatTriggerButton } from './ChatTriggerButton';
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
-import { generateFollowUpSuggestions } from '@/lib/chat-suggestions';
+import { fetchFollowUpSuggestions } from '@/lib/chat-suggestions';
 
 /**
  * Inner component that uses the chat context
@@ -165,11 +165,15 @@ function ChatPanelWithContent({
     // Only generate suggestions after an assistant message completes
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role === 'assistant' && lastMessage?.status === 'complete') {
-      const suggestions = generateFollowUpSuggestions(
-        messages.map(m => ({ role: m.role, content: m.content })),
-        3
-      );
-      setFollowUpSuggestions(suggestions);
+      let cancelled = false;
+      fetchFollowUpSuggestions(
+        messages.map(m => ({ role: m.role, content: m.content }))
+      ).then(suggestions => {
+        if (!cancelled) {
+          setFollowUpSuggestions(suggestions);
+        }
+      });
+      return () => { cancelled = true; };
     } else if (isLoading) {
       // Clear suggestions while loading
       setFollowUpSuggestions([]);

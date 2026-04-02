@@ -37,11 +37,18 @@ export const CHAT_GUARDRAIL_CONFIG: GuardrailConfig = {
       'technical decisions',
       'general greetings',
       'contact information',
+      'leadership and team management',
+      'AI and GenAI implementation',
+      'cloud architecture and migrations',
+      'entrepreneurship and side ventures',
+      'industry-specific experience',
+      'AI-assisted development and tooling',
+      'personal motivation and working style',
     ],
     description:
-      `Questions about ${PORTFOLIO_OWNER.name}'s professional background, experience, skills, and projects`,
+      `Questions about ${PORTFOLIO_OWNER.name}'s professional background, experience, skills, projects, leadership, AI expertise, and entrepreneurial ventures`,
   },
-  blockThreshold: 0.8,
+  blockThreshold: 0.9,
   validateOutput: true,
 };
 
