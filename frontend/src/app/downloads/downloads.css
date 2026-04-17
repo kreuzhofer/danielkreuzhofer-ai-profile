@@ -1,0 +1,201 @@
+/*
+  Downloads route: clean, PDF-style document layout.
+  Overrides the site's dark theme with a neutral black-on-white design
+  suitable for reading, printing, and saving as PDF.
+*/
+
+.downloads-page {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #111111;
+  padding: 3rem 1rem 4rem;
+}
+
+.downloads-container {
+  max-width: 48rem;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #111111;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.downloads-container h1 {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0 0 1.25rem;
+  color: #000000;
+  border-bottom: 2px solid #111111;
+  padding-bottom: 0.75rem;
+}
+
+.downloads-container h2 {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1.4rem;
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 2.5rem 0 0.75rem;
+  color: #000000;
+}
+
+.downloads-container h3 {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  font-weight: 600;
+  margin: 1.75rem 0 0.5rem;
+  color: #000000;
+}
+
+.downloads-container p {
+  margin: 0 0 1rem;
+}
+
+.downloads-container ul,
+.downloads-container ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.downloads-container li {
+  margin-bottom: 0.35rem;
+}
+
+.downloads-container strong {
+  color: #000000;
+  font-weight: 700;
+}
+
+.downloads-container em {
+  font-style: italic;
+  color: #333333;
+}
+
+.downloads-container a {
+  color: #0a558c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.downloads-container a:hover {
+  color: #073a63;
+}
+
+.downloads-container hr {
+  border: none;
+  border-top: 1px solid #cccccc;
+  margin: 2rem 0;
+}
+
+.downloads-container blockquote {
+  border-left: 3px solid #555555;
+  padding-left: 1rem;
+  margin: 1.25rem 0;
+  color: #444444;
+  font-style: italic;
+}
+
+.downloads-container code {
+  background: #f3f3f3;
+  color: #111111;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-family: "Geist Mono", "SF Mono", Menlo, monospace;
+  font-size: 0.9em;
+}
+
+.downloads-container pre {
+  background: #f3f3f3;
+  color: #111111;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-family: "Geist Mono", "SF Mono", Menlo, monospace;
+  font-size: 0.85rem;
+}
+
+/* Tables, PDF-style */
+.downloads-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9rem;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.downloads-container th,
+.downloads-container td {
+  border: 1px solid #bbbbbb;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.downloads-container th {
+  background: #f3f3f3;
+  font-weight: 700;
+  color: #000000;
+}
+
+.downloads-container tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+/* GitHub-flavored task list checkboxes */
+.downloads-container input[type="checkbox"] {
+  margin-right: 0.5rem;
+  transform: translateY(1px);
+}
+
+.downloads-container ul:has(> li > input[type="checkbox"]),
+.downloads-container ol:has(> li > input[type="checkbox"]) {
+  list-style: none;
+  padding-left: 0.25rem;
+}
+
+.downloads-container li:has(> input[type="checkbox"]) {
+  margin-bottom: 0.5rem;
+}
+
+/* Print styles: true PDF-like rendering when printed */
+@media print {
+  .downloads-page {
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .downloads-container {
+    max-width: none;
+    font-size: 11pt;
+  }
+
+  .downloads-container h1 {
+    font-size: 20pt;
+  }
+
+  .downloads-container h2 {
+    font-size: 14pt;
+    page-break-after: avoid;
+  }
+
+  .downloads-container h3 {
+    font-size: 12pt;
+    page-break-after: avoid;
+  }
+
+  .downloads-container table,
+  .downloads-container tr,
+  .downloads-container td,
+  .downloads-container th {
+    page-break-inside: avoid;
+  }
+
+  .downloads-container a {
+    color: #000000;
+    text-decoration: none;
+  }
+}
