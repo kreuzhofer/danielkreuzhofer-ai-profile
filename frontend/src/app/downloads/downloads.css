@@ -8,12 +8,101 @@
   min-height: 100vh;
   background: #ffffff;
   color: #111111;
-  padding: 3rem 1rem 4rem;
+  padding: 0 0 4rem;
+}
+
+/* Sticky header — unified branding across all /downloads/* pages */
+.downloads-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+  margin-bottom: 2.5rem;
+}
+
+.downloads-header-inner {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.downloads-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.downloads-brand-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #000000;
+  letter-spacing: -0.01em;
+}
+
+.downloads-brand-author {
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: #555555;
+  margin-top: 2px;
+}
+
+.downloads-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #111111;
+  color: #ffffff;
+  border: 1px solid #111111;
+  padding: 0.55rem 0.9rem;
+  border-radius: 6px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.downloads-download-btn:hover {
+  background: #333333;
+  border-color: #333333;
+}
+
+.downloads-download-btn:focus-visible {
+  outline: 2px solid #0a558c;
+  outline-offset: 2px;
+}
+
+.downloads-download-btn svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .downloads-header-inner {
+    padding: 0.75rem 0.75rem;
+  }
+
+  .downloads-download-btn span {
+    display: none;
+  }
+
+  .downloads-download-btn {
+    padding: 0.55rem 0.7rem;
+  }
 }
 
 .downloads-container {
   max-width: 48rem;
   margin: 0 auto;
+  padding: 0 1rem;
   background: #ffffff;
   color: #111111;
   font-family: Georgia, "Times New Roman", serif;
@@ -168,9 +257,14 @@
     background: #ffffff;
   }
 
+  .downloads-header {
+    display: none;
+  }
+
   .downloads-container {
     max-width: none;
     font-size: 11pt;
+    padding: 0;
   }
 
   .downloads-container h1 {
