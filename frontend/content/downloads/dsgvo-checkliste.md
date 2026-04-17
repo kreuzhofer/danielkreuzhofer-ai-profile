@@ -172,7 +172,9 @@ Maximale Kontrolle und Datensouveränität, aber deutlich mehr technischer Aufwa
 
 ## 9. Noch Fragen?
 
-Wenn Du Klarheit willst, wie Du KI-Tools rechtssicher und sinnvoll einsetzt, schau Dir meine weiteren Videos auf YouTube an. Oder schreib mir einen Kommentar unter dem Video.
+Wenn Du Klarheit willst, wie Du KI-Tools rechtssicher und sinnvoll einsetzt, schau Dir meine weiteren Videos auf meinem YouTube-Kanal an: [youtube.com/@DanielKreuzhofer](https://www.youtube.com/@DanielKreuzhofer)
+
+Oder schreib mir einen Kommentar unter dem Video.
 
 ---
 
