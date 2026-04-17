@@ -1,11 +1,9 @@
-export const metadata = {
-  title: 'DSGVO & KI-Tools Checkliste | Daniel Kreuzhofer',
-  description: 'Einordnung und Compliance-Checkliste zur DSGVO-konformen Nutzung von KI-Tools im Unternehmen (Stand April 2026).',
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+---
+title: "DSGVO & KI-Tools: Einordnung & Checkliste für Unternehmen"
+description: "Einordnung und Compliance-Checkliste zur DSGVO-konformen Nutzung von KI-Tools im Unternehmen (Stand April 2026)."
+version: "2.0"
+date: "2026-04-16"
+---
 
 # DSGVO & KI-Tools: Einordnung & Checkliste für Unternehmen
 
