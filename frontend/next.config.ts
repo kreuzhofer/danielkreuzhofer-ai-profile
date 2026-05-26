@@ -11,6 +11,15 @@ const nextConfig: NextConfig = {
   // Keep pdf-parse (and its pdfjs-dist dependency) as external Node.js modules
   // so the worker file is resolved from node_modules at runtime
   serverExternalPackages: ["pdf-parse"],
+
+  async headers() {
+    return [
+      {
+        source: "/downloads/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
