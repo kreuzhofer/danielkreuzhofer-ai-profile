@@ -72,11 +72,11 @@ const STORAGE_KEY = "engpass-check-state";
 export function EngpassCheck() {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
-  // Capture the trackmysales visitor id (?tid) on first mount so it survives the
-  // quiz and rides along with the opt-in submit (attribution back to the video).
-  const [tid, setTid] = useState<string | null>(null);
+  // Capture the trackmysales visitor id (?tid) into sessionStorage on landing so
+  // it survives the quiz; the opt-in reads it back at submit time. Side-effect
+  // only (no React state) — nothing in the tree depends on it during render.
   useEffect(() => {
-    setTid(captureTrackingId());
+    captureTrackingId();
   }, []);
 
   // Restore in-progress answers after mount (client-only → no hydration mismatch).
@@ -130,7 +130,6 @@ export function EngpassCheck() {
         {state.phase === "result" && (
           <Result
             answers={state.answers}
-            tid={tid}
             onBack={() => dispatch({ type: "back" })}
             onRestart={() => {
               // Pristine state isn't persisted, so clear the store explicitly
@@ -238,12 +237,10 @@ function Quiz({
 
 function Result({
   answers,
-  tid,
   onBack,
   onRestart,
 }: {
   answers: Answers;
-  tid: string | null;
   onBack: () => void;
   onRestart: () => void;
 }) {
@@ -267,7 +264,7 @@ function Result({
       </div>
 
       {/* Punkt 9: Opt-in */}
-      <OptIn answers={answers} tid={tid} />
+      <OptIn answers={answers} />
 
       {/* Punkt 10: Video-Verweis */}
       <VideoVerweis />
@@ -302,7 +299,7 @@ function VideoVerweis() {
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
-function OptIn({ answers, tid }: { answers: Answers; tid: string | null }) {
+function OptIn({ answers }: { answers: Answers }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<SubmitStatus>("idle");
 
@@ -310,6 +307,7 @@ function OptIn({ answers, tid }: { answers: Answers; tid: string | null }) {
     event.preventDefault();
     if (status === "submitting") return;
     setStatus("submitting");
+    const tid = captureTrackingId();
     try {
       const response = await fetch("/api/engpass-check", {
         method: "POST",
