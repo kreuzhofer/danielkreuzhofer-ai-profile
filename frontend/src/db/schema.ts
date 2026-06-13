@@ -37,6 +37,9 @@ export const submissions = pgTable(
     ipAtSubmit: text("ip_at_submit"),
     userAgent: text("user_agent"),
 
+    /** trackmysales visitor id captured from ?tid on landing (null if untracked). */
+    tid: text("tid"),
+
     cleverreachSynced: boolean("cleverreach_synced").notNull().default(false),
   },
   (t) => [
