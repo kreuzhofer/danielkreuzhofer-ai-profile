@@ -113,6 +113,17 @@ describe("POST /api/engpass-check", () => {
     expect(mail.confirmUrl).toContain("/engpass-check/bestaetigen");
   });
 
+  it("persists a valid tid from the body", async () => {
+    const res = await post({ email: "lead@firma.de", answers: validAnswers, tid: "vid_abc-123" });
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({ tid: "vid_abc-123" }));
+  });
+
+  it("stores tid as null when malformed", async () => {
+    await post({ email: "lead@firma.de", answers: validAnswers, tid: "bad tid!" });
+    expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({ tid: null }));
+  });
+
   it("returns 503 when SMTP is not configured (submission still stored)", async () => {
     mockSendDoi.mockRejectedValueOnce(new EmailNotConfiguredError());
     const res = await post({ email: "lead@firma.de", answers: validAnswers });

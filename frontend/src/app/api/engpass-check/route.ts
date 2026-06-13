@@ -22,10 +22,12 @@ import type { Answers } from "@/lib/engpass-check/types";
 const log = createLogger("EngpassCheckAPI");
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TID_RE = /^[A-Za-z0-9_-]{1,255}$/;
 
 interface SubmitBody {
   email: string;
   answers: Answers;
+  tid?: string;
 }
 
 function isValidBody(body: unknown): body is SubmitBody {
@@ -35,7 +37,8 @@ function isValidBody(body: unknown): body is SubmitBody {
     typeof b.email === "string" &&
     typeof b.answers === "object" &&
     b.answers !== null &&
-    !Array.isArray(b.answers)
+    !Array.isArray(b.answers) &&
+    (b.tid === undefined || typeof b.tid === "string")
   );
 }
 
@@ -77,6 +80,7 @@ export async function POST(request: NextRequest): Promise<Response> {
   const result = computeResult(body.answers);
   const doiToken = newToken();
   const reportToken = newToken();
+  const tid = typeof body.tid === "string" && TID_RE.test(body.tid) ? body.tid : null;
 
   try {
     await insertSubmission({
@@ -92,6 +96,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       reportToken,
       ipAtSubmit: clientIp(request),
       userAgent: request.headers.get("user-agent") ?? "",
+      tid,
     });
 
     await sendDoiConfirmation({
