@@ -41,7 +41,6 @@ services:
       - CLEVERREACH_CLIENT_ID=${CLEVERREACH_CLIENT_ID:-}
       - CLEVERREACH_CLIENT_SECRET=${CLEVERREACH_CLIENT_SECRET:-}
       - CLEVERREACH_GROUP_ID=${CLEVERREACH_GROUP_ID:-}
-      - CLEVERREACH_FORM_ID=${CLEVERREACH_FORM_ID:-}
     depends_on:
       postgres:
         condition: service_healthy
@@ -87,7 +86,6 @@ services:
       - CLEVERREACH_CLIENT_ID=${CLEVERREACH_CLIENT_ID:-}
       - CLEVERREACH_CLIENT_SECRET=${CLEVERREACH_CLIENT_SECRET:-}
       - CLEVERREACH_GROUP_ID=${CLEVERREACH_GROUP_ID:-}
-      - CLEVERREACH_FORM_ID=${CLEVERREACH_FORM_ID:-}
     depends_on:
       postgres:
         condition: service_healthy

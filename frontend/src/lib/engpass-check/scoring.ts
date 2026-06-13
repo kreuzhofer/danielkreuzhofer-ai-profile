@@ -8,7 +8,6 @@
  */
 
 import { QUESTIONS_BY_ID } from "./questions";
-import { BAND_COPY, TYP_COPY, WEG_COPY } from "./copy";
 import type { Answers, AnswerOption, Band, Dimension, EngpassResult, QuestionId, Weg } from "./types";
 
 const SCORE_QUESTIONS: QuestionId[] = ["S1", "S2", "S3", "S4", "S5", "S6"];
@@ -124,32 +123,5 @@ export function computeResult(answers: Answers): EngpassResult {
     typ,
     weg: computeWeg(answers, typ),
     qualified: isQualified(answers),
-  };
-}
-
-/** Human-readable label of the selected context answer (for CRM attributes). */
-function answerLabel(questionId: QuestionId, answers: Answers): string {
-  return selectedOption(questionId, answers)?.label ?? "";
-}
-
-/**
- * CleverReach attribute payload (06-quiz-spec.md §Qualifikations-Logik).
- * Values are human-readable so the delivery mail and CRM stay legible.
- */
-export function buildCleverReachAttributes(
-  answers: Answers,
-  result: EngpassResult,
-): Record<string, string> {
-  return {
-    ec_rolle: answerLabel("K1", answers),
-    ec_groesse: answerLabel("K2", answers),
-    ec_mandat: answerLabel("K3", answers),
-    ec_zeit: answerLabel("K5", answers),
-    ec_score: String(result.score),
-    ec_typ: TYP_COPY[result.typ].name,
-    ec_weg: WEG_COPY[result.weg].label,
-    ec_qualified: String(result.qualified),
-    // also expose the band for segmentation, harmless if unused in CleverReach
-    ec_band: BAND_COPY[result.band].name,
   };
 }

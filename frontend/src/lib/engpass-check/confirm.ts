@@ -13,7 +13,7 @@ import {
   addConfirmedNewsletterLead,
   isCleverReachConfigured,
 } from "@/lib/engpass-check/cleverreach";
-import { buildCleverReachAttributes, computeResult } from "@/lib/engpass-check/scoring";
+import { computeResult } from "@/lib/engpass-check/scoring";
 import { TYP_COPY } from "@/lib/engpass-check/copy";
 import { baseUrl } from "@/lib/engpass-check/tokens";
 import type { Answers } from "@/lib/engpass-check/types";
@@ -41,25 +41,30 @@ export async function confirmByToken(doiToken: string): Promise<ConfirmResult> {
   const answers = submission.answers as Answers;
   const result = computeResult(answers);
 
-  // Delivery email — best-effort (the page also shows the link).
+  // Delivery email — best-effort (the page also shows the link). Qualified leads
+  // get Variante B (an extra, low-key Erstgespräch CTA); everyone else Variante A.
   try {
     await sendReportDelivery({
       to: submission.email,
       reportUrl,
       typName: TYP_COPY[result.typ].name,
       score: submission.score,
+      qualified: submission.qualified,
     });
   } catch (error) {
     log.error("Report delivery email failed (non-fatal)", error);
   }
 
   // Newsletter push to CleverReach — best-effort, active receiver (we ran our own DOI).
+  // Base tag = the lead-magnet (the scorecard id) for later filtering; qualified leads
+  // get an extra `<scorecard>-qualified` segment tag. Typ/Weg/score stay in our DB
+  // (CleverReach is a newsletter list, not a CRM).
   if (isCleverReachConfigured()) {
     try {
-      await addConfirmedNewsletterLead({
-        email: submission.email,
-        attributes: buildCleverReachAttributes(answers, result),
-      });
+      const tags = submission.qualified
+        ? [submission.scorecard, `${submission.scorecard}-qualified`]
+        : [submission.scorecard];
+      await addConfirmedNewsletterLead({ email: submission.email, tags });
       await markCleverreachSynced(submission.id);
     } catch (error) {
       log.error("CleverReach newsletter push failed (non-fatal)", error);

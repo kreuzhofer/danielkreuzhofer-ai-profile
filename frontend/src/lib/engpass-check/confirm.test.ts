@@ -34,6 +34,7 @@ import { confirmByToken } from "./confirm";
 function submission(overrides: Record<string, unknown> = {}) {
   return {
     id: "row-1",
+    scorecard: "engpass-check",
     email: "lead@firma.de",
     answers: { K1: "gf", S2: "alle" },
     score: 53,
@@ -73,8 +74,25 @@ describe("confirmByToken", () => {
 
     expect(mockConfirm).toHaveBeenCalledWith("row-1");
     expect(mockSendDelivery).toHaveBeenCalledTimes(1);
+    // Default submission is qualified → Variante-B delivery + the qualified segment tag.
+    expect(mockSendDelivery).toHaveBeenCalledWith(expect.objectContaining({ qualified: true }));
     expect(mockAddNewsletter).toHaveBeenCalledTimes(1);
+    expect(mockAddNewsletter).toHaveBeenCalledWith({
+      email: "lead@firma.de",
+      tags: ["engpass-check", "engpass-check-qualified"],
+    });
     expect(mockMarkSynced).toHaveBeenCalledWith("row-1");
+  });
+
+  it("non-qualified lead: Variante-A delivery + only the base tag", async () => {
+    mockFindByDoiToken.mockResolvedValueOnce(submission({ qualified: false }));
+    await confirmByToken("doi_abc");
+
+    expect(mockSendDelivery).toHaveBeenCalledWith(expect.objectContaining({ qualified: false }));
+    expect(mockAddNewsletter).toHaveBeenCalledWith({
+      email: "lead@firma.de",
+      tags: ["engpass-check"],
+    });
   });
 
   it("is idempotent: an already-confirmed submission just returns the report link", async () => {

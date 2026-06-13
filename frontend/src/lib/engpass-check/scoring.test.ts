@@ -10,7 +10,6 @@ import fc from "fast-check";
 import { QUESTIONS } from "./questions";
 import type { Answers, Dimension } from "./types";
 import {
-  buildCleverReachAttributes,
   computeBand,
   computeDimensions,
   computeResult,
@@ -191,8 +190,8 @@ describe("isQualified (Setting-Stufe)", () => {
   });
 });
 
-describe("computeResult + buildCleverReachAttributes", () => {
-  it("aggregates a full result and the CleverReach attribute payload", () => {
+describe("computeResult", () => {
+  it("aggregates typ, weg, qualification and band into one result", () => {
     const a = answers({
       K1: "gf",
       K2: "50-250",
@@ -208,18 +207,6 @@ describe("computeResult + buildCleverReachAttributes", () => {
     expect(result.weg).toBe("weg-a");
     expect(result.qualified).toBe(true);
     expect(result.band).toBe(computeBand(result.score));
-
-    const attrs = buildCleverReachAttributes(a, result);
-    expect(attrs).toMatchObject({
-      ec_rolle: "Geschäftsführer / Inhaber",
-      ec_groesse: "50–250",
-      ec_mandat: "Nein — ich treibe das selbst",
-      ec_zeit: "Dieses Halbjahr",
-      ec_typ: "Übergabe-Stau",
-      ec_qualified: "true",
-      ec_score: String(result.score),
-    });
-    expect(attrs.ec_weg).toContain("Weg A");
   });
 });
 

@@ -1,18 +1,17 @@
 /**
- * CleverReach REST API v3 client — Engpass-Check submit.
+ * CleverReach REST API v3 client — newsletter push (hybrid model).
  *
- * Flow (06-quiz-spec.md §Tech-Spec): receiver in Gruppe `engpass-check` anlegen
- * (inaktiv, mit ec_* Attributen) → Double-Opt-in-Mail über das DOI-Formular
- * triggern. CleverReach ist der einzige Verarbeiter — wir halten KEINEN eigenen
- * Datenspeicher.
+ * The app runs its OWN Double-Opt-in, so CleverReach is used ONLY to add an
+ * already-confirmed lead to the newsletter group as an ACTIVE receiver — no
+ * CleverReach DOI form involved. Therefore only 3 credentials are needed
+ * (client id/secret + group id); no FORM_ID.
  *
  * Endpoints (REST API v3):
- *   POST /oauth/token.php                          → OAuth client_credentials token
- *   POST /v3/groups.json/{groupId}/receivers       → create receiver (+ PUT to update)
- *   POST /v3/forms.json/{formId}/send/activate      → trigger Double-Opt-in mail
+ *   POST /oauth/token.php                      → OAuth client_credentials token
+ *   POST /v3/groups.json/{groupId}/receivers   → create receiver (+ PUT to update)
  *
- * Configured entirely via env vars; see `.env.example`. When unconfigured the
- * route degrades gracefully (the lead still sees their result).
+ * Configured via env vars; see `.env.example`. When unconfigured the confirm
+ * step skips the push (best-effort) — the lead still gets their report.
  */
 
 import { createLogger } from "@/lib/logger";
@@ -25,7 +24,6 @@ interface CleverReachConfig {
   clientId?: string;
   clientSecret?: string;
   groupId?: string;
-  formId?: string;
   baseUrl: string;
   tokenUrl: string;
 }
@@ -35,16 +33,15 @@ function readConfig(): CleverReachConfig {
     clientId: process.env.CLEVERREACH_CLIENT_ID,
     clientSecret: process.env.CLEVERREACH_CLIENT_SECRET,
     groupId: process.env.CLEVERREACH_GROUP_ID,
-    formId: process.env.CLEVERREACH_FORM_ID,
     baseUrl: process.env.CLEVERREACH_BASE_URL ?? "https://rest.cleverreach.com",
     tokenUrl: process.env.CLEVERREACH_TOKEN_URL ?? "https://rest.cleverreach.com/oauth/token.php",
   };
 }
 
-/** True only when every credential needed for a real submit is present. */
+/** True when the credentials needed for the newsletter push are present. */
 export function isCleverReachConfigured(): boolean {
   const c = readConfig();
-  return Boolean(c.clientId && c.clientSecret && c.groupId && c.formId);
+  return Boolean(c.clientId && c.clientSecret && c.groupId);
 }
 
 /** Raised when the integration isn't wired up yet (missing env vars). */
@@ -55,18 +52,12 @@ export class CleverReachNotConfiguredError extends Error {
   }
 }
 
-/** Raised on any failed CleverReach API call (auth, create, DOI). */
+/** Raised on any failed CleverReach API call (auth, create/update). */
 export class CleverReachError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "CleverReachError";
   }
-}
-
-export interface DoiData {
-  user_ip: string;
-  referer: string;
-  user_agent: string;
 }
 
 // =============================================================================
@@ -106,7 +97,6 @@ async function fetchToken(config: CleverReachConfig): Promise<{ token: string; e
 
 async function getToken(config: CleverReachConfig): Promise<string> {
   const now = Date.now();
-  // Re-use a cached token until 60s before expiry.
   if (cachedToken && cachedToken.expiresAt > now + 60_000) {
     return cachedToken.token;
   }
@@ -136,27 +126,20 @@ function crFetch(
   });
 }
 
-/** Create/update the receiver. `active` = already confirmed (we ran our own DOI). */
-async function upsertReceiver(
+/** Create the receiver as ACTIVE (confirmed via our own DOI). Falls back to PUT. */
+async function upsertActiveReceiver(
   config: CleverReachConfig,
   token: string,
   email: string,
-  attributes: Record<string, string>,
-  active: boolean,
+  tags: string[],
 ): Promise<void> {
   const now = Math.floor(Date.now() / 1000);
-  const payload = {
-    email,
-    registered: now,
-    activated: active ? now : 0,
-    source: SOURCE,
-    attributes,
-  };
+  const payload = { email, registered: now, activated: now, source: SOURCE, tags };
 
   const created = await crFetch(config, `/v3/groups.json/${config.groupId}/receivers`, token, "POST", payload);
   if (created.ok) return;
 
-  // Receiver likely already exists → update its attributes instead.
+  // Receiver likely already exists → update instead.
   const updated = await crFetch(
     config,
     `/v3/groups.json/${config.groupId}/receivers/${encodeURIComponent(email)}`,
@@ -171,68 +154,19 @@ async function upsertReceiver(
   }
 }
 
-/** Trigger the Double-Opt-in email via the configured DOI form. */
-async function triggerDoubleOptIn(
-  config: CleverReachConfig,
-  token: string,
-  email: string,
-  doidata: DoiData,
-): Promise<void> {
-  const response = await crFetch(
-    config,
-    `/v3/forms.json/${config.formId}/send/activate`,
-    token,
-    "POST",
-    { email, doidata },
-  );
-  if (!response.ok) {
-    throw new CleverReachError(`DOI trigger failed (HTTP ${response.status})`);
-  }
-}
-
-// =============================================================================
-// Public entry point
-// =============================================================================
-
-export interface SubmitLeadParams {
-  email: string;
-  attributes: Record<string, string>;
-  doidata: DoiData;
-}
-
-/**
- * Add the lead to the Engpass-Check group with their answer attributes and send
- * the Double-Opt-in mail. Throws CleverReachNotConfiguredError when env vars are
- * missing, CleverReachError on any API failure.
- *
- * Note: with the app now running its OWN Double-Opt-in, the newsletter push uses
- * `addConfirmedNewsletterLead` instead (active receiver, no second DOI).
- */
-export async function submitEngpassLead(params: SubmitLeadParams): Promise<void> {
-  if (!isCleverReachConfigured()) {
-    throw new CleverReachNotConfiguredError();
-  }
-  const config = readConfig();
-  const token = await getToken(config);
-  await upsertReceiver(config, token, params.email, params.attributes, false);
-  await triggerDoubleOptIn(config, token, params.email, params.doidata);
-  log.info("Engpass-Check lead submitted to CleverReach", { qualified: params.attributes.ec_qualified });
-}
-
 /**
  * Push an already-confirmed lead to the CleverReach newsletter group as an
- * ACTIVE receiver (no CleverReach DOI — consent was obtained via our own DOI).
- * Used after our confirmation step.
+ * ACTIVE receiver (consent obtained via our own DOI — no CleverReach DOI form).
  */
 export async function addConfirmedNewsletterLead(params: {
   email: string;
-  attributes: Record<string, string>;
+  tags: string[];
 }): Promise<void> {
   if (!isCleverReachConfigured()) {
     throw new CleverReachNotConfiguredError();
   }
   const config = readConfig();
   const token = await getToken(config);
-  await upsertReceiver(config, token, params.email, params.attributes, true);
-  log.info("Confirmed Engpass-Check lead added to CleverReach newsletter");
+  await upsertActiveReceiver(config, token, params.email, params.tags);
+  log.info("Confirmed Engpass-Check lead added to CleverReach newsletter", { tags: params.tags });
 }

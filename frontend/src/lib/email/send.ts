@@ -25,6 +25,9 @@ const SUBJECTS = {
   reportDelivery: "Dein Engpass-Report ist da — plus Dein Umsetzungs-Toolkit",
 } as const;
 
+/** Erstgespräch booking link for the Variante-B CTA (qualified leads). */
+const BOOKING_URL = "https://calendly.com/danielkreuzhofer/30min";
+
 async function send(to: string, subject: string, html: string): Promise<void> {
   if (!isEmailConfigured()) throw new EmailNotConfiguredError();
   await getTransporter().sendMail({ from: getFrom(), to, subject, html });
@@ -37,17 +40,28 @@ export async function sendDoiConfirmation(params: { to: string; confirmUrl: stri
   await send(params.to, SUBJECTS.doiConfirmation, tpl({ confirmUrl: params.confirmUrl }));
 }
 
-/** Delivery email with the link to the personalized report + toolkit. */
+/**
+ * Delivery email with the link to the personalized report + toolkit. When
+ * `qualified` is true the template renders Variante B — an extra, low-key
+ * Erstgespräch CTA ("zweite Meinung, kein Verkaufsgespräch").
+ */
 export async function sendReportDelivery(params: {
   to: string;
   reportUrl: string;
   typName: string;
   score: number;
+  qualified: boolean;
 }): Promise<void> {
   const tpl = await loadTemplate("report-delivery");
   await send(
     params.to,
     SUBJECTS.reportDelivery,
-    tpl({ reportUrl: params.reportUrl, typName: params.typName, score: params.score }),
+    tpl({
+      reportUrl: params.reportUrl,
+      typName: params.typName,
+      score: params.score,
+      qualified: params.qualified,
+      bookingUrl: BOOKING_URL,
+    }),
   );
 }

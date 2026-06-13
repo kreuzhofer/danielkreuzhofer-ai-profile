@@ -100,18 +100,14 @@ export const RESULT = {
 } as const;
 
 export const OPTIN = {
-  intro:
-    "Dein ausführlicher Engpass-Report: was Dein Typ konkret bedeutet, die drei nächsten " +
-    "Schritte für Deinen Fall, und der Satz, mit dem Du das Ergebnis vor Deiner " +
-    "Geschäftsführung begründest. Trag Deine E-Mail ein, ich schicke ihn Dir sofort.",
   // Opt-in sells the Toolkit, not a PDF copy of the (already free) report (Spec §F).
   heading: "Dein Ergebnis steht. Jetzt das Werkzeug für die Umsetzung.",
   emailLabel: "E-Mail-Adresse",
   emailPlaceholder: "dein.name@firma.de",
   submitLabel: "Toolkit anfordern",
   consent:
-    "Mit „Report anfordern“ willige ich ein, dass meine E-Mail-Adresse und meine Check-Antworten " +
-    "gespeichert und verarbeitet werden, damit ich meinen Engpass-Report erhalte, und dass mir " +
+    "Mit „Toolkit anfordern“ willige ich ein, dass meine E-Mail-Adresse und meine Check-Antworten " +
+    "gespeichert und verarbeitet werden, damit ich mein Umsetzungs-Toolkit erhalte, und dass mir " +
     "Daniel Kreuzhofer regelmäßig Tipps und Angebote rund um KI per E-Mail schickt. Die " +
     "Verarbeitung läuft über Dienstleister in der EU (Hosting, E-Mail-Versand, Newsletter) mit " +
     "Auftragsverarbeitungsvertrag; meine Daten werden nicht verkauft. Ich bestätige per " +
@@ -122,14 +118,14 @@ export const OPTIN = {
   successHeading: "Fast geschafft — schau in Dein Postfach",
   successBody:
     "Ich habe Dir gerade eine E-Mail geschickt. Ein Klick auf den Bestätigungs-Link, dann hast " +
-    "Du Deinen Engpass-Report. (Falls nichts ankommt: kurz im Spam-Ordner schauen.)",
+    "Du Dein Umsetzungs-Toolkit. (Falls nichts ankommt: kurz im Spam-Ordner schauen.)",
   errorBody:
     "Da ist gerade etwas schiefgelaufen. Dein Ergebnis siehst Du oben weiterhin — bitte versuch " +
     "es in einem Moment noch einmal.",
 } as const;
 
 export const DATENSCHUTZ_HINWEIS =
-  "Deine Antworten bleiben bis zum Klick auf „Report anfordern“ nur in Deinem Browser. Erst dann " +
+  "Deine Antworten bleiben bis zum Klick auf „Toolkit anfordern“ nur in Deinem Browser. Erst dann " +
   "werden E-Mail und Antworten gespeichert (Hosting: Hostinger, Frankfurt) und der Bestätigungs-Link " +
   "per E-Mail verschickt (IONOS); nach Bestätigung läuft der Newsletter über CleverReach. Alle " +
   "Verarbeiter in der EU, AVV vorhanden. Kein Tracking, keine Cookies außer technisch notwendig.";
