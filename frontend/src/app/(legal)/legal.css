@@ -1,0 +1,97 @@
+/*
+  Legal pages (/impressum, /datenschutz): clean, readable, indexable document
+  theme. Light black-on-white, overrides the site's dark theme.
+*/
+
+.legal-page {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #18181b;
+  padding-bottom: 4rem;
+}
+
+.legal-header {
+  border-bottom: 1px solid #e5e5e5;
+  background: #ffffff;
+  margin-bottom: 2.5rem;
+}
+
+.legal-header-inner {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.legal-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  text-decoration: none;
+  color: inherit;
+  border-left: 4px solid #e89244;
+  padding-left: 0.7rem;
+}
+.legal-brand-name { font-weight: 700; font-size: 1rem; color: #000; }
+.legal-brand-sub { font-size: 0.82rem; color: #71717a; }
+
+.legal-nav { display: flex; gap: 1.1rem; font-size: 0.9rem; }
+.legal-nav a { color: #0a558c; text-decoration: none; }
+.legal-nav a:hover { text-decoration: underline; }
+
+.legal-container {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.legal-container h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 800;
+  margin: 0 0 1.5rem;
+  color: #000;
+  border-bottom: 2px solid #18181b;
+  padding-bottom: 0.6rem;
+}
+.legal-container h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 2.25rem 0 0.6rem;
+  color: #000;
+}
+.legal-container h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.4rem;
+  color: #18181b;
+}
+.legal-container p { margin: 0 0 1rem; }
+.legal-container ul, .legal-container ol { margin: 0 0 1.1rem; padding-left: 1.4rem; }
+.legal-container li { margin-bottom: 0.35rem; }
+.legal-container strong { color: #000; }
+.legal-container a { color: #0a558c; text-decoration: underline; text-underline-offset: 2px; }
+.legal-container a:hover { color: #073a63; }
+.legal-container hr { border: none; border-top: 1px solid #e5e5e5; margin: 2rem 0; }
+.legal-container code {
+  background: #f4f4f5;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+/* Visible marker for not-yet-filled placeholders in the scaffold */
+.legal-container mark {
+  background: #fef08a;
+  color: #713f12;
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  font-weight: 600;
+}

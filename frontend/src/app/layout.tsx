@@ -4,6 +4,7 @@ import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ChatProvider } from "@/context/ChatContext";
 import { ChatWrapper } from "@/components/chat/ChatWrapper";
+import { Footer } from "@/components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         <ChatProvider>
           {children}
+          <Footer />
           <ChatWrapper />
         </ChatProvider>
       </body>
