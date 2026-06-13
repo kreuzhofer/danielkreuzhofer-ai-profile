@@ -134,5 +134,9 @@ USER nextjs
 # Expose port 8087 for production
 EXPOSE 8087
 
-# Start production server on port 8087
-CMD ["npm", "run", "start", "--", "-p", "8087"]
+# Apply any pending Drizzle migrations, then start the server. Runs on every
+# container start (idempotent — Drizzle tracks applied migrations in
+# __drizzle_migrations), so a fresh deploy creates the schema with no manual
+# step. Fail-fast: if the migration fails, the app does not start. The
+# `postgres` service is already `depends_on: condition: service_healthy`.
+CMD ["sh", "-c", "npm run db:migrate:deploy && npm run start -- -p 8087"]
