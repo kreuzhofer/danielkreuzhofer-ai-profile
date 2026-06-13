@@ -26,6 +26,25 @@ services:
       # AI Chatbot - OpenAI Configuration
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      # Engpass-Check funnel: database, base URL, SMTP, CleverReach
+      # Inside Docker the app always reaches the `postgres` service directly,
+      # independent of the host .env DATABASE_URL (which targets localhost).
+      - DATABASE_URL=postgres://${POSTGRES_USER:-dbuser}:${POSTGRES_PASSWORD:-dbpass}@postgres:5432/${POSTGRES_DB:-danielkreuzhofer}
+      - BASE_URL=${BASE_URL:-http://localhost:8087}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_SECURE=${SMTP_SECURE:-false}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=${SMTP_FROM:-}
+      - CRON_SECRET=${CRON_SECRET:-}
+      - CLEVERREACH_CLIENT_ID=${CLEVERREACH_CLIENT_ID:-}
+      - CLEVERREACH_CLIENT_SECRET=${CLEVERREACH_CLIENT_SECRET:-}
+      - CLEVERREACH_GROUP_ID=${CLEVERREACH_GROUP_ID:-}
+      - CLEVERREACH_FORM_ID=${CLEVERREACH_FORM_ID:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     profiles:
       - development
@@ -53,6 +72,50 @@ services:
       # AI Chatbot - OpenAI Configuration
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      # Engpass-Check funnel: database, base URL, SMTP, CleverReach
+      # Inside Docker the app always reaches the `postgres` service directly,
+      # independent of the host .env DATABASE_URL (which targets localhost).
+      - DATABASE_URL=postgres://${POSTGRES_USER:-dbuser}:${POSTGRES_PASSWORD:-dbpass}@postgres:5432/${POSTGRES_DB:-danielkreuzhofer}
+      - BASE_URL=${BASE_URL:-http://localhost:8087}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_SECURE=${SMTP_SECURE:-false}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=${SMTP_FROM:-}
+      - CRON_SECRET=${CRON_SECRET:-}
+      - CLEVERREACH_CLIENT_ID=${CLEVERREACH_CLIENT_ID:-}
+      - CLEVERREACH_CLIENT_SECRET=${CLEVERREACH_CLIENT_SECRET:-}
+      - CLEVERREACH_GROUP_ID=${CLEVERREACH_GROUP_ID:-}
+      - CLEVERREACH_FORM_ID=${CLEVERREACH_FORM_ID:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     profiles:
       - production
+
+  # Postgres - Engpass-Check submissions store (dev + prod)
+  postgres:
+    image: postgres:16-alpine
+    container_name: portfolio-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-dbuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dbpass}
+      - POSTGRES_DB=${POSTGRES_DB:-danielkreuzhofer}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dbuser} -d ${POSTGRES_DB:-danielkreuzhofer}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    profiles:
+      - development
+      - production
+
+volumes:
+  postgres-data:

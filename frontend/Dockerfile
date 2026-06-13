@@ -122,6 +122,12 @@ COPY --from=builder /app/package.json ./package.json
 # Copy content directory for MDX files (needed at runtime)
 COPY --from=builder /app/content ./content
 
+# Engpass-Check funnel: email templates (read at runtime via process.cwd())
+COPY --from=builder /app/email-templates ./email-templates
+# DB migrations + drizzle config (for `drizzle-kit migrate` at deploy time)
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/src/db/migrations ./src/db/migrations
+
 # Switch to non-root user
 USER nextjs
 

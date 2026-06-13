@@ -1,0 +1,225 @@
+/*
+  Engpass-Report — print-optimized, light document theme (for "Als PDF speichern").
+  Black-on-white, generous reading layout, true PDF-like @media print. Scoped to
+  .engpass-report so it overrides the site's dark theme.
+*/
+
+.engpass-report {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #18181b;
+  font-family: Inter, system-ui, sans-serif;
+  line-height: 1.65;
+  padding-bottom: 4rem;
+}
+
+/* Sticky header with brand + print button */
+.er-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 2rem;
+}
+
+.er-header-inner {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.er-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  border-left: 4px solid #e89244;
+  padding-left: 0.7rem;
+}
+.er-brand-name { font-weight: 700; font-size: 1rem; color: #000; }
+.er-brand-sub { font-size: 0.82rem; color: #71717a; }
+
+.er-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #18181b;
+  color: #fff;
+  border: 1px solid #18181b;
+  padding: 0.55rem 0.95rem;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.er-print-btn:hover { background: #000; }
+
+.er-container {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* ── Score block ─────────────────────────────────────────────────────────── */
+.er-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #e89244;
+  margin: 0 0 0.5rem;
+}
+
+.er-score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  border-bottom: 2px solid #18181b;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+.er-score-value { font-size: 3rem; font-weight: 800; line-height: 1; }
+.er-score-max { font-size: 1rem; color: #71717a; font-weight: 600; }
+.er-score-band { font-size: 1.1rem; font-weight: 700; margin-left: auto; }
+.er-band-feintuning .er-score-band { color: #15803d; }
+.er-band-spuerbar .er-score-band { color: #c2410c; }
+.er-band-akut .er-score-band { color: #b91c1c; }
+
+.er-kontext {
+  border-left: 3px solid #4dbed4;
+  background: #f4fafc;
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+  color: #3f3f46;
+  margin: 1.2rem 0;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+.er-section { margin: 2rem 0; }
+.er-section + .er-section { border-top: 1px solid #e5e5e5; padding-top: 1.6rem; }
+
+.er-h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.8rem;
+}
+.er-h3 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: #0a558c;
+  margin: 0 0 0.6rem;
+}
+.er-text { margin: 0 0 0.9rem; color: #27272a; }
+.er-text:last-child { margin-bottom: 0; }
+
+.er-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.9rem; }
+.er-step { display: flex; gap: 0.8rem; align-items: flex-start; }
+.er-step-num {
+  flex-shrink: 0;
+  width: 1.7rem; height: 1.7rem;
+  border-radius: 50%;
+  background: #e89244; color: #1a1206;
+  font-weight: 800; font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.er-quote {
+  margin: 0;
+  padding: 0.9rem 1.1rem;
+  border-left: 4px solid #e89244;
+  background: #fdf6ef;
+  border-radius: 0 8px 8px 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.er-source-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.er-source { font-size: 0.85rem; color: #3f3f46; padding-left: 0.9rem; border-left: 2px solid #e5e5e5; }
+.er-source a { color: #0a558c; text-decoration: underline; text-underline-offset: 2px; }
+
+/* ── Toolkit ─────────────────────────────────────────────────────────────── */
+.er-toolkit-badge {
+  margin-top: 3rem;
+  padding-top: 1.4rem;
+  border-top: 3px double #18181b;
+}
+
+.er-raster-step { margin: 1.1rem 0; }
+.er-raster-fields { list-style: none; margin: 0.6rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+.er-raster-fields li {
+  font-size: 0.9rem;
+  color: #3f3f46;
+  border-bottom: 1px dashed #d4d4d8;
+  padding-bottom: 0.45rem;
+}
+
+.er-weg-node {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 0.8rem 0;
+}
+.er-weg-node.is-mine { border-color: #e89244; background: #fdf6ef; }
+.er-weg-pfad {
+  display: inline-block;
+  font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+  background: #18181b; color: #fff; padding: 0.15rem 0.5rem; border-radius: 5px; margin-bottom: 0.5rem;
+}
+.er-weg-node.is-mine .er-weg-pfad { background: #e89244; color: #1a1206; }
+.er-weg-tag { font-size: 0.7rem; font-weight: 700; color: #e89244; margin-left: 0.5rem; }
+.er-weg-title { font-weight: 800; font-size: 1.05rem; margin: 0 0 0.2rem; }
+.er-weg-wenn { font-size: 0.9rem; color: #52525b; font-style: italic; margin: 0 0 0.5rem; }
+.er-it-check { font-size: 0.9rem; color: #3f3f46; background: #f4f4f5; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; }
+
+.er-case {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 0.8rem 0;
+  break-inside: avoid;
+}
+.er-case-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
+.er-case-pfad { font-size: 0.7rem; font-weight: 800; color: #fff; background: #0a558c; padding: 0.12rem 0.45rem; border-radius: 5px; }
+.er-case-company { font-weight: 800; font-size: 1.02rem; }
+.er-case-context { font-size: 0.82rem; color: #71717a; }
+.er-case dl { margin: 0; font-size: 0.9rem; }
+.er-case dt { font-weight: 700; color: #3f3f46; margin-top: 0.4rem; }
+.er-case dd { margin: 0 0 0.2rem; color: #27272a; }
+.er-case-outcome { color: #15803d; font-weight: 600; }
+.er-case-quote { font-style: italic; color: #3f3f46; margin-top: 0.4rem; }
+.er-case-source { font-size: 0.8rem; margin-top: 0.5rem; }
+.er-case-source a { color: #0a558c; }
+
+.er-phase { display: grid; grid-template-columns: auto 1fr; gap: 0.8rem; margin: 0.8rem 0; align-items: start; }
+.er-phase-when { font-weight: 800; color: #e89244; font-size: 0.85rem; white-space: nowrap; }
+.er-bruecke { font-style: italic; color: #3f3f46; margin-top: 1rem; }
+
+.er-bizcase-link { display: inline-block; margin-top: 0.6rem; font-weight: 700; color: #0a558c; }
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
+@media print {
+  /* Isolate the report for the PDF: hide everything else on the page (chat
+     bubble, dev tools, …) without depending on their classes. */
+  body * { visibility: hidden; }
+  .engpass-report,
+  .engpass-report * { visibility: visible; }
+  .engpass-report { position: absolute; inset: 0; width: 100%; padding: 0; }
+
+  .er-header { display: none; }
+  .er-container { max-width: none; padding: 0; }
+  .er-section, .er-weg-node, .er-case, .er-raster-step { break-inside: avoid; }
+  .er-h2 { page-break-after: avoid; }
+  a { color: #000; text-decoration: none; }
+  .er-toolkit-badge { page-break-before: always; }
+}
