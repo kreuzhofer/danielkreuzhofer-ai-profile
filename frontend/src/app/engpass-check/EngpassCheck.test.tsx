@@ -96,7 +96,7 @@ describe("EngpassCheck flow", () => {
 
     // 9 — Opt-in form
     expect(screen.getByLabelText("E-Mail-Adresse")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Report anfordern" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Toolkit anfordern" })).toBeInTheDocument();
 
     // 10 — Video-Verweis
     expect(screen.getByText(/Software ist nicht mehr Dein Engpass/)).toBeInTheDocument();
@@ -109,6 +109,27 @@ describe("EngpassCheck flow", () => {
     expect(
       screen.queryByRole("button", { name: /ausführlichen Report ansehen/ }),
     ).not.toBeInTheDocument();
+  });
+
+  it("opt-in boundary: report is free on screen, the toolkit is gated, and the opt-in sells the toolkit", () => {
+    render(<EngpassCheck />);
+    completeQuiz();
+
+    // The report itself is free — no email needed.
+    expect(reportShown()).toBe(true);
+
+    // The opt-in copy *names* the toolkit to sell it, but the actual toolkit
+    // CONTENT (raster fields, decision-tree, case cards, 90-day phases) must NOT
+    // render on screen — it only lives on the token-gated report page.
+    expect(screen.queryByText(/Station 1/)).not.toBeInTheDocument(); // raster worksheet fields
+    expect(screen.queryByText(/Bremsen lösen/)).not.toBeInTheDocument(); // 90-day phases
+    expect(screen.queryByText(/Lüdenscheid/)).not.toBeInTheDocument(); // a verified case detail
+
+    // The opt-in sells the TOOLKIT (not "the report as PDF").
+    expect(screen.getByText(/Werkzeug für die Umsetzung/)).toBeInTheDocument();
+    expect(screen.getByText(/Umsetzungs-Toolkit ist das, womit Du morgen anfängst/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Toolkit anfordern" })).toBeInTheDocument();
+    expect(screen.queryByText(/Report als PDF/i)).not.toBeInTheDocument();
   });
 
   it("renders only the sources that actually appear (Übergabe-Stau → Schulte + RSP, no Gartner)", () => {
@@ -183,7 +204,7 @@ describe("EngpassCheck flow", () => {
     completeQuiz();
 
     fireEvent.change(screen.getByLabelText("E-Mail-Adresse"), { target: { value: "lead@firma.de" } });
-    fireEvent.click(screen.getByRole("button", { name: "Report anfordern" }));
+    fireEvent.click(screen.getByRole("button", { name: "Toolkit anfordern" }));
 
     expect(await screen.findByText(/schau in Dein Postfach/i)).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith("/api/engpass-check", expect.objectContaining({ method: "POST" }));

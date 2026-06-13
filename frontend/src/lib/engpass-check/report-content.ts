@@ -337,12 +337,13 @@ export type SourceId = keyof typeof SOURCES;
 // F) Opt-in-Block (Punkt 9) · G) Video-Verweis (Punkt 10)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// F) Opt-in verkauft das TOOLKIT (nicht „den Report als PDF") — Spec 06-quiz-spec.md §F.
 export const OPTIN_TEXT =
-  `Du hast Dein Ergebnis. Wenn Du es schwarz auf weiß willst — zum Abspeichern, zum Weiterleiten ` +
-  `an Deine Geschäftsführung, zum Abarbeiten im nächsten Termin — schick ich Dir den ausführlichen ` +
-  `Report als PDF. Da drin ist zusätzlich das ausfüllbare Engpass-Raster, mit dem Du Deinen Prozess ` +
-  `Schritt für Schritt durchgehst, und der Entscheidungsbaum für die drei Wege. Trag Deine E-Mail ` +
-  `ein, ich schick ihn Dir sofort.`;
+  `Du kennst jetzt Deinen Engpass und Deinen Weg. Das Umsetzungs-Toolkit ist das, womit Du morgen ` +
+  `anfängst: das ausfüllbare Engpass-Raster, mit dem Du Deinen Prozess in 20 Minuten durchgehst und ` +
+  `Deine drei Baseline-Zahlen festlegst. Der Entscheidungsbaum für Deinen Weg. Sechs geprüfte Cases ` +
+  `aus dem Mittelstand — zum Zeigen, wenn Deine Geschäftsführung fragt „wer hat das schon gemacht?". ` +
+  `Und das 90-Tage-Grundgerüst. Trag Deine E-Mail ein, ich schick Dir das Toolkit.`;
 
 export const VIDEO_INTRO =
   `Das ganze Denkmodell — warum Software 2026 nicht mehr Dein Engpass ist und wie Du die ` +

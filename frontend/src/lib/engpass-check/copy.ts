@@ -104,9 +104,11 @@ export const OPTIN = {
     "Dein ausführlicher Engpass-Report: was Dein Typ konkret bedeutet, die drei nächsten " +
     "Schritte für Deinen Fall, und der Satz, mit dem Du das Ergebnis vor Deiner " +
     "Geschäftsführung begründest. Trag Deine E-Mail ein, ich schicke ihn Dir sofort.",
+  // Opt-in sells the Toolkit, not a PDF copy of the (already free) report (Spec §F).
+  heading: "Dein Ergebnis steht. Jetzt das Werkzeug für die Umsetzung.",
   emailLabel: "E-Mail-Adresse",
   emailPlaceholder: "dein.name@firma.de",
-  submitLabel: "Report anfordern",
+  submitLabel: "Toolkit anfordern",
   consent:
     "Mit „Report anfordern“ willige ich ein, dass meine E-Mail-Adresse und meine Check-Antworten " +
     "gespeichert und verarbeitet werden, damit ich meinen Engpass-Report erhalte, und dass mir " +

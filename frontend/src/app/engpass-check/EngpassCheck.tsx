@@ -324,7 +324,7 @@ function OptIn({ answers }: { answers: Answers }) {
 
   return (
     <div className="ec-card ec-optin">
-      <h2 className="ec-optin-heading">Den ganzen Report als PDF</h2>
+      <h2 className="ec-optin-heading">{OPTIN.heading}</h2>
       <p className="ec-report-text">{OPTIN_TEXT}</p>
 
       <form className="ec-form" onSubmit={handleSubmit} noValidate>
