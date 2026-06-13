@@ -29,6 +29,13 @@ jest.mock("@/lib/engpass-check/cleverreach", () => ({
   isCleverReachConfigured: () => cleverreachConfigured,
 }));
 
+const mockReportLead = jest.fn();
+let trackmysalesConfigured = true;
+jest.mock("@/lib/engpass-check/trackmysales", () => ({
+  reportLeadConversion: (...a: unknown[]) => mockReportLead(...a),
+  isTrackmysalesConfigured: () => trackmysalesConfigured,
+}));
+
 import { confirmByToken } from "./confirm";
 
 function submission(overrides: Record<string, unknown> = {}) {
@@ -55,6 +62,8 @@ beforeEach(() => {
   mockSendDelivery.mockReset().mockResolvedValue(undefined);
   mockAddNewsletter.mockReset().mockResolvedValue(undefined);
   cleverreachConfigured = true;
+  mockReportLead.mockReset().mockResolvedValue({ attributed: true });
+  trackmysalesConfigured = true;
 });
 
 describe("confirmByToken", () => {
@@ -117,5 +126,24 @@ describe("confirmByToken", () => {
     const result = await confirmByToken("doi_abc");
     expect(result.status).toBe("confirmed");
     expect(mockAddNewsletter).not.toHaveBeenCalled();
+  });
+
+  it("reports the trackmysales conversion when the submission has a tid", async () => {
+    mockFindByDoiToken.mockResolvedValueOnce(submission({ tid: "tid-xyz" }));
+    await confirmByToken("doi_abc");
+    expect(mockReportLead).toHaveBeenCalledWith("tid-xyz");
+  });
+
+  it("skips trackmysales when the submission has no tid", async () => {
+    mockFindByDoiToken.mockResolvedValueOnce(submission()); // factory has no tid
+    await confirmByToken("doi_abc");
+    expect(mockReportLead).not.toHaveBeenCalled();
+  });
+
+  it("still confirms when the trackmysales report fails (non-fatal)", async () => {
+    mockReportLead.mockRejectedValueOnce(new Error("tms down"));
+    mockFindByDoiToken.mockResolvedValueOnce(submission({ tid: "tid-xyz" }));
+    const result = await confirmByToken("doi_abc");
+    expect(result.status).toBe("confirmed");
   });
 });

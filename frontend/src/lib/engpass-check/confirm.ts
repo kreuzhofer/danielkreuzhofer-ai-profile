@@ -13,6 +13,7 @@ import {
   addConfirmedNewsletterLead,
   isCleverReachConfigured,
 } from "@/lib/engpass-check/cleverreach";
+import { isTrackmysalesConfigured, reportLeadConversion } from "@/lib/engpass-check/trackmysales";
 import { computeResult } from "@/lib/engpass-check/scoring";
 import { TYP_COPY } from "@/lib/engpass-check/copy";
 import { baseUrl } from "@/lib/engpass-check/tokens";
@@ -68,6 +69,16 @@ export async function confirmByToken(doiToken: string): Promise<ConfirmResult> {
       await markCleverreachSynced(submission.id);
     } catch (error) {
       log.error("CleverReach newsletter push failed (non-fatal)", error);
+    }
+  }
+
+  // trackmysales attribution — best-effort, server-to-server. Closes the
+  // video→lead loop now that we no longer redirect through a /c/:code link.
+  if (submission.tid && isTrackmysalesConfigured()) {
+    try {
+      await reportLeadConversion(submission.tid);
+    } catch (error) {
+      log.error("trackmysales lead conversion failed (non-fatal)", error);
     }
   }
 
