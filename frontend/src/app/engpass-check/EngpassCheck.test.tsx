@@ -15,7 +15,10 @@ jest.mock("next/link", () => ({
   ),
 }));
 
-beforeEach(() => sessionStorage.clear());
+beforeEach(() => {
+  sessionStorage.clear();
+  window.history.replaceState({}, "", "/engpass-check");
+});
 
 /** Click the option with the given accessible label (auto-advances). */
 function answer(label: string) {
@@ -208,5 +211,20 @@ describe("EngpassCheck flow", () => {
 
     expect(await screen.findByText(/schau in Dein Postfach/i)).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith("/api/engpass-check", expect.objectContaining({ method: "POST" }));
+  });
+
+  it("includes the captured tid in the opt-in submit", async () => {
+    window.history.replaceState({}, "", "/engpass-check?tid=vid01");
+    const fetchMock = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    render(<EngpassCheck />);
+    completeQuiz();
+    fireEvent.change(screen.getByLabelText("E-Mail-Adresse"), { target: { value: "lead@firma.de" } });
+    fireEvent.click(screen.getByRole("button", { name: "Toolkit anfordern" }));
+
+    expect(await screen.findByText(/schau in Dein Postfach/i)).toBeInTheDocument();
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.tid).toBe("vid01");
   });
 });

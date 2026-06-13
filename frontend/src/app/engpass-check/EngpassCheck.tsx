@@ -5,6 +5,7 @@ import Link from "next/link";
 import { QUESTIONS, TOTAL_QUESTIONS } from "@/lib/engpass-check/questions";
 import { computeResult } from "@/lib/engpass-check/scoring";
 import { buildReportModel } from "@/lib/engpass-check/report";
+import { captureTrackingId } from "@/lib/engpass-check/tracking";
 import { DATENSCHUTZ_HINWEIS, INTRO, OPTIN, RESULT } from "@/lib/engpass-check/copy";
 import {
   OPTIN_TEXT,
@@ -71,6 +72,13 @@ const STORAGE_KEY = "engpass-check-state";
 export function EngpassCheck() {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
+  // Capture the trackmysales visitor id (?tid) on first mount so it survives the
+  // quiz and rides along with the opt-in submit (attribution back to the video).
+  const [tid, setTid] = useState<string | null>(null);
+  useEffect(() => {
+    setTid(captureTrackingId());
+  }, []);
+
   // Restore in-progress answers after mount (client-only → no hydration mismatch).
   // sessionStorage keeps answers in the browser only — consistent with the DSGVO
   // promise that nothing leaves the device before the opt-in.
@@ -122,6 +130,7 @@ export function EngpassCheck() {
         {state.phase === "result" && (
           <Result
             answers={state.answers}
+            tid={tid}
             onBack={() => dispatch({ type: "back" })}
             onRestart={() => {
               // Pristine state isn't persisted, so clear the store explicitly
@@ -229,10 +238,12 @@ function Quiz({
 
 function Result({
   answers,
+  tid,
   onBack,
   onRestart,
 }: {
   answers: Answers;
+  tid: string | null;
   onBack: () => void;
   onRestart: () => void;
 }) {
@@ -256,7 +267,7 @@ function Result({
       </div>
 
       {/* Punkt 9: Opt-in */}
-      <OptIn answers={answers} />
+      <OptIn answers={answers} tid={tid} />
 
       {/* Punkt 10: Video-Verweis */}
       <VideoVerweis />
@@ -291,7 +302,7 @@ function VideoVerweis() {
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
-function OptIn({ answers }: { answers: Answers }) {
+function OptIn({ answers, tid }: { answers: Answers; tid: string | null }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<SubmitStatus>("idle");
 
@@ -303,7 +314,7 @@ function OptIn({ answers }: { answers: Answers }) {
       const response = await fetch("/api/engpass-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), answers }),
+        body: JSON.stringify({ email: email.trim(), answers, ...(tid ? { tid } : {}) }),
       });
       const data = (await response.json().catch(() => null)) as { ok?: boolean } | null;
       if (!response.ok || !data?.ok) throw new Error("submit failed");
