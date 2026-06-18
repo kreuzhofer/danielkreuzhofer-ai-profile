@@ -40,5 +40,9 @@ describe("ReportDocument (gated toolkit page)", () => {
     expect(screen.getByRole("heading", { name: /geprüfte Cases/ })).toBeInTheDocument();
     expect(screen.getByText(/Bremsen lösen/)).toBeInTheDocument(); // 90-day skeleton
     expect(screen.getByText(/Lüdenscheid/)).toBeInTheDocument(); // a verified case detail
+
+    // #8 — vendor-reference transparency, dezent aber sichtbar
+    expect(screen.getByText(/Anbieter bzw\. der Agentur veröffentlichten Referenz/)).toBeInTheDocument(); // cases note
+    expect(screen.getByText(/Anbieter veröffentlichte Referenzen/)).toBeInTheDocument(); // sources note (this result cites Schulte/RSP)
   });
 });

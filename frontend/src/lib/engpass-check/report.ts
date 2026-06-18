@@ -82,6 +82,8 @@ export interface ReportModel {
   antiPattern: string;
   /** Nur die Belege, die im Ergebnis tatsächlich vorkamen, in Render-Reihenfolge. */
   sources: ReportSource[];
+  /** Enthält die Quellen eine Firmen-Case-Anbieterreferenz (Schulte/RSP)? → Transparenz-Hinweis (#8). */
+  hasVendorCaseSource: boolean;
 }
 
 /**
@@ -174,6 +176,8 @@ export function buildReportModel(answers: Answers, result: EngpassResult): Repor
       ? NO_TYP_SCORE_SPUERBAR
       : SCORE_BAND_PARAGRAPH[result.band];
 
+  const sources = selectSources(answers, result.typ, variant, noDominantTyp);
+
   return {
     score: result.score,
     band: result.band,
@@ -191,6 +195,9 @@ export function buildReportModel(answers: Answers, result: EngpassResult): Repor
     wegVolltext: noDominantTyp ? NO_TYP_WEG : WEG_VOLLTEXT[variant],
     gfSatz: noDominantTyp ? NO_TYP_GF_SATZ : GF_SATZ[result.typ],
     antiPattern: noDominantTyp ? NO_TYP_ANTIPATTERN : TYP_ANTIPATTERN[result.typ],
-    sources: selectSources(answers, result.typ, variant, noDominantTyp),
+    sources,
+    hasVendorCaseSource: sources.some(
+      (s) => s.id === "encowaySchulte" || s.id === "camosRsp",
+    ),
   };
 }

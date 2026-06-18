@@ -442,4 +442,8 @@ export const REPORT_LABELS = {
   gf: "Der Satz für Deine Geschäftsführung",
   antiPattern: "Was Du jetzt vermeiden solltest",
   quellen: "Quellen & Belege",
+  /** Transparenz-Hinweis (#8) — nur gezeigt, wenn eine Firmen-Case-Anbieterreferenz vorkommt. */
+  quellenHinweis:
+    "Firmen-Beispiele (z. B. Schulte, RSP) sind vom jeweiligen Anbieter veröffentlichte Referenzen — " +
+    "keine unabhängige Prüfung; die Branchenzahlen stammen aus Studien.",
 } as const;

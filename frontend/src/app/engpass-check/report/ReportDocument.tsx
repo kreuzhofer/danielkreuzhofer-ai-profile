@@ -119,6 +119,9 @@ export function ReportDocument({ model }: { model: ReportModel }) {
       {/* 8 — Quellen */}
       <section className="er-section">
         <h3 className="er-h3">{REPORT_LABELS.quellen}</h3>
+        {model.hasVendorCaseSource && (
+          <p className="er-kontext">{REPORT_LABELS.quellenHinweis}</p>
+        )}
         <ul className="er-source-list">
           {model.sources.map((s) => (
             <li key={s.id} className="er-source">
@@ -175,6 +178,7 @@ export function ReportDocument({ model }: { model: ReportModel }) {
       {/* 6 Cases */}
       <section className="er-section">
         <h2 className="er-h2">{TOOLKIT_LABELS.cases}</h2>
+        <p className="er-kontext">{TOOLKIT_LABELS.casesHinweis}</p>
         {orderedCases.map((c) => (
           <div key={c.company} className="er-case">
             <div className="er-case-head">

@@ -165,6 +165,8 @@ describe("EngpassCheck flow", () => {
     expect(screen.getByText(/Schulte Elektrotechnik, 70 % schnellere Angebote/)).toBeInTheDocument();
     expect(screen.getByText(/RSP Spezialsaugtechnik, 2 Stunden → 10 Minuten/)).toBeInTheDocument();
     expect(screen.queryByText(/Gartner \(2024\)/)).not.toBeInTheDocument();
+    // #8 — these company cases are vendor references; note must be visible
+    expect(screen.getByText(/Anbieter veröffentlichte Referenzen/)).toBeInTheDocument();
   });
 
   // --- Persistence guards (StrictMode = Next dev) ------------------------------

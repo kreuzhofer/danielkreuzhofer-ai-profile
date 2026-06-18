@@ -210,6 +210,18 @@ describe("typ ↔ weg consistency (#2)", () => {
   });
 });
 
+describe("vendor-reference transparency (#8)", () => {
+  it("flags vendor company-case sources (Schulte/RSP) so the report can label them", () => {
+    const a = answers({ S2: "alle", S5: "teilweise", S4: "alles" }); // Übergabe-Stau → Schulte+RSP
+    expect(model(a).hasVendorCaseSource).toBe(true);
+  });
+
+  it("is false when only independent studies are cited (no company case)", () => {
+    const a = answers({ S4: "nichts", S6: "produktiv" }); // Wissens-Monopol → Kyocera+Salesforce only
+    expect(model(a).hasVendorCaseSource).toBe(false);
+  });
+});
+
 describe("factual framing of cited stats (#6/#7)", () => {
   it("frames the Gartner 30 % as a forecast about generative AI, not a demonstrated fact", () => {
     const t = TYP_DIAGNOSE["mess-blindflug"];

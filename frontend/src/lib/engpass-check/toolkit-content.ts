@@ -299,6 +299,10 @@ export const TOOLKIT_LABELS = {
   raster: "Das Engpass-Raster (zum Ausfüllen)",
   baum: "Der Entscheidungsbaum: Deine drei Wege",
   cases: "6 geprüfte Cases aus dem Mittelstand",
+  /** Transparenz-Hinweis unter der Cases-Überschrift (#8) — dezent, aber sichtbar. */
+  casesHinweis:
+    "Echte, dokumentierte Fälle — die genannten Erfolgszahlen stammen jeweils aus der vom Anbieter " +
+    "bzw. der Agentur veröffentlichten Referenz (Quelle pro Fall unten verlinkt).",
   plan: "Die nächsten 90 Tage (Kurz-Überblick)",
   businessCase: "Business-Case für Deine GF",
   print: "Als PDF speichern",

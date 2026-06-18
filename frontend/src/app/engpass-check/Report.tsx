@@ -109,6 +109,9 @@ export function Report({ model }: { model: ReportModel }) {
       {/* 8 — Quellen & Belege (nur die im Ergebnis vorgekommenen) */}
       <section className="ec-report-section ec-sources">
         <h3 className="ec-report-h">{REPORT_LABELS.quellen}</h3>
+        {model.hasVendorCaseSource && (
+          <p className="ec-kontext">{REPORT_LABELS.quellenHinweis}</p>
+        )}
         <ul className="ec-source-list">
           {model.sources.map((source) => (
             <li key={source.id} className="ec-source">
