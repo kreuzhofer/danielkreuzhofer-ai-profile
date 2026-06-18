@@ -11,6 +11,7 @@ import fc from "fast-check";
 import { QUESTIONS } from "./questions";
 import { computeResult } from "./scoring";
 import { buildReportModel } from "./report";
+import { TYP_DIAGNOSE } from "./report-content";
 import type { Answers } from "./types";
 
 const answersArb: fc.Arbitrary<Answers> = fc.record(
@@ -206,6 +207,18 @@ describe("typ ↔ weg consistency (#2)", () => {
 
   it("no dominant typ + weg-a drops Schulte/RSP sources (their text is overridden)", () => {
     expect(sourceIds(answers({ S2: "gelegentlich" })).sort()).toEqual(["salesforce2024"]);
+  });
+});
+
+describe("factual framing of cited stats (#6/#7)", () => {
+  it("frames the Gartner 30 % as a forecast about generative AI, not a demonstrated fact", () => {
+    const t = TYP_DIAGNOSE["mess-blindflug"];
+    expect(t).not.toContain("hat gezeigt"); // it's a Gartner *prediction*
+    expect(t).toMatch(/generativ/i); // figure is about *generative* AI, not all AI
+  });
+
+  it("names the year of the (2018) Statista/Kyocera figures inline", () => {
+    expect(TYP_DIAGNOSE["wissens-monopol"]).toContain("2018");
   });
 });
 

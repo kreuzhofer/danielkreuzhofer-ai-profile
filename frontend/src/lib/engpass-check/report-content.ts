@@ -64,8 +64,8 @@ export const TYP_DIAGNOSE: Record<Dimension, string> = {
     `Das Problem dabei ist nicht das Bauchgefühl an sich — Du hast Erfahrung, und die trägt weit. ` +
     `Das Problem ist, dass Du ohne Zahlen jede KI-Investition blind tätigst. Du kannst vorher nicht ` +
     `sagen, wo es am meisten klemmt. Und Du kannst hinterher nicht beweisen, dass sich was ` +
-    `verbessert hat. Genau daran sterben die meisten Piloten: Gartner hat gezeigt, dass mindestens ` +
-    `30 Prozent aller KI-Projekte nach dem Proof of Concept eingestellt werden — Hauptgrund ist ` +
+    `verbessert hat. Genau daran sterben die meisten Piloten: Gartner rechnet damit, dass mindestens ` +
+    `30 Prozent aller generativen KI-Projekte nach dem Proof of Concept eingestellt werden — Hauptgrund ist ` +
     `nicht die Technik, sondern dass niemand den Wert belegen konnte.\n\n` +
     `Für Dich heißt das: Bevor Du über Bauen, Kaufen oder Automatisieren auch nur nachdenkst, ` +
     `brauchst Du eine Baseline. Ein paar Wochen Zahlen, sauber erhoben. Das klingt nach einem ` +
@@ -77,7 +77,7 @@ export const TYP_DIAGNOSE: Record<Dimension, string> = {
     `steht nirgends. Kein Handbuch, keine Regeln, keine Dokumentation. Es ist in seinem Kopf.\n\n` +
     `Das funktioniert, solange er da ist. Es wird zum Risiko, sobald er ausfällt, kündigt oder in ` +
     `Rente geht — dann geht das Wissen mit ihm. Und Du bist damit nicht allein: In einer ` +
-    `Statista-Erhebung für den deutschen Mittelstand gaben 38 Prozent der Unternehmen an, dass ` +
+    `Statista-Erhebung für den deutschen Mittelstand (2018) gaben 38 Prozent der Unternehmen an, dass ` +
     `Wissen sofort verloren oder nur mühsam auffindbar wäre, wenn der Falsche ausfällt. Nur 27 ` +
     `Prozent hatten es so dokumentiert, dass ein Kollege sofort weiterarbeiten könnte. Bei zwei ` +
     `von drei Firmen hängt also genau das, was Dich gerade bremst.\n\n` +
@@ -399,7 +399,7 @@ export const SOURCES = {
   },
   gartner2024: {
     id: "gartner2024",
-    text: `KI-Projekte nach Proof of Concept eingestellt (30 %): Gartner (2024)`,
+    text: `Generative-KI-Projekte nach Proof of Concept eingestellt (Prognose, 30 %): Gartner (2024)`,
     url: "https://www.gartner.com/en/newsroom/press-releases/2024-07-29-gartner-predicts-30-percent-of-generative-ai-projects-will-be-abandoned-after-proof-of-concept-by-end-of-2025",
   },
 } as const satisfies Record<string, ReportSource>;
