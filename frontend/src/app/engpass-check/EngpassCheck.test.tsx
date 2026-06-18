@@ -7,6 +7,7 @@
 import { StrictMode } from "react";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import { EngpassCheck } from "./EngpassCheck";
+import { VIDEO_URL } from "@/lib/engpass-check/report-content";
 
 jest.mock("next/link", () => ({
   __esModule: true,
@@ -103,6 +104,15 @@ describe("EngpassCheck flow", () => {
 
     // 10 — Video-Verweis
     expect(screen.getByText(/Software ist nicht mehr Dein Engpass/)).toBeInTheDocument();
+  });
+
+  it("links the closing CTA (point 10) to Video #05 once VIDEO_URL is wired (#10)", () => {
+    expect(VIDEO_URL).not.toBe(""); // go-live: the V05 link must be set
+    render(<EngpassCheck />);
+    completeQuiz();
+    const videoLink = screen.getByRole("link", { name: /Software ist nicht mehr Dein Engpass/ });
+    expect(videoLink).toHaveAttribute("href", VIDEO_URL);
+    expect(videoLink).toHaveAttribute("target", "_blank");
   });
 
   it("shows the report immediately — there is no reveal button", () => {

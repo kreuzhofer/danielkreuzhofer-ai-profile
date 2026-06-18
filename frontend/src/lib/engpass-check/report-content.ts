@@ -423,8 +423,8 @@ export const VIDEO_INTRO =
   `Bauen-oder-Kaufen-Frage in der richtigen Reihenfolge beantwortest — steckt im Video:`;
 export const VIDEO_TITLE = "Software ist nicht mehr Dein Engpass";
 export const VIDEO_LABEL = "Video #05";
-/** Echte URL noch offen (Funnel-TODO) — leer ⇒ nicht-klickbar gerendert. */
-export const VIDEO_URL = "";
+/** Video #05 „Software ist nicht mehr Dein Engpass" (YouTube). Leer ⇒ nicht-klickbar. */
+export const VIDEO_URL = "https://youtu.be/C9jW0jqhRtY";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Section-Labels (Render-Reihenfolge 1–10)
