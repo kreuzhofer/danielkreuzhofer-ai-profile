@@ -32,7 +32,8 @@ const PFAD_OF: Record<ReturnType<typeof highlightedWeg>, "A" | "B" | "C"> = {
 /** Full printable document: report points 1–8 + the implementation toolkit. */
 export function ReportDocument({ model }: { model: ReportModel }) {
   const [, ...scoreBody] = model.scoreParagraph.split("\n\n");
-  const mineWeg = highlightedWeg(model.weg);
+  // Ohne dominante Engstelle keine Weg-Tendenz hervorheben → „Stufe 0" (erst beobachten).
+  const mineWeg = model.noDominantTyp ? "Stufe 0" : highlightedWeg(model.weg);
   const myPfad = PFAD_OF[mineWeg];
   const orderedCases = [...CASES].sort(
     (a, b) => (a.pfad === myPfad ? 0 : 1) - (b.pfad === myPfad ? 0 : 1),
@@ -53,10 +54,24 @@ export function ReportDocument({ model }: { model: ReportModel }) {
       {/* 2 — Engpass-Typ */}
       <section className="er-section">
         <h2 className="er-h2">
-          {REPORT_LABELS.typPrefix} {model.typName}
+          {model.noDominantTyp
+            ? REPORT_LABELS.noTyp
+            : `${REPORT_LABELS.typPrefix} ${model.typName}`}
         </h2>
         <Paras text={model.typDiagnose} />
       </section>
+
+      {/* 2b — Zur Einordnung (Disclaimer, immer sichtbar wenn zutreffend) */}
+      {model.einordnung.length > 0 && (
+        <section className="er-section">
+          <h3 className="er-h3">{REPORT_LABELS.einordnung}</h3>
+          {model.einordnung.map((p, i) => (
+            <p key={i} className="er-text">
+              {p}
+            </p>
+          ))}
+        </section>
+      )}
 
       {/* 3 — Was das bedeutet */}
       {model.bedeutung.length > 0 && (

@@ -125,11 +125,14 @@ export const QUESTIONS: readonly Question[] = [
   {
     id: "S6",
     block: 2,
+    // Kalibrierung (#5, 2026-06-18): S6 misst KI-Reife, keinen Prozess-Engpass.
+    // „Noch nicht gestartet" ist keine Reibung → 0 Punkte; nur ein gescheitertes
+    // bzw. steckengebliebenes Projekt zählt als Engpass-Signal.
     kind: "score",
     prompt: "Habt ihr schon mal ein KI- oder Automatisierungs-Projekt gestartet?",
     options: [
       { id: "produktiv", label: "Ja — läuft produktiv, mit messbarem Effekt", points: 0 },
-      { id: "noch-nicht", label: "Nein, noch nicht", points: 1 },
+      { id: "noch-nicht", label: "Nein, noch nicht", points: 0 },
       { id: "eingestellt", label: "Ja — wieder eingestellt", points: 2 },
       { id: "poc", label: "Ja — im Proof of Concept hängengeblieben", points: 3 },
     ],

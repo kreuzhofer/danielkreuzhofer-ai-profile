@@ -89,7 +89,11 @@ export function computeTyp(dimensions: Record<Dimension, number>): Dimension {
  * the "gelöstes Standard-Problem" default.
  */
 export function computeWeg(answers: Answers, typ: Dimension): Weg {
-  if (points("S5", answers) >= 2) return "stufe-0";
+  // An die Mess-Blindflug-DIMENSION koppeln, nicht an die rohen S5-Punkte: so
+  // löst auch der S1-„weiß nicht"-Bonus die stufe-0-Bremse aus, der denselben
+  // Typ bestimmt. Sonst kann der Typ „Mess-Blindflug" lauten, der Weg aber
+  // „Kaufen/Bauen" — ein Selbstwiderspruch im Report.
+  if (computeDimensions(answers)["mess-blindflug"] >= 2) return "stufe-0";
   if (points("S4", answers) >= 2) return "beschreiben";
   if (typ === "uebergabe-stau" || typ === "schnittstellen-luecke") return "weg-a";
   if (selectedOption("K4", answers)?.cFaehig) return "weg-c-denkbar";

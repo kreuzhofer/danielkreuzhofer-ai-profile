@@ -63,6 +63,13 @@ describe("computeScoreSum + normalizeScore", () => {
     expect(computeScoreSum(answers({ S1: "2w-plus" }))).toBe(2);
   });
 
+  it("S6 'noch nicht gestartet' adds 0 to the score — only real friction counts (#5)", () => {
+    expect(computeScoreSum(answers({ S6: "noch-nicht" }))).toBe(0);
+    // a stalled / abandoned project still counts as friction
+    expect(computeScoreSum(answers({ S6: "eingestellt" }))).toBe(2);
+    expect(computeScoreSum(answers({ S6: "poc" }))).toBe(3);
+  });
+
   it("normalizes with rounding (÷17)", () => {
     expect(normalizeScore(9)).toBe(53); // round(52.94)
     expect(normalizeScore(1)).toBe(6); // round(5.88)
@@ -138,6 +145,11 @@ describe("computeTyp (tie-break: mess-blindflug > wissens-monopol > uebergabe-st
 describe("computeWeg (ordered rule tree)", () => {
   it("rule 1: S5 ≥ 2 → stufe-0 (overrides everything, even high S4)", () => {
     const a = answers({ S5: "kaum", S4: "nichts" });
+    expect(computeWeg(a, computeTyp(computeDimensions(a)))).toBe("stufe-0");
+  });
+
+  it("rule 1 via dimension: S1 'weiß nicht' bonus tips mess-blindflug to stufe-0 even when S5 alone is < 2", () => {
+    const a = answers({ S1: "unbekannt", S5: "teilweise" }); // mess-blindflug dim = 1 + bonus 1 = 2
     expect(computeWeg(a, computeTyp(computeDimensions(a)))).toBe("stufe-0");
   });
 

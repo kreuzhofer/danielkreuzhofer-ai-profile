@@ -192,6 +192,65 @@ export const TYP_ANTIPATTERN: Record<Dimension, string> = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// B2) „Kein dominanter Engpass" — Bausteine, wenn keine der vier Dimensionen
+//     heraussticht (max Dimension ≤ 1). Ersetzen Typ-Diagnose, Schritte, GF-Satz,
+//     Anti-Pattern. KOMPLETT ADAPTIERT (kein Spec-Volltext) und bewusst markerfrei
+//     (keine externe Zahl → kein Quellen-Zwang). Daniel-Review der Wortwahl offen.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Score-Einstieg NUR für den No-Typ-Fall im Spürbar-Band — verspricht keinen
+ *  einzelnen Engpass-Typ (der reguläre Spürbar-Absatz täte das). {score} wird
+ *  zur Laufzeit ersetzt. Feintuning behält seinen regulären Absatz (passt schon).*/
+export const NO_TYP_SCORE_SPUERBAR =
+  `{score} von 100.\n\n` +
+  `Dein Score ist spürbar erhöht — aber er kommt nicht aus einer einzelnen Engstelle, die Dir den ` +
+  `Durchsatz wegfrisst. Bei euch summiert er sich aus mehreren kleinen Stellen, ohne dass eine klar ` +
+  `dominiert. Was das für Deinen nächsten Schritt heißt, steht direkt unten.`;
+
+export const NO_TYP_DIAGNOSE =
+  `Keine der vier Engstellen — Übergabe, Wissen, Schnittstellen, Messung — sticht bei euch klar ` +
+  `heraus. Dein Ergebnis kommt aus verteilten Einzelpunkten, nicht aus einer einzelnen Stelle, die ` +
+  `den ganzen Prozess ausbremst.\n\n` +
+  `Das ist erst mal eine gute Nachricht: Es gibt keinen akuten Brandherd, an dem Dir Tag für Tag ` +
+  `Durchsatz wegläuft. Es ist zugleich die Lage, in der die Versuchung am größten ist, KI als ` +
+  `Lösung zu kaufen, wo es noch gar kein klares Problem gibt. Steck Dein Budget nicht in ein ` +
+  `Werkzeug, das eine Engstelle beheben soll, die Du noch nicht hast.\n\n` +
+  `Dein nächster Schritt ist deshalb nicht „bauen, kaufen oder automatisieren", sondern „weiter ` +
+  `beobachten": ein paar einfache Zahlen mitlaufen lassen, damit Du es sofort siehst, wenn sich ` +
+  `doch eine Engstelle herausbildet — und dann gezielt dort ansetzt, statt vorsorglich zu ` +
+  `überoptimieren.`;
+
+export const NO_TYP_SCHRITTE: readonly [string, string, string] = [
+  `Leg drei einfache Zahlen fest, an denen Du Deinen Vertrieb beobachtest: Durchlaufzeit eines ` +
+    `Angebots (Anfrage bis Versand), Win-Rate (Angebote zu Aufträgen) und Umsatz pro Funnel-Stufe. ` +
+    `Mehr brauchst Du nicht.`,
+  `Lass sie ein paar Wochen nebenher mitlaufen — von Hand reicht. Sie sind Dein Frühwarnsystem: ` +
+    `Sobald eine Zahl kippt, siehst Du, an welcher Stelle ein Engpass entsteht, bevor er weh tut.`,
+  `Widersteh dem Reflex, jetzt „schon mal etwas mit KI“ anzuschaffen. Warte, bis eine Zahl Dir eine ` +
+    `klare Engstelle zeigt — dann lohnt sich der nächste Schritt, und Du kannst seinen Erfolg auch ` +
+    `beweisen.`,
+];
+
+export const NO_TYP_GF_SATZ =
+  `„Wir haben aktuell keinen einzelnen Engpass, der uns ausbremst — deshalb investieren wir nicht ` +
+  `vorsorglich in ein KI-Tool. Wir beobachten unsere Zahlen und setzen gezielt an, sobald sich eine ` +
+  `Engstelle zeigt.“`;
+
+export const NO_TYP_ANTIPATTERN =
+  `Vermeide, KI oder ein neues Tool zu kaufen, nur weil gerade alle darüber reden. Ohne eine echte ` +
+  `Engstelle ist das verbranntes Budget für ein Problem, das Du (noch) nicht hast — und es verstellt ` +
+  `Dir den Blick auf die Stelle, die irgendwann wirklich klemmt.`;
+
+/** Weg-Sektion (Punkt 5) im No-Typ-Fall: ohne dominante Engstelle gibt es keine
+ *  belastbare Weg-Tendenz. Markerfrei. */
+export const NO_TYP_WEG =
+  `Noch kein klarer Weg — und das ist hier die ehrliche Antwort. Solange keine einzelne Engstelle ` +
+  `dominiert, gibt es nichts, worauf Du ein Bauen, Kaufen oder Automatisieren zuschneiden könntest. ` +
+  `Sich jetzt festzulegen — „wir machen was mit KI" — wäre eine Lösung auf der Suche nach einem ` +
+  `Problem. Beobachte Deine Zahlen weiter; sobald eine davon eine echte Engstelle zeigt, ergibt ` +
+  `sich der passende Weg fast von selbst — und dann ist er auch begründbar.`;
+
+// ─────────────────────────────────────────────────────────────────────────────
 // C) Personalisierungs-Regeln (Punkt 3 — „Was das für Dich bedeutet")
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -233,7 +292,7 @@ export const PERSONALISIERUNG = {
 // D) Weg-Tendenz-Volltexte (Punkt 5)
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type WegVariant = "stufe-0" | "weg-a" | "weg-b" | "weg-c";
+export type WegVariant = "stufe-0" | "beschreiben" | "weg-a" | "weg-b" | "weg-c";
 
 export const WEG_VOLLTEXT: Record<WegVariant, string> = {
   "stufe-0":
@@ -242,6 +301,20 @@ export const WEG_VOLLTEXT: Record<WegVariant, string> = {
     `beweisen, und ein Projekt, dessen Erfolg Du nicht beweisen kannst, wird beim nächsten ` +
     `Budget-Review gestrichen. Erst die Baseline, dann der Weg. Das ist keine Verzögerung, das ist ` +
     `die Versicherung für alles, was danach kommt.`,
+  // ADAPTIERT (Spec D kannte nur Stufe-0/A/B/C). „beschreiben" ist die Wissens-Monopol-
+  // Vorstufe zu Weg A — eigener Text in dieser Stimme, markerfrei (nennt Weg A, aber
+  // keine Case-Zahlen → kein Quellen-Zwang). Deckt sich mit copy.ts WEG_COPY.beschreiben.
+  beschreiben:
+    `Deine Weg-Tendenz: erst beschreiben — dann automatisieren. Bei euch steckt zu viel ` +
+    `Prozesswissen in Köpfen statt auf Papier, und das ist die eigentliche Bremse: Eine Maschine ` +
+    `kann nur übernehmen, was sich beschreiben lässt. Bevor Du über ein Tool oder eine Regel-Strecke ` +
+    `nachdenkst, bring die zwei, drei wichtigsten Abläufe so zu Papier, dass ein neuer Mitarbeiter ` +
+    `sie lesen und anwenden könnte.\n\n` +
+    `Die gute Nachricht: Das ist kein Umweg, sondern der Schritt mit dem größten Hebel — und ` +
+    `meistens stellt sich heraus, dass „bei uns ist alles zu individuell" gar nicht stimmt; es ist ` +
+    `nur nicht aufgeschrieben. Sobald der Prozess beschrieben ist, ist Weg A — Automatisieren, oft ` +
+    `ganz ohne KI — für Dich zum Greifen nah. Aber die Reihenfolge entscheidet: erst beschreiben, ` +
+    `dann automatisieren.`,
   "weg-a":
     `Deine Weg-Tendenz: Automatisieren — und zwar wahrscheinlich ganz ohne KI. Das überrascht ` +
     `viele. Aber wenn Dein Engpass eine regelbasierte Übergabe oder eine fehlende Schnittstelle ` +
@@ -359,6 +432,10 @@ export const VIDEO_URL = "";
 
 export const REPORT_LABELS = {
   typPrefix: "Dein Engpass-Typ:",
+  /** Überschrift, wenn keine Dimension dominiert (statt „Dein Engpass-Typ: …"). */
+  noTyp: "Kein dominanter Engpass-Typ",
+  /** Disclaimer-Block (Größe/IT) — immer sichtbar, wenn zutreffend. */
+  einordnung: "Zur Einordnung",
   bedeutung: "Was das konkret für Dich bedeutet",
   schritte: "Deine drei nächsten Schritte",
   weg: "Dein wahrscheinlicher Weg",

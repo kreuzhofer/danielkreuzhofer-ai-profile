@@ -44,10 +44,24 @@ export function Report({ model }: { model: ReportModel }) {
       {/* 2 — Engpass-Typ + Voll-Diagnose */}
       <section className="ec-report-section">
         <h2 className="ec-typ-name">
-          {REPORT_LABELS.typPrefix} {model.typName}
+          {model.noDominantTyp
+            ? REPORT_LABELS.noTyp
+            : `${REPORT_LABELS.typPrefix} ${model.typName}`}
         </h2>
         <Paragraphs text={model.typDiagnose} className="ec-report-text" />
       </section>
+
+      {/* 2b — Zur Einordnung (Disclaimer, immer sichtbar wenn zutreffend) */}
+      {model.einordnung.length > 0 && (
+        <section className="ec-report-section">
+          <h3 className="ec-report-h">{REPORT_LABELS.einordnung}</h3>
+          {model.einordnung.map((p, i) => (
+            <p key={i} className="ec-report-text">
+              {p}
+            </p>
+          ))}
+        </section>
+      )}
 
       {/* 3 — Was das konkret für Dich bedeutet (nur wenn eine Regel greift) */}
       {model.bedeutung.length > 0 && (
