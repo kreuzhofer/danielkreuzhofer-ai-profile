@@ -303,7 +303,7 @@ export const WEG_VOLLTEXT: Record<WegVariant, string> = {
     `die Versicherung für alles, was danach kommt.`,
   // ADAPTIERT (Spec D kannte nur Stufe-0/A/B/C). „beschreiben" ist die Wissens-Monopol-
   // Vorstufe zu Weg A — eigener Text in dieser Stimme, markerfrei (nennt Weg A, aber
-  // keine Case-Zahlen → kein Quellen-Zwang). Deckt sich mit copy.ts WEG_COPY.beschreiben.
+  // keine Case-Zahlen → kein Quellen-Zwang).
   beschreiben:
     `Deine Weg-Tendenz: erst beschreiben — dann automatisieren. Bei euch steckt zu viel ` +
     `Prozesswissen in Köpfen statt auf Papier, und das ist die eigentliche Bremse: Eine Maschine ` +

@@ -5,7 +5,7 @@
  * the wording can be reviewed (Daniels Review-Punkte) without touching logic.
  */
 
-import type { Band, Dimension, Weg } from "./types";
+import type { Band, Dimension } from "./types";
 
 export const INTRO = {
   heading: "Der Engpass-Check",
@@ -63,40 +63,10 @@ export const TYP_COPY: Record<Dimension, { name: string; diagnose: string }> = {
   },
 };
 
-export const WEG_COPY: Record<Weg, { label: string; satz: string }> = {
-  "stufe-0": {
-    label: "Stufe 0 — Baseline",
-    satz: "Noch kein Weg — erst Stufe 0: ein paar Wochen Baseline messen. Sonst lässt sich kein Erfolg beweisen.",
-  },
-  beschreiben: {
-    label: "Erst beschreiben",
-    satz:
-      "Erst beschreiben, dann Weg A prüfen: Was Du nicht in einem Absatz beschreiben kannst, " +
-      "kannst Du nicht automatisieren.",
-  },
-  "weg-a": {
-    label: "Weg A — Automatisieren ohne KI",
-    satz:
-      "Weg A: Automatisieren ohne KI — Deine Regel-Strecke bzw. Konfigurator-Logik ist der " +
-      "Hebel, nicht das nächste KI-Tool.",
-  },
-  "weg-b": {
-    label: "Weg B — Kaufen",
-    satz: "Weg B: Kaufen — Dein Engpass ist ein gelöstes Standard-Problem, das tausende Firmen haben.",
-  },
-  "weg-c-denkbar": {
-    label: "Weg C — denkbar",
-    satz: "Weg C denkbar — aber nur mit den drei Bedingungen aus dem Video.",
-  },
-};
-
 export const RESULT = {
   heading: "Dein Ergebnis",
   scoreLabel: "Engpass-Score",
   typLabel: "Dein Engpass-Typ",
-  wegLabel: "Deine Weg-Tendenz",
-  wegHint:
-    "Hinweis: Die Weg-Tendenz ist ein erster Fingerzeig. Die saubere Weg-Wahl ist Thema des Videos bzw. eines Gesprächs.",
 } as const;
 
 export const OPTIN = {
