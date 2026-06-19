@@ -192,6 +192,10 @@ describe("isQualified (Setting-Stufe)", () => {
     expect(isQualified(qualified)).toBe(true);
   });
 
+  it("qualifies when the timeframe is 'Dieses Jahr' (loosened #11)", () => {
+    expect(isQualified({ ...qualified, K5: "jahr" })).toBe(true);
+  });
+
   it.each([
     ["role", { K1: "it-leitung" }],
     ["size", { K2: "u50" }],

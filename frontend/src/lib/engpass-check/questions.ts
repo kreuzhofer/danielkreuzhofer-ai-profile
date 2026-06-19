@@ -160,7 +160,7 @@ export const QUESTIONS: readonly Question[] = [
     options: [
       { id: "quartal", label: "Dieses Quartal", qualifies: true },
       { id: "halbjahr", label: "Dieses Halbjahr", qualifies: true },
-      { id: "jahr", label: "Dieses Jahr" },
+      { id: "jahr", label: "Dieses Jahr", qualifies: true },
       { id: "kein-druck", label: "Kein konkreter Zeitdruck" },
     ],
   },
