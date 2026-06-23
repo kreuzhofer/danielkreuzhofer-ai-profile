@@ -26,6 +26,18 @@ describe("buildResult", () => {
     expect(r.nextLever).toBeUndefined();
     expect(r.outcome).toBe("vorbild"); // score 100
   });
+
+  it("yields no nextLever when it is configured but the scorecard has no categories", () => {
+    const noCats = {
+      ...SAMPLE_DEFINITION, // keeps nextLever: { over: "category", pick: "min" }
+      questions: SAMPLE_DEFINITION.questions.map((q) =>
+        q.kind === "score" ? { ...q, category: undefined } : q,
+      ),
+    };
+    const r = buildResult(noCats, { S1: "daily", S2: "active" });
+    expect(r.nextLever).toBeUndefined();
+    expect(r.categoryScores).toBeUndefined();
+  });
 });
 
 describe("buildResult invariants (property-based)", () => {

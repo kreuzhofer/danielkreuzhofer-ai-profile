@@ -16,7 +16,10 @@ export function computeRawSum(def: ScorecardDefinition, answers: Answers): numbe
     .reduce((sum, q) => sum + (selectedOption(q, answers)?.points ?? 0), 0);
 }
 
-/** round(rawSum / maxPoints * 100); 0 when maxPoints <= 0. */
+/**
+ * round(rawSum / maxPoints * 100); 0 when maxPoints <= 0. Not clamped above 100 —
+ * `maxPoints` must be the true attainable maximum for the definition.
+ */
 export function normalizeScore(rawSum: number, maxPoints: number): number {
   if (maxPoints <= 0) return 0;
   return Math.round((rawSum / maxPoints) * 100);
