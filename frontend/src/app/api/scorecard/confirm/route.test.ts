@@ -64,4 +64,11 @@ describe("GET /api/scorecard/confirm", () => {
     const res = await get("nope");
     expect(res.status).toBe(404);
   });
+
+  it("500s when confirm throws (internals not leaked)", async () => {
+    mockConfirm.mockRejectedValueOnce(new Error("boom"));
+    const res = await get("doi_abc");
+    expect(res.status).toBe(500);
+    expect((await res.json()).code).toBe("INTERNAL_ERROR");
+  });
 });

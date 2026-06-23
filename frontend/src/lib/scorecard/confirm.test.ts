@@ -97,6 +97,7 @@ describe("confirmScorecardByToken", () => {
     expect(res.status).toBe("already");
     expect(mockConfirm).not.toHaveBeenCalled();
     expect(mockSendDelivery).not.toHaveBeenCalled();
+    expect(mockAddNewsletter).not.toHaveBeenCalled();
   });
 
   it("still confirms when delivery email fails (non-fatal)", async () => {
