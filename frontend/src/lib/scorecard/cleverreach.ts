@@ -12,6 +12,10 @@
  *
  * Configured via env vars; see `.env.example`. When unconfigured the confirm
  * step skips the push (best-effort) — the lead still gets their report.
+ *
+ * NOTE: deliberate copy of `lib/engpass-check/cleverreach.ts`, generalized with a
+ * `source` param, to keep the Engpass funnel untouched. Consolidating both onto
+ * one shared client is acknowledged debt (see the M2 plan/design spec).
  */
 
 import { createLogger } from "@/lib/logger";
