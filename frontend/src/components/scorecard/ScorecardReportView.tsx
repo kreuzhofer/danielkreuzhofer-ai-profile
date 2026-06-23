@@ -7,6 +7,14 @@ export interface ReportLabels {
   quellen: string;
 }
 
+/** Default German section headings (scorecard-agnostic UI chrome). */
+export const DEFAULT_REPORT_LABELS: ReportLabels = {
+  bedeutung: "Was das für Dich bedeutet",
+  schritte: "Deine nächsten Schritte",
+  antiPattern: "Was Du jetzt vermeiden solltest",
+  quellen: "Quellen & Belege",
+};
+
 /** Split a `\n\n`-separated block into <p> elements. */
 function Paragraphs({ text, className }: { text: string; className?: string }) {
   return (

@@ -5,18 +5,10 @@ import Link from "next/link";
 import { buildResult } from "@/lib/scorecard/result";
 import { buildScorecardReport } from "@/lib/scorecard/report-model";
 import { brandStyle } from "@/lib/scorecard/branding";
-import { ScorecardReportView, type ReportLabels } from "./ScorecardReportView";
+import { ScorecardReportView, DEFAULT_REPORT_LABELS } from "./ScorecardReportView";
 import type { ScorecardRegistration } from "@/lib/scorecard/registry";
 import type { ScorecardContent } from "@/lib/scorecard/content";
 import type { Answers, Question } from "@/lib/scorecard/types";
-
-/** Section headings (UI chrome, scorecard-agnostic German defaults). */
-const REPORT_LABELS: ReportLabels = {
-  bedeutung: "Was das für Dich bedeutet",
-  schritte: "Deine nächsten Schritte",
-  antiPattern: "Was Du jetzt vermeiden solltest",
-  quellen: "Quellen & Belege",
-};
 
 // =============================================================================
 // State
@@ -280,7 +272,7 @@ function Result({
     <section className="sc-result" aria-label={content.resultHeading}>
       <div className="sc-card sc-report-card">
         <p className="sc-eyebrow">{content.resultHeading}</p>
-        <ScorecardReportView model={model} labels={REPORT_LABELS} />
+        <ScorecardReportView model={model} labels={DEFAULT_REPORT_LABELS} />
 
         <div className="sc-result-nav">
           <button type="button" className="sc-btn sc-btn-ghost" onClick={onBack}>
