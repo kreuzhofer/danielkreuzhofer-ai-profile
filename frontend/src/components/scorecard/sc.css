@@ -4,17 +4,12 @@
  * usable without a brand. Generalized from the Engpass `engpass-check.css`.
  */
 
+/* All --sc-* vars are supplied per-scorecard via brandStyle (inline style); the
+   fallbacks below only apply if the shell is rendered without a brand. */
 .sc-shell {
-  --sc-bg: var(--sc-bg, #0e0e10);
-  --sc-surface: var(--sc-surface, #17171b);
-  --sc-ink: var(--sc-ink, #f5f5f5);
-  --sc-ink-muted: var(--sc-ink-muted, #a0a0a8);
-  --sc-accent: var(--sc-accent, #ff6a3d);
-  --sc-accent-ink: var(--sc-accent-ink, #0e0e10);
-
   min-height: 100vh;
-  background: var(--sc-bg);
-  color: var(--sc-ink);
+  background: var(--sc-bg, #0e0e10);
+  color: var(--sc-ink, #f5f5f5);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.6;
 }

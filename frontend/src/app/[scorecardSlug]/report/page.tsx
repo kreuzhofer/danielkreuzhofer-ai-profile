@@ -1,15 +1,16 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getScorecard } from "@/lib/scorecard/registry";
-import { buildScorecardReport } from "@/lib/scorecard/report-model";
+import { buildScorecardReport, type ScorecardReport } from "@/lib/scorecard/report-model";
 import { brandStyle } from "@/lib/scorecard/branding";
 import { ScorecardReportView, DEFAULT_REPORT_LABELS } from "@/components/scorecard/ScorecardReportView";
 import { findScorecardByReportToken } from "@/db/scorecard-submissions";
 import { isDatabaseConfigured } from "@/db/client";
 import "@/components/scorecard/sc.css";
 
-/** Token-gated personal report — never indexed. */
+/** Token-gated personal report — never indexed, always rendered per-request. */
 export const metadata: Metadata = { robots: { index: false, follow: false } };
+export const dynamic = "force-dynamic";
 
 export default async function ScorecardReportPage({
   params,
@@ -28,7 +29,14 @@ export default async function ScorecardReportPage({
   const reg = getScorecard(scorecardSlug);
   if (!reg) notFound();
 
-  const model = buildScorecardReport(reg, submission.result, submission.answers);
+  // A misconfigured registration (outcome without a content block) must not 500
+  // on external token input — fail to a 404 instead.
+  let model: ScorecardReport;
+  try {
+    model = buildScorecardReport(reg, submission.result, submission.answers);
+  } catch {
+    notFound();
+  }
 
   return (
     <div className="sc-shell" style={brandStyle(reg.branding)}>
