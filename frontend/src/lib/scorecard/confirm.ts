@@ -32,9 +32,9 @@ export async function confirmScorecardByToken(doiToken: string): Promise<Confirm
   await confirmScorecardSubmission(submission.id);
 
   const qualified = submission.result.qualified;
-  const source = getScorecard(submission.scorecard)?.cleverreachSource ?? submission.scorecard;
-  const deliverySubject =
-    getScorecard(submission.scorecard)?.deliverySubject ?? "Dein Ergebnis ist da";
+  const reg = getScorecard(submission.scorecard);
+  const source = reg?.cleverreachSource ?? submission.scorecard;
+  const deliverySubject = reg?.deliverySubject ?? "Dein Ergebnis ist da";
 
   try {
     await sendScorecardDelivery({
