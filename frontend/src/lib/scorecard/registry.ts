@@ -6,6 +6,8 @@
 
 import { REGISTRATIONS } from "@/scorecards";
 import type { ScorecardDefinition } from "./types";
+import type { ScorecardContent } from "./content";
+import type { BrandTokens } from "./branding";
 
 export interface ScorecardRegistration {
   definition: ScorecardDefinition;
@@ -14,6 +16,11 @@ export interface ScorecardRegistration {
   deliverySubject: string;
   /** CleverReach `source` + base tag; defaults to the slug. */
   cleverreachSource?: string;
+  /** Page <head> metadata. */
+  meta: { title: string; description: string };
+  /** Renderer content + theme (M3). */
+  content: ScorecardContent;
+  branding: BrandTokens;
 }
 
 /** Pure: build a slug→registration lookup. Exported for testing. */

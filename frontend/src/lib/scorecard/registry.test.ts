@@ -1,11 +1,7 @@
-import { buildRegistry, type ScorecardRegistration } from "./registry";
-import { SAMPLE_DEFINITION } from "./__fixtures__/sample-definition";
+import { buildRegistry } from "./registry";
+import { SAMPLE_REGISTRATION } from "./__fixtures__/sample-registration";
 
-const reg: ScorecardRegistration = {
-  definition: SAMPLE_DEFINITION,
-  doiSubject: "Bestätige Deine Anmeldung",
-  deliverySubject: "Dein Ergebnis ist da",
-};
+const reg = SAMPLE_REGISTRATION;
 
 describe("buildRegistry", () => {
   it("looks a scorecard up by its definition slug", () => {
