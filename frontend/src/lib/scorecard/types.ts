@@ -12,8 +12,6 @@ export interface AnswerOption {
   label: string;
   /** Score points (score questions only). */
   points?: number;
-  /** Category/dimension this answer feeds (score questions only). */
-  category?: string;
   /** Context questions: this answer counts toward qualification. */
   qualifies?: boolean;
   /** Context questions: the CRM attribute value this answer maps to (M2). */
@@ -24,7 +22,7 @@ export interface Question {
   id: string;
   kind: "context" | "score";
   prompt: string;
-  /** Score question → the category it feeds (defaults to a per-question dimension). */
+  /** Score question → the category/dimension it feeds. */
   category?: string;
   /** Context question → the CRM attribute key, e.g. "kfc_rolle" (used in M2). */
   attributeKey?: string;
@@ -66,7 +64,7 @@ export interface ScorecardDefinition {
   scoring: {
     /** Max attainable raw points across score questions (for normalization). */
     maxPoints: number;
-    /** Affects copy only, not math. */
+    /** Ignored by the engine; consumed by renderers/copy only. */
     direction: "higher-better" | "higher-worse";
   };
   outcome: OutcomeConfig;
@@ -78,7 +76,7 @@ export interface ScorecardDefinition {
 
 export interface ScorecardResult {
   rawSum: number;
-  /** Normalized 0..100. */
+  /** Normalized 0..100 (always an integer — score is rounded). */
   score: number;
   /** Outcome key (a band key or an argmax outcome). */
   outcome: string;

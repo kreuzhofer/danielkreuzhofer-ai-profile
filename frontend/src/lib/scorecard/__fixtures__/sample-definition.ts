@@ -1,6 +1,6 @@
 import type { ScorecardDefinition } from "../types";
 
-/** A small KFC-shaped definition (2 context + 2 score questions, maxPoints 6). */
+/** A small KFC-shaped (KI-Führungs-Check) definition: 2 context + 2 score questions, maxPoints 6. */
 export const SAMPLE_DEFINITION: ScorecardDefinition = {
   slug: "sample",
   questions: [
