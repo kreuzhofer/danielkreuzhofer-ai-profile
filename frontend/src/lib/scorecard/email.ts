@@ -3,6 +3,9 @@
  * (IONOS). Subjects come from the scorecard registration; the v1 HTML is generic
  * (M3 can switch to per-scorecard templates). Throws EmailNotConfiguredError when
  * SMTP is absent so routes can map it to a 503, exactly like the Engpass funnel.
+ *
+ * SECURITY: `confirmUrl`/`reportUrl` are interpolated into the HTML — callers must
+ * pass trusted, server-built internal URLs (never user-supplied values).
  */
 
 import { createLogger } from "@/lib/logger";

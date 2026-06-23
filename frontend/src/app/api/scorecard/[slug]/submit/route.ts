@@ -32,16 +32,21 @@ interface SubmitBody {
   tid?: string;
 }
 
+// Bound the stored jsonb: no real scorecard has anywhere near this many questions.
+const MAX_ANSWERS = 100;
+
 function isValidBody(body: unknown): body is SubmitBody {
   if (!body || typeof body !== "object") return false;
   const b = body as Record<string, unknown>;
-  return (
-    typeof b.email === "string" &&
-    typeof b.answers === "object" &&
-    b.answers !== null &&
-    !Array.isArray(b.answers) &&
-    (b.tid === undefined || typeof b.tid === "string")
-  );
+  if (typeof b.email !== "string") return false;
+  if (b.tid !== undefined && typeof b.tid !== "string") return false;
+  const answers = b.answers;
+  if (typeof answers !== "object" || answers === null || Array.isArray(answers)) return false;
+  // The schema (and CleverReach/analytics) assume string→string answers; enforce it
+  // at the boundary so malformed/oversized payloads never reach the DB (§3/§8).
+  const entries = Object.entries(answers as Record<string, unknown>);
+  if (entries.length > MAX_ANSWERS) return false;
+  return entries.every(([, v]) => typeof v === "string");
 }
 
 function clientIp(request: NextRequest): string {

@@ -60,9 +60,9 @@ jest.mock("next/server", () => ({
 
 import { POST } from "./route";
 
-function post(slug: string, body: unknown): Promise<Response> {
+function post(slug: string, body: unknown, ip = "9.9.9.9"): Promise<Response> {
   const req = new MockNextRequest(`http://localhost/api/scorecard/${slug}/submit`, {
-    headers: { "x-forwarded-for": "9.9.9.9" },
+    headers: { "x-forwarded-for": ip },
     body: JSON.stringify(body),
   });
   return POST(req as never, { params: Promise.resolve({ slug }) } as never);
@@ -114,5 +114,21 @@ describe("POST /api/scorecard/[slug]/submit", () => {
     expect(mail.to).toBe("lead@firma.de");
     expect(mail.subject).toBe("Bestätige Deine Anmeldung");
     expect(mail.confirmUrl).toContain(`/api/scorecard/confirm?token=${row.doiToken}`);
+  });
+
+  it("400s when an answer value is not a string", async () => {
+    const res = await post("sample", { email: "a@b.de", answers: { K1: 42 } }, "8.8.8.8");
+    expect(res.status).toBe(400);
+    expect((await res.json()).code).toBe("INVALID_REQUEST");
+    expect(mockInsert).not.toHaveBeenCalled();
+  });
+
+  it("429s once an IP exceeds the submit rate limit", async () => {
+    for (let i = 0; i < 5; i++) {
+      const res = await post("sample", { email: "lead@firma.de", answers }, "7.7.7.7");
+      expect(res.status).toBe(200);
+    }
+    const blocked = await post("sample", { email: "lead@firma.de", answers }, "7.7.7.7");
+    expect(blocked.status).toBe(429);
   });
 });
