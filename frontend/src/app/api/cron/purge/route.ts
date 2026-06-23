@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createLogger } from "@/lib/logger";
 import { purgePendingOlderThan } from "@/db/submissions";
+import { purgeScorecardPendingOlderThan } from "@/db/scorecard-submissions";
 
 const log = createLogger("CronPurge");
 
@@ -30,8 +31,17 @@ async function handle(request: NextRequest): Promise<Response> {
   }
   try {
     const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);
-    const deleted = await purgePendingOlderThan(cutoff);
-    log.info("Purged unconfirmed submissions", { deleted, retentionDays: RETENTION_DAYS });
+    const [engpass, scorecard] = await Promise.all([
+      purgePendingOlderThan(cutoff),
+      purgeScorecardPendingOlderThan(cutoff),
+    ]);
+    const deleted = engpass + scorecard;
+    log.info("Purged unconfirmed submissions", {
+      engpass,
+      scorecard,
+      deleted,
+      retentionDays: RETENTION_DAYS,
+    });
     return NextResponse.json({ ok: true, deleted, retentionDays: RETENTION_DAYS });
   } catch (error) {
     log.error("Retention purge failed", error);
