@@ -68,14 +68,14 @@ export const scorecardSubmissions = pgTable(
     email: text("email").notNull(),
     answers: jsonb("answers").notNull().$type<Record<string, string>>(),
     result: jsonb("result").notNull().$type<ScorecardResult>(),
-    doiStatus: text("doi_status").notNull().default("pending"),
+    doiStatus: text("doi_status").notNull().default("pending"), // pending | confirmed | expired
     doiToken: text("doi_token").notNull().unique(),
     reportToken: text("report_token").notNull().unique(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
-    ipAtSubmit: text("ip_at_submit"),
+    ipAtSubmit: text("ip_at_submit"), // DSGVO-Consent-Nachweis
     userAgent: text("user_agent"),
-    tid: text("tid"),
+    tid: text("tid"), // trackmysales attribution (optional)
     cleverreachSynced: boolean("cleverreach_synced").notNull().default(false),
   },
   (t) => [
