@@ -7,6 +7,7 @@
  */
 
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import type { ScorecardResult } from "../lib/scorecard/types";
 
 export const submissions = pgTable(
   "submissions",
@@ -52,3 +53,36 @@ export const submissions = pgTable(
 
 export type Submission = typeof submissions.$inferSelect;
 export type NewSubmission = typeof submissions.$inferInsert;
+
+/**
+ * Generic scorecard funnel state — one row per opt-in. The scorecard-specific
+ * result lives in `result jsonb` (no per-scorecard columns), so this one table
+ * serves every config-driven scorecard. The Engpass-Check uses its own
+ * `submissions` table and is unaffected.
+ */
+export const scorecardSubmissions = pgTable(
+  "scorecard_submissions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    scorecard: text("scorecard").notNull(),
+    email: text("email").notNull(),
+    answers: jsonb("answers").notNull().$type<Record<string, string>>(),
+    result: jsonb("result").notNull().$type<ScorecardResult>(),
+    doiStatus: text("doi_status").notNull().default("pending"),
+    doiToken: text("doi_token").notNull().unique(),
+    reportToken: text("report_token").notNull().unique(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
+    ipAtSubmit: text("ip_at_submit"),
+    userAgent: text("user_agent"),
+    tid: text("tid"),
+    cleverreachSynced: boolean("cleverreach_synced").notNull().default(false),
+  },
+  (t) => [
+    index("scorecard_submissions_scorecard_idx").on(t.scorecard),
+    index("scorecard_submissions_created_at_idx").on(t.createdAt),
+  ],
+);
+
+export type ScorecardSubmission = typeof scorecardSubmissions.$inferSelect;
+export type NewScorecardSubmission = typeof scorecardSubmissions.$inferInsert;
