@@ -1,6 +1,8 @@
 import type { Answers } from "@/lib/scorecard/types";
-import { TOOLS, DPF_STATUS } from "./facts";
-import type { RiskClass, TierFact, ToolFact, ToolVerdict, Tier, Verdict } from "./types";
+import { isQualified } from "@/lib/scorecard/qualification";
+import { TOOLS, DPF_STATUS, RECHTSSTAND } from "./facts";
+import { definition } from "./definition";
+import type { ActionItem, Ampel, DsgvoResult, RiskClass, TierFact, ToolFact, ToolVerdict, Tier, Verdict } from "./types";
 
 const ORDER: Verdict[] = ["gruen", "gelb", "rot"];
 const worse = (a: Verdict, b: Verdict): Verdict => (ORDER.indexOf(a) >= ORDER.indexOf(b) ? a : b);
@@ -77,5 +79,77 @@ export function classifyRisk(answers: Answers): { riskClass: RiskClass; obligati
   return {
     riskClass: "minimal",
     obligations: ["Keine spezifischen AI-Act-Pflichten — die DSGVO gilt trotzdem (AVV, Rechtsgrundlage, EU-Region)."],
+  };
+}
+
+/** Compliance item id → action shown when the user did NOT check it. Order = priority. */
+const COMPLIANCE_ACTIONS: { id: string; title: string; detail: string }[] = [
+  { id: "literacy", title: "AI-Literacy-Schulung durchführen", detail: "Pflicht seit 02/2025 (Art. 4 EU AI Act) für alle, die KI nutzen — auch KMU." },
+  { id: "avv", title: "AVV/DPA mit jedem Anbieter abschließen", detail: "Art. 28 DSGVO: ohne Auftragsverarbeitungsvertrag keine zulässige Verarbeitung." },
+  { id: "richtlinie", title: "KI-Nutzungsrichtlinie erstellen", detail: "Welche Tools erlaubt sind, welche Daten rein dürfen, wer verantwortlich ist." },
+  { id: "euregion", title: "EU-Region + Training-Opt-out aktivieren", detail: "Wo wählbar EU-Datenverarbeitung; Training vertraglich und technisch ausschalten." },
+  { id: "dsfa", title: "DSFA durchführen, wo nötig", detail: "Datenschutz-Folgenabschätzung (Art. 35) für KI mit personenbezogenen Daten." },
+];
+
+export function buildActionPlan(answers: Answers): ActionItem[] {
+  const done = new Set(asArray(answers.Q_COMPLIANCE));
+  const matrix = buildToolMatrix(answers);
+  const items: ActionItem[] = [];
+  let p = 0;
+  for (const a of COMPLIANCE_ACTIONS) {
+    if (!done.has(a.id)) items.push({ priority: p++, title: a.title, detail: a.detail });
+  }
+  for (const v of matrix) {
+    if (v.verdict !== "gruen" && v.upgradePath) {
+      items.push({ priority: p++, title: `${v.label}: konform machen`, detail: v.upgradePath });
+    }
+  }
+  const hasUs = matrix.some((v) => v.verdict !== "rot" && TOOLS[v.toolId]?.usDirect === true);
+  if (!DPF_STATUS.stable && hasUs) {
+    items.push({ priority: p++, title: "SCCs + Transfer Impact Assessment für US-Anbieter", detail: "Das DPF ist instabil — Standardvertragsklauseln vereinbaren und ein TIA dokumentieren." });
+  }
+  const shadow = typeof answers.Q_SHADOW === "string" ? answers.Q_SHADOW : "";
+  if (shadow === "nein" || shadow === "keine-ahnung" || shadow === "teilweise") {
+    items.push({ priority: p++, title: "Schatten-KI eindämmen", detail: "Erfassen, welche Tools Mitarbeitende real nutzen; freigegebene Alternativen anbieten (private Accounts haben oft Training-Opt-in)." });
+  }
+  return items;
+}
+
+function usTransfer(answers: Answers): boolean {
+  return buildToolMatrix(answers).some((v) => v.verdict !== "rot" && TOOLS[v.toolId]?.usDirect === true);
+}
+
+/** Readiness 0..100 + ampel, from tier fit, data sensitivity, shadow overview, compliance done. */
+function readiness(answers: Answers): { score: number; ampel: Ampel } {
+  const matrix = buildToolMatrix(answers);
+  const reds = matrix.filter((v) => v.verdict === "rot").length;
+  const yellows = matrix.filter((v) => v.verdict === "gelb").length;
+  const doneCount = asArray(answers.Q_COMPLIANCE).filter((x) => x !== "nichts").length;
+  const shadowOk = answers.Q_SHADOW === "ja";
+  let score = 40 + doneCount * 10 + (shadowOk ? 15 : 0) - reds * 20 - yellows * 8;
+  score = Math.max(0, Math.min(100, score));
+  const ampel: Ampel = reds > 0 || score < 34 ? "rot" : score < 67 ? "gelb" : "gruen";
+  return { score, ampel };
+}
+
+export function recommend(answers: Answers): DsgvoResult {
+  const toolMatrix = buildToolMatrix(answers);
+  const { riskClass, obligations } = classifyRisk(answers);
+  const actionPlan = buildActionPlan(answers);
+  const { score, ampel } = readiness(answers);
+  const shadow = typeof answers.Q_SHADOW === "string" ? answers.Q_SHADOW : "";
+  return {
+    rawSum: 0,
+    score,
+    outcome: ampel,
+    qualified: isQualified(definition, answers),
+    ampel,
+    toolMatrix,
+    riskClass,
+    riskObligations: obligations,
+    actionPlan,
+    shadowAiFlag: shadow !== "ja",
+    usTransferFlag: usTransfer(answers),
+    rechtsstand: RECHTSSTAND,
   };
 }
