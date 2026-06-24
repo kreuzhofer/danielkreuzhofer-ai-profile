@@ -1,0 +1,259 @@
+/*
+  DSGVO-Check — gated report document styles.
+  Light, print-optimized (dark text on white). Scoped to .dsgr.
+  Mirrors sc-report-doc.css palette and spacing conventions.
+*/
+
+/* ── Document root ──────────────────────────────────────────────────────── */
+.dsgr {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 4rem;
+  background: transparent;
+  color: #1a1a1a;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  line-height: 1.65;
+}
+
+/* ── Rechtsstand badge ──────────────────────────────────────────────────── */
+.dsgr-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: #f4f4f5;
+  color: #52525b;
+  border: 1px solid #e4e4e7;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  margin-bottom: 1.25rem;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Ampel header ───────────────────────────────────────────────────────── */
+.dsgr-ampel {
+  border-left: 5px solid #e5e5e5;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  border-radius: 0 8px 8px 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.dsgr-ampel-gruen {
+  border-left-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.dsgr-ampel-gelb {
+  border-left-color: #ca8a04;
+  background: #fefce8;
+}
+
+.dsgr-ampel-rot {
+  border-left-color: #dc2626;
+  background: #fef2f2;
+}
+
+.dsgr-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #71717a;
+  margin: 0 0 0.4rem;
+}
+
+.dsgr-headline {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #18181b;
+  margin: 0;
+}
+
+/* ── Sections ───────────────────────────────────────────────────────────── */
+.dsgr-section {
+  margin: 2rem 0;
+  break-inside: avoid;
+}
+
+.dsgr-section + .dsgr-section {
+  border-top: 1px solid #e5e5e5;
+  padding-top: 1.6rem;
+}
+
+.dsgr-h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #18181b;
+  margin: 0 0 1rem;
+  page-break-after: avoid;
+}
+
+/* ── Tool cards ─────────────────────────────────────────────────────────── */
+.dsgr-tool {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.9rem;
+  break-inside: avoid;
+}
+
+.dsgr-tool-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.dsgr-tool-reason {
+  margin: 0 0 0.4rem;
+  color: #27272a;
+  font-size: 0.92rem;
+}
+
+.dsgr-tool-upgrade {
+  margin: 0 0 0.4rem;
+  color: #0a558c;
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+.dsgr-tool-caveat {
+  margin: 0 0 0.4rem;
+  color: #92400e;
+  background: #fffbeb;
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.dsgr-tool-link {
+  margin: 0.4rem 0 0;
+  font-size: 0.88rem;
+}
+
+.dsgr-tool-link a {
+  color: #0a558c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+
+.dsgr-tool-link a:hover {
+  color: #084677;
+}
+
+/* ── Verdict badge2 (per-tool pill) ─────────────────────────────────────── */
+.dsgr-badge2 {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  flex-shrink: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.dsgr-badge2-gruen {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.dsgr-badge2-gelb {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.dsgr-badge2-rot {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Lists ──────────────────────────────────────────────────────────────── */
+.dsgr-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #27272a;
+  font-size: 0.93rem;
+}
+
+.dsgr-plan {
+  margin: 0;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  color: #27272a;
+  font-size: 0.93rem;
+}
+
+/* ── Reward block ───────────────────────────────────────────────────────── */
+.dsgr-reward {
+  background: #fdf6ef;
+  border: 1px solid #e89244;
+  border-radius: 10px;
+  padding: 1.25rem 1.4rem;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Footer notes ───────────────────────────────────────────────────────── */
+.dsgr-update {
+  font-size: 0.82rem;
+  color: #71717a;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 1rem;
+  margin-top: 2.5rem;
+}
+
+.dsgr-disclaimer {
+  font-size: 0.79rem;
+  color: #a1a1aa;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* ── Print ──────────────────────────────────────────────────────────────── */
+@media print {
+  .dsgr {
+    max-width: none;
+    padding: 0;
+  }
+
+  .dsgr-section,
+  .dsgr-tool {
+    break-inside: avoid;
+  }
+
+  .dsgr-ampel,
+  .dsgr-badge,
+  .dsgr-badge2,
+  .dsgr-tool-caveat,
+  .dsgr-reward {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .dsgr-tool-link a {
+    color: #000;
+  }
+}
