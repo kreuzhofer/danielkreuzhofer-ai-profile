@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -141,6 +141,14 @@ export function MobileMenu({
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Only portal after the component has mounted on the client. Keeps the server
+  // render and the first client render identical (both null), so the portal can
+  // never trigger a hydration mismatch.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Handle Escape key to close menu
   useEffect(() => {
@@ -154,12 +162,14 @@ export function MobileMenu({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  // Focus first link when menu opens
+  // Focus first link when menu opens. Depends on `mounted` too: on the first
+  // render the portal (and firstLinkRef) doesn't exist yet, so the effect must
+  // re-run once the menu has actually mounted.
   useEffect(() => {
-    if (isOpen && firstLinkRef.current) {
+    if (mounted && isOpen && firstLinkRef.current) {
       firstLinkRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, mounted]);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -200,8 +210,9 @@ export function MobileMenu({
     return currentSection === sectionId;
   };
 
-  // Don't render anything if not open (for SSR compatibility)
-  if (typeof document === 'undefined') {
+  // Render nothing until mounted on the client (see the effect above) — the
+  // portal targets document.body, which doesn't exist during SSR.
+  if (!mounted) {
     return null;
   }
 

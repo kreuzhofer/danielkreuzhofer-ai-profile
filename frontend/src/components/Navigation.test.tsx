@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
 import userEvent from '@testing-library/user-event';
 import { Navigation, NavLink, MobileMenuButton, MobileMenu, DEFAULT_SECTIONS } from './Navigation';
 
@@ -480,6 +481,23 @@ describe('MobileMenuButton Component', () => {
 });
 
 describe('MobileMenu Component', () => {
+  describe('SSR / hydration safety', () => {
+    // The portal must not render during SSR or on the first client render —
+    // otherwise server (null) and client (portal) disagree and React throws a
+    // hydration mismatch. A mounted-gate keeps the first render null on both.
+    it('renders nothing on the server (no portal in SSR markup)', () => {
+      const html = renderToString(
+        <MobileMenu
+          isOpen={true}
+          onClose={() => {}}
+          sections={DEFAULT_SECTIONS}
+          currentSection="about"
+        />,
+      );
+      expect(html).toBe('');
+    });
+  });
+
   describe('Rendering', () => {
     it('renders navigation links when open', () => {
       render(
