@@ -1,18 +1,27 @@
 /**
- * Generic scorecard transactional emails. Reuse the shared SMTP transporter
- * (IONOS). Subjects come from the scorecard registration; the v1 HTML is generic
- * (M3 can switch to per-scorecard templates). Throws EmailNotConfiguredError when
- * SMTP is absent so routes can map it to a 503, exactly like the Engpass funnel.
+ * Generic scorecard transactional emails — branded HTML via Handlebars templates
+ * (`email-templates/scorecard-doi.hbs`, `scorecard-delivery.hbs`), the same
+ * pattern as the Engpass funnel. Subjects + brand tokens + scorecard name come
+ * from the caller (registration). Throws EmailNotConfiguredError when SMTP is
+ * absent so routes can map it to a 503, exactly like the Engpass funnel.
  *
- * SECURITY: `confirmUrl`/`reportUrl` are interpolated into the HTML — callers must
- * pass trusted, server-built internal URLs (never user-supplied values).
+ * SECURITY: `confirmUrl`/`reportUrl`/`bookingUrl` are interpolated into the HTML
+ * — callers must pass trusted, server-built URLs (never user-supplied values).
  */
 
 import { createLogger } from "@/lib/logger";
 import { getFrom, getTransporter, isEmailConfigured } from "@/lib/email/transporter";
 import { EmailNotConfiguredError } from "@/lib/email/send";
+import { loadTemplate } from "@/lib/email/templates";
 
 const log = createLogger("ScorecardEmail");
+
+/** Brand bits every scorecard email needs to look on-brand. */
+interface BrandBits {
+  brandAuthor: string;
+  accent: string;
+  accentInk: string;
+}
 
 async function send(to: string, subject: string, html: string): Promise<void> {
   if (!isEmailConfigured()) throw new EmailNotConfiguredError();
@@ -20,32 +29,41 @@ async function send(to: string, subject: string, html: string): Promise<void> {
   log.info("Scorecard email sent", { subject });
 }
 
-export async function sendScorecardDoi(params: {
-  to: string;
-  subject: string;
-  confirmUrl: string;
-}): Promise<void> {
-  const html =
-    `<p>Ein Klick noch, dann ist Deine Anmeldung bestätigt und Dein Ergebnis unterwegs:</p>` +
-    `<p><a href="${params.confirmUrl}">Jetzt bestätigen</a></p>` +
-    `<p>Wenn Du das nicht angefordert hast, ignorier diese E-Mail einfach.</p>`;
+export async function sendScorecardDoi(
+  params: { to: string; subject: string; confirmUrl: string; scorecardName: string } & BrandBits,
+): Promise<void> {
+  const tpl = await loadTemplate("scorecard-doi");
+  const html = tpl({
+    confirmUrl: params.confirmUrl,
+    scorecardName: params.scorecardName,
+    brandAuthor: params.brandAuthor,
+    accent: params.accent,
+    accentInk: params.accentInk,
+  });
   await send(params.to, params.subject, html);
 }
 
-export async function sendScorecardDelivery(params: {
-  to: string;
-  subject: string;
-  reportUrl: string;
-  qualified: boolean;
-  bookingUrl?: string;
-}): Promise<void> {
-  const cta =
-    params.qualified && params.bookingUrl
-      ? `<p>Wenn Du magst, hol Dir eine zweite Meinung — kein Verkaufsgespräch: ` +
-        `<a href="${params.bookingUrl}">15 Minuten buchen</a>.</p>`
-      : "";
-  const html =
-    `<p>Dein vollständiger Report liegt hier — Dein Ergebnis, Deine nächsten Schritte und konkrete Tipps:</p>` +
-    `<p><a href="${params.reportUrl}">Zu Deinem Report</a></p>${cta}`;
+export async function sendScorecardDelivery(
+  params: {
+    to: string;
+    subject: string;
+    reportUrl: string;
+    scorecardName: string;
+    outcomeLabel: string;
+    qualified: boolean;
+    bookingUrl?: string;
+  } & BrandBits,
+): Promise<void> {
+  const tpl = await loadTemplate("scorecard-delivery");
+  const html = tpl({
+    reportUrl: params.reportUrl,
+    scorecardName: params.scorecardName,
+    outcomeLabel: params.outcomeLabel,
+    qualified: params.qualified,
+    bookingUrl: params.bookingUrl,
+    brandAuthor: params.brandAuthor,
+    accent: params.accent,
+    accentInk: params.accentInk,
+  });
   await send(params.to, params.subject, html);
 }

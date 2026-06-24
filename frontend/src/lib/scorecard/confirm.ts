@@ -35,6 +35,7 @@ export async function confirmScorecardByToken(doiToken: string): Promise<Confirm
   const reg = getScorecard(submission.scorecard);
   const source = reg?.cleverreachSource ?? submission.scorecard;
   const deliverySubject = reg?.deliverySubject ?? "Dein Ergebnis ist da";
+  const outcome = submission.result.outcome;
 
   try {
     await sendScorecardDelivery({
@@ -42,6 +43,12 @@ export async function confirmScorecardByToken(doiToken: string): Promise<Confirm
       subject: deliverySubject,
       reportUrl,
       qualified,
+      scorecardName: reg?.content.intro.eyebrow ?? "Check",
+      outcomeLabel: reg?.content.outcomeLabel[outcome] ?? outcome,
+      brandAuthor: reg?.branding.brandAuthor ?? "Daniel Kreuzhofer",
+      accent: reg?.branding.accent ?? "#e89244",
+      accentInk: reg?.branding.accentInk ?? "#1a1206",
+      bookingUrl: reg?.bookingUrl,
     });
   } catch (error) {
     log.error("Scorecard delivery email failed (non-fatal)", error);

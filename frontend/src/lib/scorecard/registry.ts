@@ -16,6 +16,8 @@ export interface ScorecardRegistration {
   deliverySubject: string;
   /** CleverReach `source` + base tag; defaults to the slug. */
   cleverreachSource?: string;
+  /** Booking link for the qualified-lead CTA in the delivery email (Variante B). */
+  bookingUrl?: string;
   /** Page <head> metadata. */
   meta: { title: string; description: string };
   /** Renderer content + theme (M3). */

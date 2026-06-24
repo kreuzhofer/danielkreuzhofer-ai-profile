@@ -16,4 +16,5 @@ export const kiFuehrungsCheck: ScorecardRegistration = {
   doiSubject: "Ein Klick noch, dann kommt Dein KI-Führungs-Report",
   deliverySubject: "Dein KI-Führungs-Report ist da",
   cleverreachSource: "ki-fuehrungs-check",
+  bookingUrl: "https://calendly.com/danielkreuzhofer/30min",
 };

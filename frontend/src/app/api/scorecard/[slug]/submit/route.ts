@@ -118,6 +118,10 @@ export async function POST(
       to: email,
       subject: registration.doiSubject,
       confirmUrl: `${baseUrl()}/api/scorecard/confirm?token=${doiToken}`,
+      scorecardName: registration.content.intro.eyebrow ?? "Check",
+      brandAuthor: registration.branding.brandAuthor,
+      accent: registration.branding.accent,
+      accentInk: registration.branding.accentInk,
     });
 
     return NextResponse.json({ ok: true });

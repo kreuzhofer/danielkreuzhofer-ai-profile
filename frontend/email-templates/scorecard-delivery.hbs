@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dein Report ist da</title>
+  </head>
+  <body style="margin:0; padding:0; background:#f4f4f5; font-family:Inter,Arial,Helvetica,sans-serif; color:#18181b;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; background:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e4e4e7;">
+            <tr>
+              <td style="height:5px; background:{{accent}};"></td>
+            </tr>
+            <tr>
+              <td style="padding:32px 32px 8px;">
+                <p style="margin:0 0 16px; font-size:16px; line-height:1.6;">Hey,</p>
+                <p style="margin:0 0 16px; font-size:16px; line-height:1.6;">
+                  danke fürs Bestätigen. Hier ist Dein Ergebnis aus dem {{scorecardName}} —
+                  Dein Typ: <strong>{{outcomeLabel}}</strong>.
+                </p>
+                <p style="margin:0 0 16px; font-size:16px; line-height:1.6;">
+                  Im Report findest Du Deine vollständige Diagnose, Deine nächsten Schritte, die
+                  KI-Challenge-Frage und eine Reihe konkreter, sofort umsetzbarer Tipps — sortiert
+                  nach Deinem schwächsten Hebel. Zum Abspeichern und Weiterleiten als PDF.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:8px 32px 24px;">
+                <a href="{{{reportUrl}}}" style="display:inline-block; background:{{accent}}; color:{{accentInk}}; text-decoration:none; font-weight:700; font-size:16px; padding:14px 28px; border-radius:10px;">
+                  → Deinen Report öffnen
+                </a>
+              </td>
+            </tr>
+            {{#if qualified}}
+            <tr>
+              <td style="padding:0 32px 24px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafaf9; border:1px solid #e7e5e4; border-radius:10px;">
+                  <tr>
+                    <td style="padding:18px 20px;">
+                      <p style="margin:0 0 10px; font-size:15px; line-height:1.6; font-weight:700;">Noch ein Angebot — unverbindlich.</p>
+                      <p style="margin:0 0 16px; font-size:15px; line-height:1.6; color:#3f3f46;">
+                        Wenn Du Deinen Fall mit jemandem durchgehen willst, der das schon ein paar Mal
+                        gesehen hat: Ich nehm mir 30 Minuten, wir schauen gemeinsam auf Deine nächsten
+                        Schritte. Kein Verkaufsgespräch — eher eine zweite Meinung, bevor Du Zeit oder
+                        Budget in die falsche Richtung steckst.
+                      </p>
+                      <a href="{{{bookingUrl}}}" style="display:inline-block; background:#18181b; color:#ffffff; text-decoration:none; font-weight:600; font-size:15px; padding:11px 22px; border-radius:8px;">
+                        → 30 Minuten buchen
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            {{/if}}
+            <tr>
+              <td style="padding:0 32px 28px;">
+                <p style="margin:0 0 4px; font-size:16px; line-height:1.6;">Bis bald,</p>
+                <p style="margin:0; font-size:16px; line-height:1.6; font-weight:600;">{{brandAuthor}}</p>
+                <p style="margin:18px 0 0; font-size:12px; line-height:1.5; color:#a1a1aa; word-break:break-all;">
+                  Falls der Button nicht funktioniert, kopier diesen Link in Deinen Browser:<br />
+                  {{{reportUrl}}}
+                </p>
+              </td>
+            </tr>
+          </table>
+          <p style="max-width:520px; margin:16px auto 0; font-size:12px; line-height:1.5; color:#a1a1aa; text-align:center;">
+            {{brandAuthor}}<br />
+            Du bekommst diese E-Mail, weil Du im {{scorecardName}} Deinen Report angefordert und per
+            Double-Opt-in bestätigt hast. Abmelden geht jederzeit über den Link im Newsletter.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

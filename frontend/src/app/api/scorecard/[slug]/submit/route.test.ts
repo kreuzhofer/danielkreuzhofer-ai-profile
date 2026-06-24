@@ -13,6 +13,8 @@ const sampleReg = {
   definition: SAMPLE_DEFINITION,
   doiSubject: "Bestätige Deine Anmeldung",
   deliverySubject: "Dein Ergebnis ist da",
+  content: { intro: { eyebrow: "Sample" }, outcomeLabel: {} },
+  branding: { brandAuthor: "Daniel Kreuzhofer", accent: "#e89244", accentInk: "#1a1206" },
 };
 let known = true;
 jest.mock("@/lib/scorecard/registry", () => ({
