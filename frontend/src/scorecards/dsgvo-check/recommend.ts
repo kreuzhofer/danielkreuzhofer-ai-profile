@@ -1,6 +1,6 @@
 import type { Answers } from "@/lib/scorecard/types";
 import { TOOLS, DPF_STATUS } from "./facts";
-import type { TierFact, ToolFact, ToolVerdict, Tier, Verdict } from "./types";
+import type { RiskClass, TierFact, ToolFact, ToolVerdict, Tier, Verdict } from "./types";
 
 const ORDER: Verdict[] = ["gruen", "gelb", "rot"];
 const worse = (a: Verdict, b: Verdict): Verdict => (ORDER.indexOf(a) >= ORDER.indexOf(b) ? a : b);
@@ -50,4 +50,32 @@ export function buildToolMatrix(answers: Answers): ToolVerdict[] {
       dpaUrl: t.dpaUrl, caveat: fact.caveat,
     };
   });
+}
+
+const HIGH_RISK = new Set(["hr", "entscheidungen"]);
+const LIMITED = new Set(["bot"]);
+
+export function classifyRisk(answers: Answers): { riskClass: RiskClass; obligations: string[] } {
+  const uses = asArray(answers.Q_USECASE);
+  if (uses.some((u) => HIGH_RISK.has(u))) {
+    return {
+      riskClass: "hoch",
+      obligations: [
+        "Risikomanagement-System und technische Dokumentation aufbauen.",
+        "Human Oversight sicherstellen (Mensch entscheidet, nicht die KI allein).",
+        "Logging der Systemnutzung ≥ 6 Monate.",
+        "Hochrisiko-Pflichten greifen ab 02.12.2027 (Annex III, via Digital Omnibus verschoben) — Vorbereitung jetzt.",
+      ],
+    };
+  }
+  if (uses.some((u) => LIMITED.has(u))) {
+    return {
+      riskClass: "begrenzt",
+      obligations: ["Transparenzpflicht (Art. 50): Nutzer müssen erkennen, dass sie mit KI sprechen — ab 02.08.2026."],
+    };
+  }
+  return {
+    riskClass: "minimal",
+    obligations: ["Keine spezifischen AI-Act-Pflichten — die DSGVO gilt trotzdem (AVV, Rechtsgrundlage, EU-Region)."],
+  };
 }

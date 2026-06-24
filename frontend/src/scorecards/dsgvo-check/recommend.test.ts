@@ -1,4 +1,4 @@
-import { buildToolMatrix } from "./recommend";
+import { buildToolMatrix, classifyRisk } from "./recommend";
 
 test("ChatGPT at free tier + personal data → rot (overlay)", () => {
   const m = buildToolMatrix({ Q_TOOLS: ["chatgpt"], Q_TIER: "free", Q_DATA: "personenbezogen" });
@@ -24,4 +24,19 @@ test("gemischt tier falls back to the tool's least-favourable known tier + upgra
 });
 test("'keine' (noch keine Tools) produces an empty matrix, not a fallback row", () => {
   expect(buildToolMatrix({ Q_TOOLS: ["keine"], Q_TIER: "gemischt", Q_DATA: "keine" })).toEqual([]);
+});
+
+test("HR/Scoring use → Hochrisiko with obligations", () => {
+  const r = classifyRisk({ Q_USECASE: ["hr"] });
+  expect(r.riskClass).toBe("hoch");
+  expect(r.obligations.join(" ")).toMatch(/Human Oversight/i);
+});
+test("customer-service bot → begrenzt (Transparenzpflicht)", () => {
+  expect(classifyRisk({ Q_USECASE: ["bot"] }).riskClass).toBe("begrenzt");
+});
+test("only productivity → minimal", () => {
+  expect(classifyRisk({ Q_USECASE: ["produktivitaet"] }).riskClass).toBe("minimal");
+});
+test("HR wins even when combined with productivity", () => {
+  expect(classifyRisk({ Q_USECASE: ["produktivitaet", "hr"] }).riskClass).toBe("hoch");
 });
