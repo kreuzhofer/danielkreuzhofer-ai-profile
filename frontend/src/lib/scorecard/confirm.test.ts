@@ -16,7 +16,7 @@ const sampleReg = {
   content: { intro: { eyebrow: "Sample" }, outcomeLabel: {} },
   branding: { brandAuthor: "Daniel Kreuzhofer", accent: "#e89244", accentInk: "#1a1206" },
 };
-const mockGetScorecard = jest.fn(() => sampleReg);
+const mockGetScorecard = jest.fn((..._a: unknown[]) => sampleReg);
 jest.mock("./registry", () => ({ getScorecard: (...a: unknown[]) => mockGetScorecard(...a) }));
 
 const mockFind = jest.fn();
