@@ -30,6 +30,27 @@ export interface SourceRef {
   shownFor?: string[];
 }
 
+/** One actionable tip. `evidence` drives the 📊 (data-backed) / ✅ (best-practice) marker. */
+export interface Tipp {
+  /** Bolded lead-in (rendered emphasized). */
+  lead: string;
+  /** The tip body. */
+  body: string;
+  evidence: "data" | "practice";
+}
+
+/**
+ * A lever ("Hebel") — a themed group of tips. `category` ties it to a scoring
+ * category so the gated report can surface the user's weakest lever first;
+ * omit it for cross-cutting or bonus groups (always shown in order).
+ */
+export interface TippHebel {
+  category?: string;
+  title: string;
+  subtitle: string;
+  tipps: Tipp[];
+}
+
 export interface ScorecardContent {
   intro: { eyebrow?: string; heading: string; lead: string; startLabel: string; meta: string };
   resultHeading: string;
@@ -41,6 +62,8 @@ export interface ScorecardContent {
   personalisierung?: PersonalisierungRule;
   /** The free "tool" block (e.g. the KI-Challenge-Frage). */
   freeTool?: { label: string; body: string };
+  /** Rich tips, grouped by lever — rendered only in the gated report (opt-in reward). */
+  tipps?: TippHebel[];
   sources: SourceRef[];
   optin: {
     heading: string;

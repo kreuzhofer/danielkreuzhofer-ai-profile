@@ -56,6 +56,8 @@ export default async function ScorecardReportPage({
         model={model}
         labels={DEFAULT_REPORT_LABELS}
         eyebrow={reg.content.resultHeading}
+        tipps={reg.content.tipps}
+        weakestCategory={submission.result.nextLever}
       />
     </div>
   );

@@ -87,4 +87,27 @@ describe("KI-Führungs-Check registration", () => {
     expect(rand.text).toContain("42 von 50");
     expect(rand.text).not.toMatch(/84 ?% aller/i);
   });
+
+  it("ships 28 tips across 6 levers, 4 of them mapped to scoring categories", () => {
+    const tipps = reg.content.tipps!;
+    expect(tipps).toHaveLength(6);
+
+    const mapped = tipps.map((h) => h.category).filter(Boolean);
+    expect(mapped).toEqual(
+      expect.arrayContaining(["eigennutzung", "sichtbarkeit", "bounds", "fuehrung"]),
+    );
+    // every mapped category must be a real scoring category on the definition
+    const realCategories = new Set(
+      reg.definition.questions.map((q) => ("category" in q ? q.category : undefined)).filter(Boolean),
+    );
+    for (const c of mapped) expect(realCategories.has(c!)).toBe(true);
+
+    const allTips = tipps.flatMap((h) => h.tipps);
+    expect(allTips).toHaveLength(28);
+    for (const t of allTips) {
+      expect(t.lead.length).toBeGreaterThan(0);
+      expect(t.body.length).toBeGreaterThan(0);
+      expect(["data", "practice"]).toContain(t.evidence);
+    }
+  });
 });
