@@ -45,7 +45,7 @@ export async function sendScorecardDelivery(params: {
         `<a href="${params.bookingUrl}">15 Minuten buchen</a>.</p>`
       : "";
   const html =
-    `<p>Dein Ergebnis und Dein Umsetzungs-Toolkit liegen hier:</p>` +
-    `<p><a href="${params.reportUrl}">Zu Deinem Ergebnis</a></p>${cta}`;
+    `<p>Dein vollständiger Report liegt hier — Dein Ergebnis, Deine nächsten Schritte und konkrete Tipps:</p>` +
+    `<p><a href="${params.reportUrl}">Zu Deinem Report</a></p>${cta}`;
   await send(params.to, params.subject, html);
 }

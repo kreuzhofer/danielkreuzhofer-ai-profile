@@ -13,7 +13,7 @@ export const kiFuehrungsCheck: ScorecardRegistration = {
       "7 Fragen, 3 Minuten: Finde heraus, ob Du KI in Deinem Bereich wirklich führst, welcher " +
       "Führungs-Typ auf Dich zutrifft und was Dein nächster Schritt ist.",
   },
-  doiSubject: "Ein Klick noch, dann hast Du Dein KI-Führungs-Toolkit",
-  deliverySubject: "Dein KI-Führungs-Check ist da, plus Dein Umsetzungs-Toolkit",
+  doiSubject: "Ein Klick noch, dann kommt Dein KI-Führungs-Report",
+  deliverySubject: "Dein KI-Führungs-Report ist da",
   cleverreachSource: "ki-fuehrungs-check",
 };

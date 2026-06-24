@@ -67,7 +67,7 @@ export const content: ScorecardContent = {
     byAnswer: {
       "keine-zeit": `Genau deshalb fängst Du klein an: der erste Schritt kostet zwei Minuten, nicht eine Stunde. Nicht noch eine Aufgabe, sondern die, die Dir Montag am meisten auf den Wecker geht.`,
       "wo-anfangen": `Der Einstieg ist nicht ein Tool-Vergleich, sondern ein Reflex: bei der nächsten Aufgabe zuerst fragen, ob KI sie löst. Im Video zeige ich den konkreten Montagmorgen-Move.`,
-      datenschutz: `Berechtigt, und lösbar. Wie Du KI datenschutzkonform an Dein Postfach lässt, zeige ich in einem eigenen Video (Link im Toolkit).`,
+      datenschutz: `Berechtigt, und lösbar. Wie Du KI datenschutzkonform an Dein Postfach lässt, zeige ich in einem eigenen Video (Link im Report).`,
       skeptisch: `Die Skepsis teilen viele Chefs. Genau deshalb fängst Du an einer Stelle an, wo Du das Ergebnis sofort selbst beurteilen kannst, statt es zu glauben.`,
     },
   },
@@ -95,25 +95,23 @@ export const content: ScorecardContent = {
     },
   ],
   optin: {
-    heading: "Dein Ergebnis steht. Jetzt das Werkzeug für die Umsetzung.",
+    heading: "Dein Ergebnis steht. Den vollständigen Report bekommst Du per E-Mail.",
     body:
-      "Du kennst jetzt Deinen Führungs-Typ und Deinen nächsten Schritt. Das Umsetzungs-Toolkit ist das, " +
-      "womit Du morgen anfängst: der 30-Minuten-Selbst-Start-Plan, die KI-Challenge-Frage als Karten-Set " +
-      "fürs nächste Meeting, und ein Template, mit dem Du Deinem Team sichtbar machst, dass und wie Du KI " +
-      "nutzt. Trag Deine E-Mail ein, ich schick Dir das Toolkit und einen persönlichen Link, über den Du " +
-      "jederzeit zurückkommst.",
-    button: "Toolkit anfordern",
+      "Du kennst jetzt Deinen Führungs-Typ und Deinen nächsten Schritt. Den vollständigen Report schick ich " +
+      "Dir per E-Mail: Deine Diagnose, Deine konkreten nächsten Schritte und eine Reihe sofort umsetzbarer " +
+      "Tipps, dazu ein dauerhafter Link, über den Du jederzeit zurückkommst. Trag einfach Deine E-Mail ein.",
+    button: "Report anfordern",
     consent:
-      "Mit „Toolkit anfordern“ willige ich ein, dass meine E-Mail-Adresse und meine Check-Antworten " +
-      "gespeichert und verarbeitet werden, damit ich mein Umsetzungs-Toolkit erhalte, und dass mir Daniel " +
+      "Mit „Report anfordern“ willige ich ein, dass meine E-Mail-Adresse und meine Check-Antworten " +
+      "gespeichert und verarbeitet werden, damit ich meinen Report erhalte, und dass mir Daniel " +
       "Kreuzhofer regelmäßig Tipps und Angebote rund um KI per E-Mail schickt. Die Verarbeitung läuft über " +
       "Dienstleister in der EU (Hosting, E-Mail-Versand, Newsletter) mit Auftragsverarbeitungsvertrag; meine " +
       "Daten werden nicht verkauft. Ich bestätige per Double-Opt-in und kann mich jederzeit abmelden.",
     datenschutzHref: "/datenschutz",
     successHeading: "Fast geschafft, schau in Dein Postfach",
     successBody:
-      "Ich habe Dir gerade eine E-Mail geschickt. Ein Klick auf den Bestätigungs-Link, dann hast Du Dein " +
-      "Umsetzungs-Toolkit. (Falls nichts ankommt: kurz im Spam-Ordner schauen.)",
+      "Ich habe Dir gerade eine E-Mail geschickt. Ein Klick auf den Bestätigungs-Link, dann hast Du Deinen " +
+      "Report. (Falls nichts ankommt: kurz im Spam-Ordner schauen.)",
     errorBody:
       "Da ist gerade etwas schiefgelaufen. Dein Ergebnis siehst Du oben weiterhin, bitte versuch es in " +
       "einem Moment noch einmal.",
