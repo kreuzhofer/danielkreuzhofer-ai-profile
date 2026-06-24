@@ -45,11 +45,15 @@ export function buildToolMatrix(answers: Answers): ToolVerdict[] {
     // DPF instability is NOT a verdict overlay: facts.ts already encodes US-transfer
     // risk per tier (Claude API-direct = gelb; EU-residency tiers = gruen). It is
     // surfaced as the SCCs+TIA action item instead (see buildActionPlan / usTransfer).
-    return {
-      toolId, label: fact.label, verdict, reason: t.reason,
-      upgradePath: tier === "gemischt" ? (t.upgradePath ?? "Auf eine konforme Stufe/EU-Region wechseln.") : t.upgradePath,
-      dpaUrl: t.dpaUrl, caveat: fact.caveat,
-    };
+    // No upgrade hint on an already-green verdict — even in "gemischt" mode — so the
+    // matrix never shows "Konform nutzbar → wechsle auf eine konforme Stufe".
+    const upgradePath =
+      verdict === "gruen"
+        ? undefined
+        : tier === "gemischt"
+          ? (t.upgradePath ?? "Auf eine konforme Stufe/EU-Region wechseln.")
+          : t.upgradePath;
+    return { toolId, label: fact.label, verdict, reason: t.reason, upgradePath, dpaUrl: t.dpaUrl, caveat: fact.caveat };
   });
 }
 
@@ -107,8 +111,9 @@ export function buildActionPlan(answers: Answers): ActionItem[] {
   if (!DPF_STATUS.stable && hasUs) {
     items.push({ priority: p++, title: "SCCs + Transfer Impact Assessment für US-Anbieter", detail: "Das DPF ist instabil — Standardvertragsklauseln vereinbaren und ein TIA dokumentieren." });
   }
+  // Anything other than a clear "ja" → remediation (matches recommend()'s shadowAiFlag).
   const shadow = typeof answers.Q_SHADOW === "string" ? answers.Q_SHADOW : "";
-  if (shadow === "nein" || shadow === "keine-ahnung" || shadow === "teilweise") {
+  if (shadow !== "ja") {
     items.push({ priority: p++, title: "Schatten-KI eindämmen", detail: "Erfassen, welche Tools Mitarbeitende real nutzen; freigegebene Alternativen anbieten (private Accounts haben oft Training-Opt-in)." });
   }
   return items;

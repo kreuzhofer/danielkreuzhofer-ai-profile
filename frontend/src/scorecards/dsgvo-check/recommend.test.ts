@@ -28,6 +28,12 @@ test("'keine' (noch keine Tools) produces an empty matrix, not a fallback row", 
   expect(buildToolMatrix({ Q_TOOLS: ["keine"], Q_TIER: "gemischt", Q_DATA: "keine" })).toEqual([]);
 });
 
+test("an all-green tool in gemischt mode gets NO upgradePath (no self-contradicting hint)", () => {
+  const m = buildToolMatrix({ Q_TOOLS: ["alephalpha"], Q_TIER: "gemischt", Q_DATA: "keine" });
+  expect(m[0].verdict).toBe("gruen");
+  expect(m[0].upgradePath).toBeUndefined();
+});
+
 test("HR/Scoring use → Hochrisiko with obligations", () => {
   const r = classifyRisk({ Q_USECASE: ["hr"] });
   expect(r.riskClass).toBe("hoch");
