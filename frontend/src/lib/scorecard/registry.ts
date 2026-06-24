@@ -18,6 +18,8 @@ export interface ScorecardRegistration {
   cleverreachSource?: string;
   /** Booking link for the qualified-lead CTA in the delivery email (Variante B). */
   bookingUrl?: string;
+  /** trackmysales ConversionLink code for lead attribution; defaults to the slug. */
+  trackmysalesCode?: string;
   /** Page <head> metadata. */
   meta: { title: string; description: string };
   /** Renderer content + theme (M3). */

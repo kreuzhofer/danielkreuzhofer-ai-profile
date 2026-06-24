@@ -9,6 +9,7 @@ import { getScorecard } from "./registry";
 import { baseUrl } from "./tokens";
 import { sendScorecardDelivery } from "./email";
 import { addConfirmedNewsletterLead, isCleverReachConfigured } from "./cleverreach";
+import { isTrackmysalesConfigured, reportLeadConversion } from "./trackmysales";
 import {
   confirmScorecardSubmission,
   findScorecardByDoiToken,
@@ -61,6 +62,17 @@ export async function confirmScorecardByToken(doiToken: string): Promise<Confirm
       await markScorecardCleverreachSynced(submission.id);
     } catch (error) {
       log.error("Scorecard CleverReach push failed (non-fatal)", error);
+    }
+  }
+
+  // trackmysales attribution — best-effort, server-to-server. Reports the
+  // confirmed lead so it is final-touch-attributed to the originating click/video.
+  // The ConversionLink code is per lead magnet (registration override → slug).
+  if (submission.tid && isTrackmysalesConfigured()) {
+    try {
+      await reportLeadConversion(submission.tid, reg?.trackmysalesCode ?? submission.scorecard);
+    } catch (error) {
+      log.error("Scorecard trackmysales conversion failed (non-fatal)", error);
     }
   }
 

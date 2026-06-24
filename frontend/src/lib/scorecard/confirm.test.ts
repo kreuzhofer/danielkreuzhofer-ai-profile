@@ -37,6 +37,13 @@ jest.mock("./cleverreach", () => ({
   isCleverReachConfigured: () => cleverreachConfigured,
 }));
 
+const mockReportConversion = jest.fn();
+let trackmysalesConfigured = true;
+jest.mock("./trackmysales", () => ({
+  reportLeadConversion: (...a: unknown[]) => mockReportConversion(...a),
+  isTrackmysalesConfigured: () => trackmysalesConfigured,
+}));
+
 import { confirmScorecardByToken } from "./confirm";
 
 function row(overrides: Record<string, unknown> = {}) {
@@ -58,7 +65,9 @@ beforeEach(() => {
   mockMarkSynced.mockReset().mockResolvedValue(undefined);
   mockSendDelivery.mockReset().mockResolvedValue(undefined);
   mockAddNewsletter.mockReset().mockResolvedValue(undefined);
+  mockReportConversion.mockReset().mockResolvedValue({ attributed: true });
   cleverreachConfigured = true;
+  trackmysalesConfigured = true;
 });
 
 describe("confirmScorecardByToken", () => {
@@ -113,5 +122,30 @@ describe("confirmScorecardByToken", () => {
     mockFind.mockResolvedValueOnce(row());
     await confirmScorecardByToken("doi_abc");
     expect(mockAddNewsletter).not.toHaveBeenCalled();
+  });
+
+  it("reports a trackmysales lead conversion on confirm when the lead carries a tid (code = slug)", async () => {
+    mockFind.mockResolvedValueOnce(row({ tid: "tid_xyz" }));
+    await confirmScorecardByToken("doi_abc");
+    expect(mockReportConversion).toHaveBeenCalledWith("tid_xyz", "sample");
+  });
+
+  it("skips trackmysales when the lead has no tid", async () => {
+    mockFind.mockResolvedValueOnce(row());
+    await confirmScorecardByToken("doi_abc");
+    expect(mockReportConversion).not.toHaveBeenCalled();
+  });
+
+  it("skips trackmysales when it is not configured", async () => {
+    trackmysalesConfigured = false;
+    mockFind.mockResolvedValueOnce(row({ tid: "tid_xyz" }));
+    await confirmScorecardByToken("doi_abc");
+    expect(mockReportConversion).not.toHaveBeenCalled();
+  });
+
+  it("still confirms when the trackmysales report fails (non-fatal)", async () => {
+    mockFind.mockResolvedValueOnce(row({ tid: "tid_xyz" }));
+    mockReportConversion.mockRejectedValueOnce(new Error("tms down"));
+    expect((await confirmScorecardByToken("doi_abc")).status).toBe("confirmed");
   });
 });
