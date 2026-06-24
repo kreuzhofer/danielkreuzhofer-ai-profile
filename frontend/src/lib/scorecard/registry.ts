@@ -17,9 +17,9 @@ export interface ScorecardResultViewProps {
   result: ScorecardResult;
 }
 
-/** Props a custom gated report-doc receives. */
+/** Props a custom gated report-doc receives. Must be SERIALIZABLE — the report
+ *  page is a Server Component, so no functions (i.e. no full registration) here. */
 export interface ScorecardReportDocProps {
-  registration: ScorecardRegistration;
   result: ScorecardResult;
   answers: Answers;
 }

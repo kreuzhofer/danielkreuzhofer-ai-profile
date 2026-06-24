@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Anton } from "next/font/google";
 import { getScorecard } from "@/lib/scorecard/registry";
 import { REGISTRATIONS } from "@/scorecards";
-import { ScorecardApp } from "@/components/scorecard/ScorecardApp";
+import { ScorecardAppBySlug } from "@/components/scorecard/ScorecardAppBySlug";
 import "@/components/scorecard/sc.css";
 
 // Condensed display font per Video-Brand-Kit §5 (Anton — ALLCAPS), same as the
@@ -35,7 +35,7 @@ export default async function ScorecardPage({
   if (!reg) notFound();
   return (
     <div className={anton.variable}>
-      <ScorecardApp registration={reg} />
+      <ScorecardAppBySlug slug={scorecardSlug} />
     </div>
   );
 }

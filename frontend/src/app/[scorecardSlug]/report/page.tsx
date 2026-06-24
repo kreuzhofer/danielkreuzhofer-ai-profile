@@ -44,7 +44,7 @@ export default async function ScorecardReportPage({
             <PrintButton label="Als PDF speichern" />
           </div>
         </header>
-        <ReportDoc registration={reg} result={submission.result} answers={submission.answers} />
+        <ReportDoc result={submission.result} answers={submission.answers} />
       </div>
     );
   }
