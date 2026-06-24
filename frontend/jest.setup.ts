@@ -23,6 +23,29 @@ jest.mock('react-markdown', () => {
   };
 });
 
+// Default next/navigation mock so components using router hooks (usePathname,
+// useRouter, …) render in the jsdom env. Test files with their own
+// jest.mock('next/navigation') override this for their file.
+jest.mock('next/navigation', () => ({
+  usePathname: () => '/',
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+    prefetch: jest.fn(),
+  }),
+  useSearchParams: () => new URLSearchParams(),
+  useParams: () => ({}),
+  notFound: () => {
+    throw new Error('NEXT_NOT_FOUND');
+  },
+  redirect: () => {
+    throw new Error('NEXT_REDIRECT');
+  },
+}));
+
 // Mock matchMedia for useReducedMotion hook and other media query tests
 // Only define if window exists (jsdom environment)
 if (typeof window !== 'undefined') {

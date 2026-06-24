@@ -18,6 +18,9 @@ const mockNotFound = jest.fn(() => {
 });
 jest.mock('next/navigation', () => ({
   notFound: mockNotFound,
+  usePathname: () => '/',
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn(), prefetch: jest.fn() }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 // Mock react-markdown to simplify rendering

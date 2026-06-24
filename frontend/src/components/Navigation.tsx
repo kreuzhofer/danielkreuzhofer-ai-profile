@@ -138,7 +138,7 @@ export function MobileMenu({
   currentSection,
   onNavigate,
 }: MobileMenuProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   const menuRef = useRef<HTMLDivElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -421,7 +421,7 @@ export function MobileMenu({
  * ```
  */
 export function NavLink({ href, label, isActive, onClick }: NavLinkProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   const isRouteLink = !href.startsWith('#');
   // When on a non-home page, anchor links need to navigate to home first
   const resolvedHref = !isRouteLink && pathname !== '/' ? `/${href}` : href;
@@ -524,7 +524,7 @@ export function Navigation({
   currentSection,
   onNavigate,
 }: NavigationProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
 
   /**
    * Handle navigation click - extracts section ID from href and calls onNavigate
