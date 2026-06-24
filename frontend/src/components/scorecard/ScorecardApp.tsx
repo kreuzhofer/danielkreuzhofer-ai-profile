@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useReducer, useState } from "react";
 import Link from "next/link";
-import { buildResult } from "@/lib/scorecard/result";
+import { resolveResult } from "@/lib/scorecard/result";
 import { buildScorecardReport } from "@/lib/scorecard/report-model";
 import { brandStyle } from "@/lib/scorecard/branding";
 import { ScorecardReportView, DEFAULT_REPORT_LABELS } from "./ScorecardReportView";
@@ -25,6 +25,8 @@ interface State {
 type Action =
   | { type: "start" }
   | { type: "answer"; questionId: string; optionId: string }
+  | { type: "toggle"; questionId: string; optionId: string }
+  | { type: "next" }
   | { type: "back" }
   | { type: "restart" }
   | { type: "hydrate"; state: State };
@@ -43,6 +45,20 @@ function makeReducer(total: number) {
         return isLast
           ? { phase: "result", index: state.index, answers }
           : { phase: "quiz", index: state.index + 1, answers };
+      }
+      case "toggle": {
+        const cur = state.answers[action.questionId];
+        const arr = Array.isArray(cur) ? cur : [];
+        const next = arr.includes(action.optionId)
+          ? arr.filter((x) => x !== action.optionId)
+          : [...arr, action.optionId];
+        return { ...state, answers: { ...state.answers, [action.questionId]: next } };
+      }
+      case "next": {
+        const isLast = state.index >= total - 1;
+        return isLast
+          ? { phase: "result", index: state.index, answers: state.answers }
+          : { phase: "quiz", index: state.index + 1, answers: state.answers };
       }
       case "back":
         if (state.phase === "result") return { ...state, phase: "quiz", index: total - 1 };
@@ -140,6 +156,10 @@ export function ScorecardApp({ registration }: { registration: ScorecardRegistra
             onAnswer={(optionId) =>
               dispatch({ type: "answer", questionId: questions[state.index].id, optionId })
             }
+            onToggle={(optionId) =>
+              dispatch({ type: "toggle", questionId: questions[state.index].id, optionId })
+            }
+            onNext={() => dispatch({ type: "next" })}
             onBack={() => dispatch({ type: "back" })}
           />
         )}
@@ -194,6 +214,8 @@ function Quiz({
   total,
   answers,
   onAnswer,
+  onToggle,
+  onNext,
   onBack,
 }: {
   question: Question;
@@ -201,10 +223,15 @@ function Quiz({
   total: number;
   answers: Answers;
   onAnswer: (optionId: string) => void;
+  onToggle: (optionId: string) => void;
+  onNext: () => void;
   onBack: () => void;
 }) {
-  const selected = answers[question.id];
   const progress = Math.round(((index + 1) / total) * 100);
+  const isMulti = question.kind === "multi";
+  const raw = answers[question.id];
+  const multiSelected = Array.isArray(raw) ? raw : [];
+  const singleSelected = typeof raw === "string" ? raw : undefined;
 
   return (
     <section className="sc-card sc-quiz" aria-labelledby="sc-question">
@@ -217,21 +244,25 @@ function Quiz({
         </p>
       </div>
 
-      <h2 id="sc-question" className="sc-question">
-        {question.prompt}
-      </h2>
+      <h2 id="sc-question" className="sc-question">{question.prompt}</h2>
 
-      <div className="sc-options" role="radiogroup" aria-labelledby="sc-question">
+      <div
+        className="sc-options"
+        role={isMulti ? "group" : "radiogroup"}
+        aria-labelledby="sc-question"
+      >
         {question.options.map((option) => {
-          const isSelected = selected === option.id;
+          const isSelected = isMulti
+            ? multiSelected.includes(option.id)
+            : singleSelected === option.id;
           return (
             <button
               key={option.id}
               type="button"
-              role="radio"
+              role={isMulti ? "checkbox" : "radio"}
               aria-checked={isSelected}
               className={`sc-option${isSelected ? " is-selected" : ""}`}
-              onClick={() => onAnswer(option.id)}
+              onClick={() => (isMulti ? onToggle(option.id) : onAnswer(option.id))}
             >
               <span className="sc-option-dot" aria-hidden="true" />
               <span className="sc-option-label">{option.label}</span>
@@ -244,7 +275,18 @@ function Quiz({
         <button type="button" className="sc-btn sc-btn-ghost" onClick={onBack}>
           ← Zurück
         </button>
-        <p className="sc-quiz-hint">Tippe eine Antwort an — es geht sofort weiter.</p>
+        {isMulti ? (
+          <button
+            type="button"
+            className="sc-btn sc-btn-primary"
+            onClick={onNext}
+            disabled={multiSelected.length === 0}
+          >
+            Weiter →
+          </button>
+        ) : (
+          <p className="sc-quiz-hint">Tippe eine Antwort an — es geht sofort weiter.</p>
+        )}
       </div>
     </section>
   );
@@ -266,17 +308,22 @@ function Result({
   onRestart: () => void;
 }) {
   const { definition, content } = registration;
+  const result = useMemo(() => resolveResult(registration, answers), [registration, answers]);
+  const ResultView = registration.ResultView;
   const model = useMemo(
-    () => buildScorecardReport(registration, buildResult(definition, answers), answers),
-    [registration, definition, answers],
+    () => (ResultView ? null : buildScorecardReport(registration, result, answers)),
+    [ResultView, registration, result, answers],
   );
 
   return (
     <section className="sc-result" aria-label={content.resultHeading}>
       <div className="sc-card sc-report-card">
         <p className="sc-eyebrow">{content.resultHeading}</p>
-        <ScorecardReportView model={model} labels={DEFAULT_REPORT_LABELS} />
-
+        {ResultView ? (
+          <ResultView registration={registration} answers={answers} result={result} />
+        ) : (
+          <ScorecardReportView model={model!} labels={DEFAULT_REPORT_LABELS} />
+        )}
         <div className="sc-result-nav">
           <button type="button" className="sc-btn sc-btn-ghost" onClick={onBack}>
             ← Antworten ändern
