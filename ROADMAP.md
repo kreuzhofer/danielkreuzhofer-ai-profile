@@ -82,5 +82,6 @@ Work completed after the core specs, grouped by area.
 *(Content/video ideas — like a "5 Hebel" video that re-promotes the KFC lead magnet — live in the vault video backlog, not here.)*
 
 ### Infrastructure
+- [x] **Test suite fully green** (133 suites / 1955 tests) — fixed all pre-existing failures: a real Navigation `usePathname()` null-deref, ESM/next-navigation jest-config gaps, and ~70 stale test assertions/fixtures lagging the dark-theme migration + SSE flow (test-only changes)
 - [x] Dependency security — cleared **all 7 prod high** + **4 moderate** Dependabot vulns (next, ws, form-data, hono, nodemailer, fast-uri, @xmldom/xmldom, qs, ip-address, express-rate-limit, dompurify) via surgical npm `overrides` + targeted bumps (NOT `npm audit fix` — it re-resolves the whole tree and breaks the jest/babel test tooling). Prod now **0 high / 5 moderate**.
 - [ ] Remaining 5 prod **moderate** vulns — all need risky majors / low real risk: @hono/node-server 1→2 (tooling, not run as a server), js-yaml↔gray-matter (frontmatter parsing, like the xmldom-0.9 break), postcss↔next (build-time CSS XSS, no runtime untrusted input)
