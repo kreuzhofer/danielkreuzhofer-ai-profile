@@ -1,6 +1,7 @@
 import fc from "fast-check";
 import { SAMPLE_DEFINITION } from "./__fixtures__/sample-definition";
-import { buildResult } from "./result";
+import { buildResult, resolveResult } from "./result";
+import type { ScorecardRegistration } from "./registry";
 
 describe("buildResult", () => {
   it("aggregates sum, score, outcome, category scores, next lever and qualification", () => {
@@ -66,4 +67,27 @@ describe("buildResult invariants (property-based)", () => {
       { numRuns: 3 },
     );
   });
+});
+
+const baseReg = {
+  definition: {
+    slug: "t",
+    scoring: { maxPoints: 0, direction: "higher-better" },
+    outcome: { type: "bands", bands: [{ key: "na", min: 0, max: 100 }] },
+    qualification: { requireQualifies: [] },
+    attributePrefix: "t_",
+    questions: [],
+  },
+} as unknown as ScorecardRegistration;
+
+test("resolveResult uses buildResult when no resolve hook", () => {
+  expect(resolveResult(baseReg, {}).outcome).toBe("na");
+});
+
+test("resolveResult uses the registration's resolve hook when present", () => {
+  const reg = {
+    ...baseReg,
+    resolve: () => ({ rawSum: 0, score: 50, outcome: "gelb", qualified: true }),
+  } as unknown as ScorecardRegistration;
+  expect(resolveResult(reg, {}).outcome).toBe("gelb");
 });

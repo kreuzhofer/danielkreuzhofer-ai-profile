@@ -4,10 +4,16 @@
  */
 
 import type { Answers, ScorecardDefinition, ScorecardResult } from "./types";
+import type { ScorecardRegistration } from "./registry";
 import { computeCategoryScores, computeRawSum, normalizeScore } from "./scoring";
 import { resolveOutcome } from "./outcome";
 import { computeNextLever } from "./next-lever";
 import { isQualified } from "./qualification";
+
+/** Use the scorecard's custom resolver if it has one; otherwise the generic engine. */
+export function resolveResult(reg: ScorecardRegistration, answers: Answers): ScorecardResult {
+  return reg.resolve ? reg.resolve(answers) : buildResult(reg.definition, answers);
+}
 
 export function buildResult(def: ScorecardDefinition, answers: Answers): ScorecardResult {
   const rawSum = computeRawSum(def, answers);

@@ -4,10 +4,25 @@
  * are registered as code in `src/scorecards`; new ones ship via git (no DB/admin).
  */
 
+import type { ComponentType } from "react";
 import { REGISTRATIONS } from "@/scorecards";
-import type { ScorecardDefinition } from "./types";
+import type { Answers, ScorecardDefinition, ScorecardResult } from "./types";
 import type { ScorecardContent } from "./content";
 import type { BrandTokens } from "./branding";
+
+/** Props a custom result view receives (free result screen). */
+export interface ScorecardResultViewProps {
+  registration: ScorecardRegistration;
+  answers: Answers;
+  result: ScorecardResult;
+}
+
+/** Props a custom gated report-doc receives. */
+export interface ScorecardReportDocProps {
+  registration: ScorecardRegistration;
+  result: ScorecardResult;
+  answers: Answers;
+}
 
 export interface ScorecardRegistration {
   definition: ScorecardDefinition;
@@ -25,6 +40,14 @@ export interface ScorecardRegistration {
   /** Renderer content + theme (M3). */
   content: ScorecardContent;
   branding: BrandTokens;
+  /** Custom result computation; overrides the generic engine when present. */
+  resolve?: (answers: Answers) => ScorecardResult;
+  /** Custom free-result view; replaces the generic report-card slot when present. */
+  ResultView?: ComponentType<ScorecardResultViewProps>;
+  /** Custom gated report document; replaces ScorecardReportDoc when present. */
+  ReportDoc?: ComponentType<ScorecardReportDocProps>;
+  /** Extra CleverReach tags derived from the stored result + answers. */
+  cleverreachTags?: (result: ScorecardResult, answers: Answers) => string[];
 }
 
 /** Pure: build a slug→registration lookup. Exported for testing. */
