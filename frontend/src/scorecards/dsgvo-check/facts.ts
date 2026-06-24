@@ -38,7 +38,7 @@ export const TOOLS: Record<string, ToolFact> = {
       business: { verdict: "gelb", reason: "API direkt / Team / Enterprise: US-Standard ohne dediziertes EU-Hosting; DPA automatisch in Commercial Terms (seit 01.01.2026) + SCCs Modul 2/3; 7-Tage-Retention; DSFA + TIA erforderlich.", upgradePath: "Über AWS Bedrock (Frankfurt) oder Google Vertex AI (EU) wird's grün.", dpaUrl: "https://privacy.claude.com/en/articles/7996862-how-do-i-view-and-sign-your-data-processing-addendum-dpa" },
       cloud: { verdict: "gruen", reason: "AWS Bedrock eu-central-1 (Frankfurt) oder Google Vertex AI EU-Region: vollständige EU-Datenresidenz, kein Training mit Kundendaten, AWS/Google DPA automatisch.", dpaUrl: "https://compound.law/en-DE/tools/claude-eu-hosting/" },
     },
-    source: { url: "https://companyscope.io/vendors/anthropic", asOf: "2026-04-29" },
+    source: { url: "https://companyscope.io/vendors/anthropic", asOf: "2026-04" },
   },
 
   gemini: {
@@ -48,7 +48,7 @@ export const TOOLS: Record<string, ToolFact> = {
       business: { verdict: "gruen", reason: "Google Workspace Business/Enterprise: EU-Region, Workspace DPA automatisch eingebunden, kein Training mit Workspace-Daten.", dpaUrl: "https://www.aipolicydesk.com/blog/ai-vendor-dpa-tracker-2026" },
       cloud: { verdict: "gruen", reason: "Vertex AI EU-Region (europe-west3/4): EU-Multi-Region, Google Cloud DPA automatisch, kein Training per Default; ISO 27001/27701 zertifiziert.", dpaUrl: "https://cloud.google.com/privacy/gdpr" },
     },
-    source: { url: "https://innfactory.ai/en/ai-models/google-gemini/", asOf: "2026-06-08" },
+    source: { url: "https://innfactory.ai/en/ai-models/google-gemini/", asOf: "2026-06" },
   },
 
   copilot: {
@@ -76,21 +76,21 @@ export const TOOLS: Record<string, ToolFact> = {
       business: { verdict: "gruen", reason: "Enterprise / On-Premise / STACKIT-as-a-Service: vollständig EU (Deutschland), individueller AVV, keine Drittlandtransfers; BSI-Zertifizierungen; ideal für regulierte Branchen.", dpaUrl: "https://aleph-alpha.com/de/aleph-alpha-stellt-phariaai-vor/" },
     },
     caveat: "Cohere-Übernahme angekündigt 24.04.2026 (unter Genehmigungsvorbehalt) — post-Merger DSGVO-Einordnung neu bewerten.",
-    source: { url: "https://europeanstack.com/software/aleph-alpha", asOf: "2026-03-05" },
+    source: { url: "https://europeanstack.com/software/aleph-alpha", asOf: "2026-03" },
   },
 
   deepseek: {
     label: "DeepSeek", vendor: "DeepSeek", country: "China", isEU: false, usDirect: false,
     tiers: {},
     override: { verdict: "rot", reason: "Datenspeicherung in China, kein Angemessenheitsbeschluss; Garante-Ban seit 30.01.2025; EU-Ermittlungen in Deutschland, Frankreich, Niederlanden, Belgien und Irland." },
-    source: { url: "https://www.euronews.com/next/2025/01/31/deepseek-ai-blocked-by-italian-authorities-as-others-member-states-open-probes", asOf: "2025-01-30" },
+    source: { url: "https://www.euronews.com/next/2025/01/31/deepseek-ai-blocked-by-italian-authorities-as-others-member-states-open-probes", asOf: "2025-01" },
   },
 
   local: {
     label: "Lokale Modelle (Ollama / vLLM / llama.cpp)", vendor: "Self-Hosted", country: "EU (self-hosted)", isEU: true, usDirect: false,
     tiers: {},
     override: { verdict: "gruen", reason: "Self-Hosted in eigener EU-Infrastruktur; keine Auftragsverarbeitung; DSGVO-Pflichten (ROPA, TOMs, ggf. DSFA) bleiben beim Unternehmen." },
-    source: { url: "https://www.qytera.de/blog/compliance-sichere-ai-fuer-unternehmen", asOf: "2026-04-20" },
+    source: { url: "https://www.qytera.de/blog/compliance-sichere-ai-fuer-unternehmen", asOf: "2026-04" },
   },
 };
 
