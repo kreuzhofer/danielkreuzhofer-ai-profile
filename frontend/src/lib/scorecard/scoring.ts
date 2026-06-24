@@ -6,7 +6,8 @@ import type { AnswerOption, Answers, Question, ScorecardDefinition } from "./typ
 
 function selectedOption(q: Question, answers: Answers): AnswerOption | undefined {
   const optionId = answers[q.id];
-  return optionId ? q.options.find((o) => o.id === optionId) : undefined;
+  if (typeof optionId !== "string") return undefined; // multi-select never feeds scoring
+  return q.options.find((o) => o.id === optionId);
 }
 
 /** Sum of `points` across score questions (0 for unanswered). Context never counts. */

@@ -38,9 +38,11 @@ export function buildScorecardReport(
   let bedeutungLink: { label: string; url: string } | undefined;
   if (c.personalisierung) {
     const answer = answers[c.personalisierung.questionId];
-    const para = answer ? c.personalisierung.byAnswer[answer] : undefined;
-    if (para) bedeutung.push(para);
-    if (answer) bedeutungLink = c.personalisierung.linkByAnswer?.[answer];
+    if (typeof answer === "string") {
+      const para = c.personalisierung.byAnswer[answer];
+      if (para) bedeutung.push(para);
+      bedeutungLink = c.personalisierung.linkByAnswer?.[answer];
+    }
   }
 
   const sources = c.sources.filter((s) => !s.shownFor || s.shownFor.includes(outcome));

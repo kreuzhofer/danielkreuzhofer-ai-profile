@@ -9,7 +9,11 @@ const reg = getScorecard("ki-fuehrungs-check")!;
 function answers(overrides: Partial<Answers>): Answers {
   const base: Answers = {};
   for (const q of reg.definition.questions) base[q.id] = q.options[0].id;
-  return { ...base, ...overrides };
+  const merged: Answers = { ...base };
+  for (const [k, v] of Object.entries(overrides)) {
+    if (v !== undefined) merged[k] = v;
+  }
+  return merged;
 }
 
 describe("KI-Führungs-Check registration", () => {

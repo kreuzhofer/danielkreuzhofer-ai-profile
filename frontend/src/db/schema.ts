@@ -66,7 +66,7 @@ export const scorecardSubmissions = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     scorecard: text("scorecard").notNull(),
     email: text("email").notNull(),
-    answers: jsonb("answers").notNull().$type<Record<string, string>>(),
+    answers: jsonb("answers").notNull().$type<Record<string, string | string[]>>(),
     result: jsonb("result").notNull().$type<ScorecardResult>(),
     doiStatus: text("doi_status").notNull().default("pending"), // pending | confirmed | expired
     doiToken: text("doi_token").notNull().unique(),

@@ -20,7 +20,7 @@ export interface AnswerOption {
 
 export interface Question {
   id: string;
-  kind: "context" | "score";
+  kind: "context" | "score" | "multi";
   prompt: string;
   /** Score question → the category/dimension it feeds. */
   category?: string;
@@ -29,7 +29,7 @@ export interface Question {
   options: AnswerOption[];
 }
 
-export type Answers = Record<string, string>; // questionId → optionId
+export type Answers = Record<string, string | string[]>; // questionId → optionId | optionIds
 
 export interface Band {
   key: string;

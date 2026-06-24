@@ -1,5 +1,6 @@
 import { SAMPLE_DEFINITION } from "./__fixtures__/sample-definition";
 import { computeCategoryScores, computeRawSum, normalizeScore } from "./scoring";
+import type { ScorecardDefinition } from "./types";
 
 describe("computeRawSum", () => {
   it("sums points of score questions only (context answers never count)", () => {
@@ -35,4 +36,19 @@ describe("computeCategoryScores", () => {
     };
     expect(computeCategoryScores(noCat, { S1: "daily", S2: "active" })).toEqual({ nutzung: 3 });
   });
+});
+
+test("computeRawSum ignores multi-select (array) answers without crashing", () => {
+  const def = {
+    slug: "t",
+    scoring: { maxPoints: 3, direction: "higher-better" },
+    outcome: { type: "bands", bands: [{ key: "a", min: 0, max: 100 }] },
+    qualification: { requireQualifies: [] },
+    attributePrefix: "t_",
+    questions: [
+      { id: "M1", kind: "multi", prompt: "?", options: [{ id: "x" }, { id: "y" }] },
+      { id: "S1", kind: "score", category: "c", prompt: "?", options: [{ id: "a", points: 3 }] },
+    ],
+  } as unknown as ScorecardDefinition;
+  expect(computeRawSum(def, { M1: ["x", "y"], S1: "a" })).toBe(3);
 });
