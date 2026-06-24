@@ -55,6 +55,12 @@ Work completed after the core specs, grouped by area.
 - [x] Claude Code build-and-deploy skill
 - [x] Fix Dockerfile BuildKit compatibility
 
+### Lead-Magnet Funnels & Scorecard Engine
+- [x] **Engpass-Check** — interactive rule-based scorecard funnel (quiz → typed result + report), own Postgres/Drizzle persistence, double-opt-in, hybrid CleverReach (tags only), branded transactional emails, DSGVO retention purge
+- [x] **trackmysales attribution** — leads attributed to their source video via the sibling `track-my-sales` repo (cross-repo, live)
+- [x] **Generic scorecard engine** — productized the funnel as config + content (definition / content / branding as data): pure scoring (bands / argmax / qualification / next-lever), generic `scorecard_submissions` table, dynamic `/[slug]` routing, registry
+- [x] **KI-Führungs-Check (#06) — LIVE** — first scorecard on the engine: Engpass-matched styling, 28-tip gated light PDF report (weakest lever highlighted first, 📊/✅-sourced), branded DOI + delivery emails, opt-in Datenschutz-Hinweis, DSGVO video linked in the personalisation; numeric score dropped product-wide
+
 ## Planned / In Progress
 
 ### Fit Analysis
@@ -68,6 +74,11 @@ Work completed after the core specs, grouped by area.
 ### Content
 - [ ] Ongoing knowledge base updates as experience evolves
 - [ ] New blog posts
+
+### Lead-Magnet Funnels
+- [ ] **In-app self-scheduling retention purge** (S) — the DSGVO purge (deletes unconfirmed opt-ins older than 7 days, both funnel tables) lives at `GET /api/cron/purge` and currently needs an *external* trigger (server crontab / cron-job.org / GitHub Actions, `CRON_SECRET`-gated). Move the schedule *into* the app — in-process scheduler in a server singleton or `instrumentation.ts`; viable because prod runs a persistent Docker container (`npm run start`)
+- [ ] (idea) Video #07 pitching the KFC "5 Hebel" report → re-promote the KFC lead magnet
+- [ ] New scorecards are now "data not code" — register via `src/scorecards/<slug>/` (definition + content + branding) when the next one is ready
 
 ### Infrastructure
 - [x] Address GitHub Dependabot security vulnerabilities
