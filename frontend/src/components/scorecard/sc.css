@@ -171,36 +171,6 @@
   flex-direction: column;
   gap: 1.5rem;
 }
-.sc-score {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-}
-.sc-score-value {
-  font-size: 3rem;
-  font-weight: 800;
-  line-height: 1;
-}
-.sc-score-max {
-  color: var(--sc-ink-muted);
-}
-.sc-score-label {
-  font-weight: 700;
-  color: var(--sc-accent);
-  margin: 0;
-}
-.sc-meter {
-  height: 6px;
-  border-radius: 3px;
-  background: color-mix(in srgb, var(--sc-ink) 12%, transparent);
-  overflow: hidden;
-  margin: 0.75rem 0 1.25rem;
-}
-.sc-meter-fill {
-  display: block;
-  height: 100%;
-  background: var(--sc-accent);
-}
 .sc-report-section {
   margin-top: 1.5rem;
 }

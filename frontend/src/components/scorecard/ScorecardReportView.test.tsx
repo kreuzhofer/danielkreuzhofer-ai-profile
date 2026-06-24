@@ -29,6 +29,13 @@ describe("ScorecardReportView", () => {
     expect(link).toHaveAttribute("href", "https://example.com");
   });
 
+  it("does not show a numeric score or score meter", () => {
+    const { container } = render(<ScorecardReportView model={model} labels={labels} />);
+    expect(container.querySelector(".sc-score")).toBeNull();
+    expect(container.querySelector(".sc-meter")).toBeNull();
+    expect(container).not.toHaveTextContent("/ 100");
+  });
+
   it("renders the personalisation section only when non-empty", () => {
     render(<ScorecardReportView model={model} labels={labels} />);
     expect(screen.getByText("Was das bedeutet")).toBeInTheDocument();

@@ -42,17 +42,6 @@ export function ScorecardReportView({
 }) {
   return (
     <article className="sc-report">
-      {/* Score */}
-      <div className="sc-score">
-        <div className="sc-score-number">
-          <span className="sc-score-value">{model.score}</span>
-          <span className="sc-score-max">/ 100</span>
-        </div>
-        <p className="sc-score-label">{model.outcomeLabel}</p>
-      </div>
-      <div className="sc-meter" aria-hidden="true">
-        <span className="sc-meter-fill" style={{ width: `${model.score}%` }} />
-      </div>
       {model.scoreParagraph && <Paragraphs text={model.scoreParagraph} className="sc-report-text" />}
 
       {/* Outcome + diagnosis */}
