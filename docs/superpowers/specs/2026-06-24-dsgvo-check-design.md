@@ -119,8 +119,11 @@ export const TOOLS = {
   // …
 } as const;
 
-export const AI_ACT_TIMELINE = [ { date, item, status } /* Art.4, Art.5, GPAI, Hochrisiko, Art.50 */ ];
-export const DPF_STATUS = { valid: boolean, note: string, asOf: "2026-06" }; // globaler Toggle
+export const AI_ACT_TIMELINE = [ { date, item, status } /* Art.4, Art.5, GPAI, Hochrisiko III/I, Art.50 */ ];
+export const DPF_STATUS = { valid: boolean, stable: boolean, note: string, asOf: "2026-06" };
+// valid=true & stable=false (Juni 2026): DPF gilt, ist aber instabil (PCLOB ohne Quorum,
+// FISA-702 auf 45-Tage-Verlängerung, Latombe-Berufung am CJEU). → bei !stable feuert die
+// SCCs+TIA-Maßnahme für jedes US-Direkt-Tool, ohne die Verdikte hart auf rot zu zwingen.
 export const RECHTSSTAND = "2026-06"; // treibt das Badge
 ```
 
@@ -128,7 +131,7 @@ export const RECHTSSTAND = "2026-06"; // treibt das Badge
 
 ```ts
 export interface ToolVerdict { toolId; label; verdict: "gruen"|"gelb"|"rot";
-  reason; upgradePath?; dpaUrl?; }
+  reason; upgradePath?; dpaUrl?; caveat?; }  // caveat: zeitkritische Note, z.B. Aleph-Alpha/Cohere-Merger
 export interface DsgvoResult {
   ampel: "rot"|"gelb"|"gruen";       // Headline-Readiness
   toolMatrix: ToolVerdict[];
@@ -146,10 +149,12 @@ export function recommend(answers: Answers): DsgvoResult
 
 Regeln:
 - **toolMatrix** — je gewähltem Tool `facts.TOOLS[tool]`. Tier aus `Q_TIER`
-  (gemischt/weiß nicht → Free→konform-Spanne mit Upgrade-Pfad zeigen). **Overlays:**
+  (gemischt/weiß nicht → Free→konform-Spanne mit Upgrade-Pfad zeigen; Tool ohne
+  passenden Tier → bestes verfügbares Tier + Hinweis). **Overlays:**
   `Q_DATA ∈ {personenbez., Art.9}` + `tier=free` → erzwingt **rot**;
-  `facts.DPF_STATUS.valid=false` → jedes US-Direkt-Tool min. **gelb** (SCCs
-  Pflicht); per-Tool-`override` (DeepSeek rot, local grün) schlägt alles.
+  `DPF_STATUS.valid=false` → US-Direkt-Tool min. **gelb**; `DPF_STATUS.stable=false`
+  (aktueller Stand) → SCCs+TIA-Maßnahme bei US-Direkt-Tool, Verdikt bleibt;
+  per-Tool-`override` (DeepSeek rot, local grün) schlägt alles.
 - **riskClass** — aus `Q_USECASE`: HR/Scoring/automat. Entscheidungen → **hoch** +
   `riskObligations` (Risikomanagement, Doku, Human Oversight, Logs ≥6 Monate);
   Kundenservice-Bot → **begrenzt** (Transparenzpflicht Art. 50); sonst **minimal**.
@@ -345,6 +350,42 @@ der `DPF_STATUS`-Toggle korrekt gesetzt ist, die AI-Act-Daten stimmen, kein Tool
 einen Tier außerhalb der offenen Map benötigt, und überträgt die „Was hat sich
 geändert"-Liste in Verdikt-Anpassungen und das Rechtsstand-Badge.
 
+## Reconciliation mit dem Fact-Check (2026-06-24)
+
+Perplexity Deep Research geliefert; Quelle: `vault/04-content/video/07-5-hebel-mit-
+denen-du-ki-fuehrst/DSGVO- und EU-AI-Act-Konformität gängiger KI-Tools – Bestands-
+aufnahme Juni 2026.md` (zitiert mit Primärquellen + Datum). **Ergebnis: Architektur
+unverändert** — jeder Fund landet in `facts.ts`-Daten oder einer kleinen Logik-
+Verfeinerung. Kein struktureller Umbau.
+
+**Bestätigt:** 3-Farben-Verdikt; per-Tool-per-Tier-Modell (gleicher globaler Tier →
+unterschiedliche Verdikte je Tool: ChatGPT Enterprise 🟢, Claude API-direkt 🟡,
+Gemini Workspace 🟢, **Copilot Business 🟡**); HR = Annex-III-Hochrisiko;
+DeepSeek 🔴 / lokal 🟢 als Overrides; offene Tier-Map (Claude hat zwei grüne
+Cloud-Tiers: Bedrock + Vertex).
+
+**Verfeinerungen (nur Daten/Logik):**
+- **DPF „gültig aber instabil"** → `DPF_STATUS.stable=false`; SCCs+TIA-Maßnahme feuert
+  bei jedem US-Direkt-Tool (PCLOB ohne Quorum, FISA-702 45-Tage-Verlängerung,
+  Latombe-Berufung C-703/25 P am CJEU ohne Termin).
+- **MS Copilot „Flex Routing"** (Default-on seit 17.04.2026) → Business-Tier 🟡,
+  Upgrade-Pfad „Flex Routing im M365 Admin Center deaktivieren" + Hinweis Anthropic-
+  Subprozessor außerhalb der EU Data Boundary. Starker Aha-Moment für den
+  Mittelstand → eigener Callout im Report.
+- **Aleph Alpha 🟢 mit Cohere-Übernahme-Caveat** (24.04.2026, unter Genehmigungs-
+  vorbehalt) → `ToolVerdict.caveat`. Untermauert das „wir halten das aktuell"-
+  Newsletter-Versprechen.
+- **AI-Act-Timeline** (Digital Omnibus, Parlament 16.06.2026, Ratifikation ~Juli
+  2026 ausstehend): Annex III → 2.12.2027, Annex I → 2.8.2028, Art. 50 Basis bleibt
+  2.8.2026 / Wasserzeichen → 2.12.2026, Sandkästen → 2.8.2027. `status`-Feld trägt
+  „verschoben, noch nicht rechtsverbindlich".
+- **Anthropic Consumer Training-Opt-in** (seit 08.10.2025) → verschärft den
+  Schatten-KI-Hook (private Claude-Accounts = Training-Opt-in).
+
+**Für Daniels Sign-off markiert:** Art.-4-Bußgeld — Research nennt **15 Mio. €/3%**,
+die alte statische Checkliste nannte 7,5 Mio. €/1,5%. Die Zuordnung zur Bußgeldstufe
+ist juristisch strittig; im Tool 15M/3% mit Quelle, finale Formulierung bei Daniel.
+
 ## Bewusst NICHT im Scope (YAGNI)
 
 - Keine generische Rules-DSL in der Engine (Approach B verworfen). `recommend.ts`
@@ -355,7 +396,8 @@ geändert"-Liste in Verdikt-Anpassungen und das Rechtsstand-Badge.
 
 ## Offene Punkte / Daniels Aufgaben
 
-- Perplexity-Research ausführen → Ergebnis liefern (Claude verdrahtet + reconciled).
+- ✅ Perplexity-Research geliefert + reconciled (2026-06-24, s. Abschnitt
+  „Reconciliation"). Verdrahtung in `facts.ts` erfolgt in der Implementierung.
 - Reward-Templates (Muster-Richtlinie, AVV-Checkliste, Literacy-Plan) inhaltlich
   freigeben (Content-Arbeit).
 - Go-live wie KFC: Migration ist schon da; CleverReach-Segment `dsgvo-check` +
