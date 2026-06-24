@@ -1,4 +1,4 @@
-import { buildRegistry } from "./registry";
+import { buildRegistry, getScorecard } from "./registry";
 import { SAMPLE_REGISTRATION } from "./__fixtures__/sample-registration";
 
 const reg = SAMPLE_REGISTRATION;
@@ -13,4 +13,13 @@ describe("buildRegistry", () => {
     const get = buildRegistry([reg]);
     expect(get("nope")).toBeUndefined();
   });
+});
+
+test("dsgvo-check is registered with resolve + custom views + tags", () => {
+  const reg = getScorecard("dsgvo-check");
+  expect(reg).toBeDefined();
+  expect(typeof reg!.resolve).toBe("function");
+  expect(reg!.ResultView).toBeDefined();
+  expect(reg!.ReportDoc).toBeDefined();
+  expect(typeof reg!.cleverreachTags).toBe("function");
 });
