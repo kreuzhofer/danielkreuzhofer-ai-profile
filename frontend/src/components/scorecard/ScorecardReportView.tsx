@@ -57,6 +57,18 @@ export function ScorecardReportView({
               {p}
             </p>
           ))}
+          {model.bedeutungLink && (
+            <p className="sc-report-text">
+              <a
+                className="sc-video-link"
+                href={model.bedeutungLink.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                → {model.bedeutungLink.label}
+              </a>
+            </p>
+          )}
         </section>
       )}
 

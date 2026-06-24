@@ -196,6 +196,15 @@
   color: #0a558c;
 }
 
+.scd-link {
+  font-weight: 700;
+  color: #0a558c;
+  text-decoration: none;
+}
+.scd-link:hover {
+  text-decoration: underline;
+}
+
 /* ── Tipps (gated report only) ───────────────────────────────────────────── */
 .scd-hebel {
   margin: 1.4rem 0;

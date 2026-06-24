@@ -123,4 +123,11 @@ describe("KI-Führungs-Check registration", () => {
     expect(p).not.toMatch(/Link im Report/i);
     expect(p).not.toMatch(/im Report\)/i);
   });
+
+  it("K3 datenschutz now delivers the DSGVO video as a real clickable link", () => {
+    const ans = answers({ K3: "datenschutz" });
+    const report = buildScorecardReport(reg, buildResult(reg.definition, ans), ans);
+    expect(report.bedeutungLink?.url).toBe("https://youtu.be/UVRIR_MljlQ");
+    expect((report.bedeutungLink?.label.length ?? 0)).toBeGreaterThan(0);
+  });
 });

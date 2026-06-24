@@ -14,6 +14,8 @@ export interface ScorecardReport {
   scoreParagraph?: string;
   diagnose: string;
   bedeutung: string[];
+  /** Optional clickable resource tied to the personalisation answer. */
+  bedeutungLink?: { label: string; url: string };
   schritte: string[];
   antiPattern: string;
   freeTool?: { label: string; body: string };
@@ -33,10 +35,12 @@ export function buildScorecardReport(
   if (!block) throw new Error(`No content for outcome "${outcome}"`);
 
   const bedeutung: string[] = [];
+  let bedeutungLink: { label: string; url: string } | undefined;
   if (c.personalisierung) {
     const answer = answers[c.personalisierung.questionId];
     const para = answer ? c.personalisierung.byAnswer[answer] : undefined;
     if (para) bedeutung.push(para);
+    if (answer) bedeutungLink = c.personalisierung.linkByAnswer?.[answer];
   }
 
   const sources = c.sources.filter((s) => !s.shownFor || s.shownFor.includes(outcome));
@@ -48,6 +52,7 @@ export function buildScorecardReport(
     scoreParagraph: c.scoreParagraph?.[outcome] ? fill(c.scoreParagraph[outcome]) : undefined,
     diagnose: fill(block.diagnose),
     bedeutung,
+    bedeutungLink,
     schritte: block.schritte,
     antiPattern: block.antiPattern,
     freeTool: c.freeTool,

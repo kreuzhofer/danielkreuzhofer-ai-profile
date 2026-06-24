@@ -19,6 +19,8 @@ export interface OutcomeContent {
 export interface PersonalisierungRule {
   questionId: string;
   byAnswer: Record<string, string>;
+  /** Optional clickable resource per answer, rendered as a link after the paragraph. */
+  linkByAnswer?: Record<string, { label: string; url: string }>;
 }
 
 /** A clickable source; shown only when the outcome is in `shownFor` (or always). */

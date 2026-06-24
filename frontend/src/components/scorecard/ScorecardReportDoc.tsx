@@ -95,6 +95,18 @@ export function ScorecardReportDoc({
               {p}
             </p>
           ))}
+          {model.bedeutungLink && (
+            <p className="scd-text">
+              <a
+                className="scd-link"
+                href={model.bedeutungLink.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                → {model.bedeutungLink.label}
+              </a>
+            </p>
+          )}
         </section>
       )}
 

@@ -67,8 +67,14 @@ export const content: ScorecardContent = {
     byAnswer: {
       "keine-zeit": `Genau deshalb fängst Du klein an: der erste Schritt kostet zwei Minuten, nicht eine Stunde. Nicht noch eine Aufgabe, sondern die, die Dir Montag am meisten auf den Wecker geht.`,
       "wo-anfangen": `Der Einstieg ist nicht ein Tool-Vergleich, sondern ein Reflex: bei der nächsten Aufgabe zuerst fragen, ob KI sie löst. Im Video zeige ich den konkreten Montagmorgen-Move.`,
-      datenschutz: `Berechtigt, und lösbar. Der erste Schritt braucht keine sensiblen Daten, fang mit unkritischen Aufgaben an. Den datenschutzkonformen Zugang zum Postfach klärst Du separat, bevor echte Kundendaten ins Spiel kommen.`,
+      datenschutz: `Berechtigt, und lösbar. Der erste Schritt braucht keine sensiblen Daten, fang mit unkritischen Aufgaben an. Wie Du KI danach datenschutzkonform an Dein Postfach lässt, zeige ich Dir im Video:`,
       skeptisch: `Die Skepsis teilen viele Chefs. Genau deshalb fängst Du an einer Stelle an, wo Du das Ergebnis sofort selbst beurteilen kannst, statt es zu glauben.`,
+    },
+    linkByAnswer: {
+      datenschutz: {
+        label: "Datenschutzkonform mit KI arbeiten",
+        url: "https://youtu.be/UVRIR_MljlQ",
+      },
     },
   },
   freeTool: {
