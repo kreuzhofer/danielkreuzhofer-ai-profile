@@ -40,6 +40,20 @@ describe("KI-Führungs-Check registration", () => {
     expect(worst.outcome).toBe("einkaeufer");
   });
 
+  it("S4 covers the shadow-AI case (nothing official, no overview) as a 0-point option → Einkäufer", () => {
+    const s4 = reg.definition.questions.find((q) => q.id === "S4")!;
+    const shadow = s4.options.find((o) => o.id === "schatten");
+    expect(shadow).toBeDefined();
+    expect(shadow!.points).toBe(0);
+
+    const result = buildResult(
+      reg.definition,
+      answers({ S1: "nie", S2: "nein", S3: "nein", S4: "schatten" }),
+    );
+    expect(result.score).toBe(0);
+    expect(result.outcome).toBe("einkaeufer");
+  });
+
   it("qualifies a GF at a mid-size company; not a team member at a tiny one", () => {
     expect(buildResult(reg.definition, answers({ K1: "gf", K2: "50-250" })).qualified).toBe(true);
     expect(buildResult(reg.definition, answers({ K1: "team", K2: "u50" })).qualified).toBe(false);

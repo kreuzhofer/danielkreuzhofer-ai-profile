@@ -100,6 +100,11 @@ export const definition: ScorecardDefinition = {
         { id: "ohne-system", label: "Ich nutze selbst, aber ohne System", points: 2 },
         { id: "it-thema", label: "Es ist ein IT-/Tool-Thema", points: 1 },
         { id: "delegiert", label: "Eingekauft und ans Team delegiert", points: 0 },
+        {
+          id: "schatten",
+          label: "Noch nichts Offizielles, einzelne nutzen wohl privat KI, ich hab keinen Überblick",
+          points: 0,
+        },
       ],
     },
 

@@ -26,7 +26,7 @@ export const content: ScorecardContent = {
   },
   byOutcome: {
     einkaeufer: {
-      diagnose: `Du hast in KI investiert, Lizenzen, vielleicht eine Schulung, und dann läuft es ins Leere. Das ist kein Technik-Problem. Du behandelst KI wie einen neuen Drucker: angeschafft, dann soll das Team ihn benutzen. Aber KI verändert, wie Entscheidungen getroffen werden, und die triffst Du. Solange Du oben nicht sichtbar mitmachst, liest Dein Team genau eine Botschaft heraus: optional. Damit bleibt das Werkzeug liegen, egal wie gut es ist.`,
+      diagnose: `Du hast in KI investiert, Lizenzen, vielleicht eine Schulung, und es läuft ins Leere. Oder bei Dir ist offiziell noch nichts passiert, während einzelne im Team längst privat mit KI arbeiten und Du keinen Überblick hast. Beides ist dasselbe Muster, und kein Technik-Problem. Du behandelst KI wie einen neuen Drucker: angeschafft oder geduldet, dann soll das Team schon damit klarkommen. Aber KI verändert, wie Entscheidungen getroffen werden, und die triffst Du. Solange Du oben nicht sichtbar mitmachst, liest Dein Team genau eine Botschaft heraus: optional. Damit bleibt das Werkzeug liegen oder läuft unkontrolliert an Dir vorbei, egal wie gut es ist.`,
       schritte: [
         `Verbinde Dir morgen früh KI mit Deinem Postfach und stell ihr eine einzige Frage: "Geh meine Woche durch und gib mir eine Prioritätenliste." Zwei Minuten. Das ist Dein Einstieg, keine zweite Aufgabe.`,
         `Mach es einmal sichtbar: ein Satz im nächsten Team-Meeting, womit Du KI gerade selbst nutzt. Nicht als Ansage, als Beispiel.`,
@@ -126,6 +126,6 @@ export const content: ScorecardContent = {
       "steckt im Video:",
     title: "Du musst selbst ran",
     label: "Video #06",
-    url: "",
+    url: "https://youtu.be/OPuHZxOnkJw",
   },
 };
