@@ -119,14 +119,15 @@ export function ScorecardApp({ registration }: { registration: ScorecardRegistra
 
   return (
     <div className="sc-shell" style={brandStyle(branding)}>
-      <header className="sc-topbar">
-        <Link href="/" className="sc-brand" aria-label={`Zur Startseite von ${branding.brandAuthor}`}>
-          <span className="sc-brand-name">{branding.brandName}</span>
-          <span className="sc-brand-author">{branding.brandAuthor}</span>
-        </Link>
-      </header>
+      <div className="sc-page">
+        <header className="sc-topbar">
+          <Link href="/" className="sc-brand" aria-label={`Zur Startseite von ${branding.brandAuthor}`}>
+            <span className="sc-brand-name">{branding.brandName}</span>
+            <span className="sc-brand-author">{branding.brandAuthor}</span>
+          </Link>
+        </header>
 
-      <main className="sc-main">
+        <main className="sc-main">
         {state.phase === "intro" && (
           <Intro content={content} onStart={() => dispatch({ type: "start" })} />
         )}
@@ -157,7 +158,8 @@ export function ScorecardApp({ registration }: { registration: ScorecardRegistra
             }}
           />
         )}
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
@@ -169,6 +171,7 @@ export function ScorecardApp({ registration }: { registration: ScorecardRegistra
 function Intro({ content, onStart }: { content: ScorecardContent; onStart: () => void }) {
   return (
     <section className="sc-card sc-intro" aria-labelledby="sc-intro-heading">
+      {content.intro.eyebrow && <p className="sc-eyebrow">{content.intro.eyebrow}</p>}
       <h1 id="sc-intro-heading" className="sc-display">
         {content.intro.heading}
       </h1>

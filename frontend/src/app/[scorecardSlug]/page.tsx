@@ -1,9 +1,14 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { Anton } from "next/font/google";
 import { getScorecard } from "@/lib/scorecard/registry";
 import { REGISTRATIONS } from "@/scorecards";
 import { ScorecardApp } from "@/components/scorecard/ScorecardApp";
 import "@/components/scorecard/sc.css";
+
+// Condensed display font per Video-Brand-Kit §5 (Anton — ALLCAPS), same as the
+// Engpass-Check. Exposes --font-anton for sc-display / sc-outcome-name.
+const anton = Anton({ weight: "400", subsets: ["latin"], display: "swap", variable: "--font-anton" });
 
 /** Only registered scorecards become routes (REGISTRATIONS is empty until KFC ships). */
 export function generateStaticParams() {
@@ -28,5 +33,9 @@ export default async function ScorecardPage({
   const { scorecardSlug } = await params;
   const reg = getScorecard(scorecardSlug);
   if (!reg) notFound();
-  return <ScorecardApp registration={reg} />;
+  return (
+    <div className={anton.variable}>
+      <ScorecardApp registration={reg} />
+    </div>
+  );
 }

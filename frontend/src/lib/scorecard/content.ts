@@ -31,7 +31,7 @@ export interface SourceRef {
 }
 
 export interface ScorecardContent {
-  intro: { heading: string; lead: string; startLabel: string; meta: string };
+  intro: { eyebrow?: string; heading: string; lead: string; startLabel: string; meta: string };
   resultHeading: string;
   /** Outcome key → display name (e.g. "vorbild" → "Vorbild"). */
   outcomeLabel: Record<string, string>;

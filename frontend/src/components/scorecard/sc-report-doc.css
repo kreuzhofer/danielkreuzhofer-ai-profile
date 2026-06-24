@@ -1,0 +1,234 @@
+/*
+  Scorecard report — print-optimized, light document theme (for "Als PDF
+  speichern"), generalized from the Engpass report.css. Black-on-white, generous
+  reading layout, true PDF-like @media print. Scoped to .sc-doc so it overrides
+  the site's dark theme. Brand accents (orange/cyan/blue) match the Video-Brand-Kit.
+*/
+
+.sc-doc {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #18181b;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  line-height: 1.65;
+  padding-bottom: 4rem;
+}
+
+/* Sticky header with brand + print button */
+.scd-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 2rem;
+}
+
+.scd-header-inner {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.scd-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  border-left: 4px solid #e89244;
+  padding-left: 0.7rem;
+  text-decoration: none;
+  color: inherit;
+}
+.scd-brand-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #000;
+}
+.scd-brand-sub {
+  font-size: 0.82rem;
+  color: #71717a;
+}
+
+.scd-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #18181b;
+  color: #fff;
+  border: 1px solid #18181b;
+  padding: 0.55rem 0.95rem;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.scd-print-btn:hover {
+  background: #000;
+}
+
+.scd-container {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.scd-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #e89244;
+  margin: 0 0 0.5rem;
+}
+
+/* The outcome heading sits where the Engpass score block does — under a 2px rule. */
+.scd-outcome {
+  border-bottom: 2px solid #18181b;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+.scd-outcome-name {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+.scd-section {
+  margin: 2rem 0;
+}
+.scd-section + .scd-section {
+  border-top: 1px solid #e5e5e5;
+  padding-top: 1.6rem;
+}
+
+.scd-h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.8rem;
+}
+.scd-h3 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: #0a558c;
+  margin: 0 0 0.6rem;
+}
+.scd-text {
+  margin: 0 0 0.9rem;
+  color: #27272a;
+}
+.scd-text:last-child {
+  margin-bottom: 0;
+}
+
+.scd-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.scd-step {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+.scd-step-num {
+  flex-shrink: 0;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: #e89244;
+  color: #1a1206;
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scd-quote {
+  margin: 0;
+  padding: 0.9rem 1.1rem;
+  border-left: 4px solid #e89244;
+  background: #fdf6ef;
+  border-radius: 0 8px 8px 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.scd-source-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.scd-source {
+  font-size: 0.85rem;
+  color: #3f3f46;
+  padding-left: 0.9rem;
+  border-left: 2px solid #e5e5e5;
+}
+.scd-source a {
+  color: #0a558c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.scd-invalid-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-weight: 700;
+  color: #0a558c;
+}
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
+@media print {
+  /* Isolate the report for the PDF: hide everything else on the page (chat
+     bubble, dev tools, …) without depending on their classes. */
+  body * {
+    visibility: hidden;
+  }
+  .sc-doc,
+  .sc-doc * {
+    visibility: visible;
+  }
+  .sc-doc {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    padding: 0;
+  }
+
+  .scd-header {
+    display: none;
+  }
+  .scd-container {
+    max-width: none;
+    padding: 0;
+  }
+  .scd-section {
+    break-inside: avoid;
+  }
+  .scd-h2 {
+    page-break-after: avoid;
+  }
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+}

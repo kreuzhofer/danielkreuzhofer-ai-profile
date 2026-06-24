@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getScorecard } from "@/lib/scorecard/registry";
 import { buildScorecardReport, type ScorecardReport } from "@/lib/scorecard/report-model";
-import { brandStyle } from "@/lib/scorecard/branding";
-import { ScorecardReportView, DEFAULT_REPORT_LABELS } from "@/components/scorecard/ScorecardReportView";
+import { ScorecardReportDoc } from "@/components/scorecard/ScorecardReportDoc";
+import { DEFAULT_REPORT_LABELS } from "@/components/scorecard/ScorecardReportView";
+import { PrintButton } from "@/components/scorecard/PrintButton";
 import { findScorecardByReportToken } from "@/db/scorecard-submissions";
 import { isDatabaseConfigured } from "@/db/client";
-import "@/components/scorecard/sc.css";
+import "@/components/scorecard/sc-report-doc.css";
 
 /** Token-gated personal report — never indexed, always rendered per-request. */
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -39,13 +41,22 @@ export default async function ScorecardReportPage({
   }
 
   return (
-    <div className="sc-shell" style={brandStyle(reg.branding)}>
-      <main className="sc-main">
-        <section className="sc-card sc-report-card">
-          <p className="sc-eyebrow">{reg.content.resultHeading}</p>
-          <ScorecardReportView model={model} labels={DEFAULT_REPORT_LABELS} />
-        </section>
-      </main>
+    <div className="sc-doc">
+      <header className="scd-header">
+        <div className="scd-header-inner">
+          <Link href="/" className="scd-brand" aria-label={`Zur Startseite von ${reg.branding.brandAuthor}`}>
+            <span className="scd-brand-name">{reg.branding.brandName}</span>
+            <span className="scd-brand-sub">{reg.branding.brandAuthor} · Report</span>
+          </Link>
+          <PrintButton label="Als PDF speichern" />
+        </div>
+      </header>
+
+      <ScorecardReportDoc
+        model={model}
+        labels={DEFAULT_REPORT_LABELS}
+        eyebrow={reg.content.resultHeading}
+      />
     </div>
   );
 }

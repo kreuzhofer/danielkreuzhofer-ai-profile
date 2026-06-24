@@ -44,11 +44,9 @@ export function ScorecardReportView({
     <article className="sc-report">
       {model.scoreParagraph && <Paragraphs text={model.scoreParagraph} className="sc-report-text" />}
 
-      {/* Outcome + diagnosis */}
-      <section className="sc-report-section">
-        <h2 className="sc-outcome-name">{model.outcomeLabel}</h2>
-        <Paragraphs text={model.diagnose} className="sc-report-text" />
-      </section>
+      {/* Outcome + diagnosis — the lead block (no top border) */}
+      <h2 className="sc-outcome-name">{model.outcomeLabel}</h2>
+      <Paragraphs text={model.diagnose} className="sc-report-text" />
 
       {/* Personalisation (only when a rule matched) */}
       {model.bedeutung.length > 0 && (
@@ -81,11 +79,11 @@ export function ScorecardReportView({
         <Paragraphs text={model.antiPattern} className="sc-report-text" />
       </section>
 
-      {/* Free tool (when present) */}
+      {/* Free tool (when present) — rendered as a signature quote block */}
       {model.freeTool && (
         <section className="sc-report-section">
           <h3 className="sc-report-h">{model.freeTool.label}</h3>
-          <Paragraphs text={model.freeTool.body} className="sc-report-text" />
+          <blockquote className="sc-report-quote">{model.freeTool.body}</blockquote>
         </section>
       )}
 

@@ -9,6 +9,7 @@ import type { ScorecardContent } from "@/lib/scorecard/content";
 
 export const content: ScorecardContent = {
   intro: {
+    eyebrow: "KI-Führungs-Check",
     heading: "Der KI-Führungs-Check",
     lead:
       "7 Fragen, 3 Minuten. Danach weißt Du, ob Du KI in Deinem Bereich wirklich führst oder bisher " +
