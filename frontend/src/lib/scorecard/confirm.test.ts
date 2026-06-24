@@ -16,7 +16,8 @@ const sampleReg = {
   content: { intro: { eyebrow: "Sample" }, outcomeLabel: {} },
   branding: { brandAuthor: "Daniel Kreuzhofer", accent: "#e89244", accentInk: "#1a1206" },
 };
-jest.mock("./registry", () => ({ getScorecard: () => sampleReg }));
+const mockGetScorecard = jest.fn(() => sampleReg);
+jest.mock("./registry", () => ({ getScorecard: (...a: unknown[]) => mockGetScorecard(...a) }));
 
 const mockFind = jest.fn();
 const mockConfirm = jest.fn();
@@ -66,6 +67,7 @@ beforeEach(() => {
   mockSendDelivery.mockReset().mockResolvedValue(undefined);
   mockAddNewsletter.mockReset().mockResolvedValue(undefined);
   mockReportConversion.mockReset().mockResolvedValue({ attributed: true });
+  mockGetScorecard.mockReset().mockReturnValue(sampleReg);
   cleverreachConfigured = true;
   trackmysalesConfigured = true;
 });
@@ -147,5 +149,18 @@ describe("confirmScorecardByToken", () => {
     mockFind.mockResolvedValueOnce(row({ tid: "tid_xyz" }));
     mockReportConversion.mockRejectedValueOnce(new Error("tms down"));
     expect((await confirmScorecardByToken("doi_abc")).status).toBe("confirmed");
+  });
+
+  it("appends registration.cleverreachTags to the CleverReach push", async () => {
+    const regWithTags = {
+      ...sampleReg,
+      cleverreachTags: () => ["tool:chatgpt", "ampel:gelb"],
+    };
+    mockGetScorecard.mockReturnValueOnce(regWithTags);
+    mockFind.mockResolvedValueOnce(row());
+    await confirmScorecardByToken("doi_abc");
+    const call = (mockAddNewsletter as jest.Mock).mock.calls.at(-1)![0];
+    expect(call.tags).toEqual(expect.arrayContaining(["tool:chatgpt", "ampel:gelb"]));
+    expect(call.tags).toContain("sample");
   });
 });

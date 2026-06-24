@@ -57,7 +57,11 @@ export async function confirmScorecardByToken(doiToken: string): Promise<Confirm
 
   if (isCleverReachConfigured()) {
     try {
-      const tags = qualified ? [submission.scorecard, `${submission.scorecard}-qualified`] : [submission.scorecard];
+      const baseTags = qualified
+        ? [submission.scorecard, `${submission.scorecard}-qualified`]
+        : [submission.scorecard];
+      const extra = reg?.cleverreachTags?.(submission.result, submission.answers) ?? [];
+      const tags = [...baseTags, ...extra];
       await addConfirmedNewsletterLead({ email: submission.email, tags, source });
       await markScorecardCleverreachSynced(submission.id);
     } catch (error) {
