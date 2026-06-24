@@ -67,7 +67,7 @@ export const content: ScorecardContent = {
     byAnswer: {
       "keine-zeit": `Genau deshalb fängst Du klein an: der erste Schritt kostet zwei Minuten, nicht eine Stunde. Nicht noch eine Aufgabe, sondern die, die Dir Montag am meisten auf den Wecker geht.`,
       "wo-anfangen": `Der Einstieg ist nicht ein Tool-Vergleich, sondern ein Reflex: bei der nächsten Aufgabe zuerst fragen, ob KI sie löst. Im Video zeige ich den konkreten Montagmorgen-Move.`,
-      datenschutz: `Berechtigt, und lösbar. Wie Du KI datenschutzkonform an Dein Postfach lässt, zeige ich in einem eigenen Video (Link im Report).`,
+      datenschutz: `Berechtigt, und lösbar. Der erste Schritt braucht keine sensiblen Daten, fang mit unkritischen Aufgaben an. Den datenschutzkonformen Zugang zum Postfach klärst Du separat, bevor echte Kundendaten ins Spiel kommen.`,
       skeptisch: `Die Skepsis teilen viele Chefs. Genau deshalb fängst Du an einer Stelle an, wo Du das Ergebnis sofort selbst beurteilen kannst, statt es zu glauben.`,
     },
   },
@@ -290,6 +290,11 @@ export const content: ScorecardContent = {
       "Dienstleister in der EU (Hosting, E-Mail-Versand, Newsletter) mit Auftragsverarbeitungsvertrag; meine " +
       "Daten werden nicht verkauft. Ich bestätige per Double-Opt-in und kann mich jederzeit abmelden.",
     datenschutzHref: "/datenschutz",
+    datenschutzHinweis:
+      "Deine Antworten bleiben bis zum Klick auf „Report anfordern“ nur in Deinem Browser. Erst dann " +
+      "werden E-Mail und Antworten gespeichert (Hosting: Hostinger, Frankfurt) und der Bestätigungs-Link " +
+      "per E-Mail verschickt (IONOS); nach Bestätigung läuft der Newsletter über CleverReach. Alle " +
+      "Verarbeiter in der EU, AVV vorhanden. Kein Tracking, keine Cookies außer technisch notwendig.",
     successHeading: "Fast geschafft, schau in Dein Postfach",
     successBody:
       "Ich habe Dir gerade eine E-Mail geschickt. Ein Klick auf den Bestätigungs-Link, dann hast Du Deinen " +

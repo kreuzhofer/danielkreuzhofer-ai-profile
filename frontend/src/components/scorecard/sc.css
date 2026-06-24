@@ -477,6 +477,15 @@
   white-space: nowrap;
 }
 
+.sc-datenschutz {
+  margin: 0.7rem 0 0;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--sc-ink-subtle, #8a8a8a);
+  border-top: 1px solid var(--sc-border, #3a3a3a);
+  padding-top: 0.7rem;
+}
+
 .sc-optin-success .sc-optin-heading {
   color: #58d68d;
 }

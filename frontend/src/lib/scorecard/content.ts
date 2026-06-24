@@ -71,6 +71,8 @@ export interface ScorecardContent {
     button: string;
     consent: string;
     datenschutzHref: string;
+    /** Concrete plain-language data-processing notice (names the sub-processors). */
+    datenschutzHinweis?: string;
     successHeading: string;
     successBody: string;
     errorBody: string;

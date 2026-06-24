@@ -399,6 +399,7 @@ function OptIn({
             Mehr in der Datenschutzerklärung
           </a>
         </p>
+        {c.datenschutzHinweis && <p className="sc-datenschutz">{c.datenschutzHinweis}</p>}
       </form>
     </div>
   );

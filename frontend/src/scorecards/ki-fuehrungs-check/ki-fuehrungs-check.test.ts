@@ -110,4 +110,17 @@ describe("KI-Führungs-Check registration", () => {
       expect(["data", "practice"]).toContain(t.evidence);
     }
   });
+
+  it("opt-in carries a concrete data-processing notice (Engpass parity)", () => {
+    const hinweis = reg.content.optin.datenschutzHinweis;
+    expect(hinweis).toBeDefined();
+    expect(hinweis).toMatch(/CleverReach/);
+    expect(hinweis).toMatch(/IONOS/);
+  });
+
+  it("K3 datenschutz personalisation does not point at a link the report never delivers", () => {
+    const p = reg.content.personalisierung!.byAnswer.datenschutz;
+    expect(p).not.toMatch(/Link im Report/i);
+    expect(p).not.toMatch(/im Report\)/i);
+  });
 });
