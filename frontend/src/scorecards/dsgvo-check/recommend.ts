@@ -42,10 +42,9 @@ export function buildToolMatrix(answers: Answers): ToolVerdict[] {
     }
     let verdict = t.verdict;
     if (sensitive && tier === "free") verdict = worse(verdict, "rot");
-    // DPF instability only worsens tiers that already carry US-transfer risk
-    // (e.g. US-routed business plans). EU-residency business tiers rated gruen
-    // in the facts are not downgraded.
-    if (!DPF_STATUS.stable && fact.usDirect && tier === "business" && t.verdict !== "gruen") verdict = worse(verdict, "gelb");
+    // DPF instability is NOT a verdict overlay: facts.ts already encodes US-transfer
+    // risk per tier (Claude API-direct = gelb; EU-residency tiers = gruen). It is
+    // surfaced as the SCCs+TIA action item instead (see buildActionPlan / usTransfer).
     return {
       toolId, label: fact.label, verdict, reason: t.reason,
       upgradePath: tier === "gemischt" ? (t.upgradePath ?? "Auf eine konforme Stufe/EU-Region wechseln.") : t.upgradePath,
