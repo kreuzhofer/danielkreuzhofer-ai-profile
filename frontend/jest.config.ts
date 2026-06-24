@@ -16,6 +16,8 @@ const config: Config = {
     // ESM-only markdown deps jest can't transform — stub them in tests.
     "^react-markdown$": "<rootDir>/__mocks__/react-markdown.tsx",
     "^remark-gfm$": "<rootDir>/__mocks__/remark-gfm.ts",
+    // CSS imports are a no-op in tests (components use CSS custom properties at runtime).
+    "\\.css$": "<rootDir>/__mocks__/style-mock.ts",
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   transform: {

@@ -1,0 +1,264 @@
+/*
+  DSGVO-Check result view — dark theme.
+  All base colors come from --sc-* custom properties supplied by brandStyle().
+  Ampel/badge/risk hues use literal color values (traffic-light semantics).
+  Namespace: .dsg — scoped to DsgvoResultView.
+*/
+
+/* ── Root container ───────────────────────────────────────────────────────── */
+.dsg {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  color: var(--sc-ink, #ffffff);
+}
+
+/* ── Ampel card ───────────────────────────────────────────────────────────── */
+.dsg-ampel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--sc-surface, #161616);
+  border: 1px solid var(--sc-border, #3a3a3a);
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  border-left-width: 5px;
+}
+
+.dsg-ampel-dot {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sc-ink-subtle, #8a8a8a);
+}
+
+/* Ampel color variants — left border + dot */
+.dsg-ampel-rot {
+  border-left-color: #e5484d;
+}
+.dsg-ampel-rot .dsg-ampel-dot {
+  background: #e5484d;
+  box-shadow: 0 0 8px rgba(229, 72, 77, 0.5);
+}
+
+.dsg-ampel-gelb {
+  border-left-color: #f5a524;
+}
+.dsg-ampel-gelb .dsg-ampel-dot {
+  background: #f5a524;
+  box-shadow: 0 0 8px rgba(245, 165, 36, 0.5);
+}
+
+.dsg-ampel-gruen {
+  border-left-color: #46a758;
+}
+.dsg-ampel-gruen .dsg-ampel-dot {
+  background: #46a758;
+  box-shadow: 0 0 8px rgba(70, 167, 88, 0.5);
+}
+
+.dsg-ampel-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--sc-ink-subtle, #8a8a8a);
+  margin: 0 0 0.25rem;
+}
+
+.dsg-ampel-headline {
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────────── */
+.dsg-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.dsg-h3 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: var(--sc-accent-2, #4dbed4);
+  margin: 0;
+}
+
+/* ── Tool matrix ──────────────────────────────────────────────────────────── */
+.dsg-matrix {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dsg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.7rem;
+  background: var(--sc-surface-2, #1e1e1e);
+  border: 1px solid var(--sc-border, #3a3a3a);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+
+/* ── Verdict badge ────────────────────────────────────────────────────────── */
+.dsg-badge {
+  display: inline-block;
+  padding: 0.2em 0.7em;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.dsg-badge-gruen {
+  background: #46a758;
+  color: #0a1f0d;
+}
+
+.dsg-badge-gelb {
+  background: #f5a524;
+  color: #1a0e00;
+}
+
+.dsg-badge-rot {
+  background: #e5484d;
+  color: #1a0002;
+}
+
+/* ── Row text slots ───────────────────────────────────────────────────────── */
+.dsg-tool {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.dsg-reason {
+  font-size: 0.88rem;
+  color: var(--sc-ink-muted, #b4b4b4);
+  flex-basis: 100%;
+}
+
+.dsg-upgrade {
+  font-size: 0.82rem;
+  color: var(--sc-accent, #e89244);
+  flex-basis: 100%;
+}
+
+.dsg-caveat {
+  font-size: 0.78rem;
+  color: #f5a524;
+  flex-basis: 100%;
+}
+
+/* ── Risk class ───────────────────────────────────────────────────────────── */
+.dsg-risk {
+  display: inline-block;
+  padding: 0.3em 0.9em;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  align-self: flex-start;
+  margin: 0;
+}
+
+.dsg-risk-hoch {
+  background: rgba(229, 72, 77, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(229, 72, 77, 0.4);
+}
+
+.dsg-risk-begrenzt {
+  background: rgba(245, 165, 36, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 165, 36, 0.35);
+}
+
+.dsg-risk-minimal {
+  background: rgba(70, 167, 88, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(70, 167, 88, 0.35);
+}
+
+/* ── Lists ────────────────────────────────────────────────────────────────── */
+.dsg-list {
+  margin: 0;
+  padding-left: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: var(--sc-ink-muted, #b4b4b4);
+  font-size: 0.92rem;
+}
+
+.dsg-plan {
+  margin: 0;
+  padding-left: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+}
+
+.dsg-teaser {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--sc-ink-muted, #b4b4b4);
+  margin: 0.3rem 0 0;
+}
+
+/* ── Shadow-AI callout ────────────────────────────────────────────────────── */
+.dsg-callout {
+  background: rgba(245, 165, 36, 0.1);
+  border: 1px solid rgba(245, 165, 36, 0.3);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.9rem;
+  color: #fbbf24;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Disclaimer ───────────────────────────────────────────────────────────── */
+.dsg-disclaimer {
+  font-size: 0.78rem;
+  color: var(--sc-ink-subtle, #8a8a8a);
+  line-height: 1.55;
+  margin: 0;
+  border-top: 1px solid var(--sc-border, #3a3a3a);
+  padding-top: 0.9rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 540px) {
+  .dsg-ampel {
+    padding: 1rem 1rem;
+  }
+
+  .dsg-row {
+    padding: 0.65rem 0.8rem;
+  }
+
+  .dsg-ampel-headline {
+    font-size: 1.3rem;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .dsg-ampel-dot {
+    box-shadow: none;
+  }
+}
