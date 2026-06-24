@@ -60,7 +60,7 @@ describe('Button', () => {
     it('applies ghost variant classes', () => {
       render(<Button variant="ghost">Ghost</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('text-[var(--primary-600)]');
+      expect(button).toHaveClass('text-[var(--primary-400)]');
     });
   });
 

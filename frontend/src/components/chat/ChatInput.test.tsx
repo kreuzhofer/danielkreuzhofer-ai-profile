@@ -296,8 +296,8 @@ describe('ChatInput', () => {
       const button = screen.getByTestId('chat-input-send-button');
 
       await user.type(textarea, 'Hello');
-      expect(button.className).toContain('bg-blue-600');
-      expect(button.className).toContain('hover:bg-blue-700');
+      expect(button.className).toContain('bg-[var(--primary-500)]');
+      expect(button.className).toContain('hover:bg-[var(--primary-400)]');
     });
   });
 

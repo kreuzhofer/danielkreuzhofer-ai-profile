@@ -108,7 +108,7 @@ describe('MessageList', () => {
       expect(userMessage.className).toContain('justify-end');
     });
 
-    it('renders user messages with blue background', () => {
+    it('renders user messages with the primary background', () => {
       const messages = [
         createMessage({ id: 'user-1', role: 'user', content: 'Hello AI' }),
       ];
@@ -116,7 +116,7 @@ describe('MessageList', () => {
       render(<MessageList messages={messages} isLoading={false} />);
 
       const userMessage = screen.getByTestId('message-user-1');
-      const bubble = userMessage.querySelector('[class*="bg-blue-600"]');
+      const bubble = userMessage.querySelector('[class*="bg-[var(--primary-600)]"]');
       expect(bubble).toBeInTheDocument();
     });
 
@@ -153,7 +153,7 @@ describe('MessageList', () => {
       expect(assistantMessage.className).toContain('justify-start');
     });
 
-    it('renders assistant messages with gray background', () => {
+    it('renders assistant messages with the elevated surface background', () => {
       const messages = [
         createMessage({
           id: 'assistant-1',
@@ -165,7 +165,7 @@ describe('MessageList', () => {
       render(<MessageList messages={messages} isLoading={false} />);
 
       const assistantMessage = screen.getByTestId('message-assistant-1');
-      const bubble = assistantMessage.querySelector('[class*="bg-gray-100"]');
+      const bubble = assistantMessage.querySelector('[class*="bg-[var(--surface-elevated)]"]');
       expect(bubble).toBeInTheDocument();
     });
 
@@ -511,20 +511,22 @@ describe('MessageList', () => {
 
   describe('Message Content Formatting', () => {
     it('preserves whitespace in message content', () => {
+      // User messages render as plain text with the whitespace-pre-wrap class.
       const messages = [
         createMessage({
-          id: 'assistant-1',
-          role: 'assistant',
+          id: 'user-1',
+          role: 'user',
           content: 'Line 1\nLine 2\nLine 3',
         }),
       ];
 
       render(<MessageList messages={messages} isLoading={false} />);
 
-      // Get the message content element directly by test id to avoid ARIA live region match
-      const messageContainer = screen.getByTestId('message-assistant-1');
-      const content = messageContainer.querySelector('[data-testid="message-content"]');
-      expect(content).toHaveClass('whitespace-pre-wrap');
+      // The whitespace-pre-wrap class lives on the inner <p> rendering the text.
+      const messageContainer = screen.getByTestId('message-user-1');
+      const content = messageContainer.querySelector('p.whitespace-pre-wrap');
+      expect(content).toBeInTheDocument();
+      expect(content).toHaveTextContent('Line 1');
     });
 
     it('handles long words with word break', () => {
@@ -538,8 +540,11 @@ describe('MessageList', () => {
 
       render(<MessageList messages={messages} isLoading={false} />);
 
-      const content = screen.getByText('Supercalifragilisticexpialidocious');
+      // The break-words class lives on the message-content wrapper.
+      const messageContainer = screen.getByTestId('message-assistant-1');
+      const content = messageContainer.querySelector('[data-testid="message-content"]');
       expect(content).toHaveClass('break-words');
+      expect(content).toHaveTextContent('Supercalifragilisticexpialidocious');
     });
   });
 

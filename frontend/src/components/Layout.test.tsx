@@ -199,7 +199,7 @@ describe('Layout Component', () => {
         </Layout>
       );
 
-      const logoLink = screen.getByRole('link', { name: 'Portfolio - Go to top of page' });
+      const logoLink = screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to top of page' });
       expect(logoLink).toBeInTheDocument();
     });
 
@@ -210,7 +210,7 @@ describe('Layout Component', () => {
         </Layout>
       );
 
-      const logoLink = screen.getByRole('link', { name: 'Portfolio - Go to top of page' });
+      const logoLink = screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to top of page' });
       expect(logoLink).toHaveClass('focus:ring-2');
       expect(logoLink).toHaveClass('focus:outline-none');
     });

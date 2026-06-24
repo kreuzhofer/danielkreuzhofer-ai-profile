@@ -47,7 +47,7 @@ describe('Card', () => {
     it('applies default variant classes by default', () => {
       render(<Card data-testid="card">Default</Card>);
       const card = screen.getByTestId('card');
-      expect(card).toHaveClass('bg-white');
+      expect(card).toHaveClass('bg-[var(--surface)]');
     });
 
     it('applies outlined variant classes', () => {

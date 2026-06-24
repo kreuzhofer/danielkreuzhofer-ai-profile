@@ -19,9 +19,20 @@ import { formatBlogDate } from '@/components/blog/PostPreviewCard';
 // Mocks
 // =============================================================================
 
-// Mock next/navigation to handle notFound()
+// Mock next/navigation to handle notFound() and the router hooks used by
+// Navigation (usePathname/useRouter), which the blog post page renders.
 jest.mock('next/navigation', () => ({
   notFound: jest.fn(),
+  usePathname: () => '/',
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+  }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 // Mock react-markdown to avoid rendering MDX content (not relevant for metadata test)

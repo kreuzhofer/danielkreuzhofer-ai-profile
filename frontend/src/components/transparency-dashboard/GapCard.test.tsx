@@ -104,8 +104,8 @@ describe('GapCard', () => {
       render(<GapCard gap={gap} />);
       const card = screen.getByTestId('gap-card-test-gap-id');
       // Verify subtle styling classes are applied
-      expect(card.className).toContain('bg-slate-50');
-      expect(card.className).toContain('border-slate-200');
+      expect(card.className).toContain('bg-slate-500/10');
+      expect(card.className).toContain('border-slate-500/30');
     });
 
     it('is not a button element (non-interactive)', () => {

@@ -231,11 +231,11 @@ describe('ConfidenceIndicator', () => {
       );
 
       const container = screen.getByTestId('confidence-indicator');
-      expect(container.className).toContain('bg-green');
-      expect(container.className).toContain('border-green');
+      expect(container.className).toContain('bg-[var(--success)]');
+      expect(container.className).toContain('border-[var(--success)]');
 
       const label = screen.getByTestId('confidence-label');
-      expect(label.className).toContain('text-green');
+      expect(label.className).toContain('text-[var(--success)]');
     });
 
     it('applies yellow styling for partial_match', () => {
@@ -247,11 +247,11 @@ describe('ConfidenceIndicator', () => {
       );
 
       const container = screen.getByTestId('confidence-indicator');
-      expect(container.className).toContain('bg-yellow');
-      expect(container.className).toContain('border-yellow');
+      expect(container.className).toContain('bg-[var(--warning)]');
+      expect(container.className).toContain('border-[var(--warning)]');
 
       const label = screen.getByTestId('confidence-label');
-      expect(label.className).toContain('text-yellow');
+      expect(label.className).toContain('text-[var(--warning)]');
     });
 
     it('applies red styling for limited_match', () => {
@@ -263,11 +263,11 @@ describe('ConfidenceIndicator', () => {
       );
 
       const container = screen.getByTestId('confidence-indicator');
-      expect(container.className).toContain('bg-red');
-      expect(container.className).toContain('border-red');
+      expect(container.className).toContain('bg-[var(--error)]');
+      expect(container.className).toContain('border-[var(--error)]');
 
       const label = screen.getByTestId('confidence-label');
-      expect(label.className).toContain('text-red');
+      expect(label.className).toContain('text-[var(--error)]');
     });
   });
 

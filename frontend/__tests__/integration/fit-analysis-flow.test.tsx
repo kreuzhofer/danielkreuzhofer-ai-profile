@@ -15,6 +15,37 @@ import { FitAnalysisModule } from '@/components/fit-analysis/FitAnalysisModule';
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
+/**
+ * Build a mock fetch Response that streams a Server-Sent-Events body, matching
+ * the production /api/analyze contract. submitAnalysis() reads response.body via
+ * getReader() and parses `data: {...}` lines, so a plain JSON mock is not enough.
+ */
+const makeSseResponse = (assessment: unknown) => {
+  const encoder = new TextEncoder();
+  const chunk = encoder.encode(
+    `data: ${JSON.stringify({ type: 'complete', assessment })}\n\n`
+  );
+  let sent = false;
+
+  return {
+    ok: true,
+    status: 200,
+    body: {
+      getReader: () => ({
+        read: async () => {
+          if (sent) {
+            return { done: true, value: undefined };
+          }
+          sent = true;
+          return { done: false, value: chunk };
+        },
+        releaseLock: () => {},
+        cancel: async () => {},
+      }),
+    },
+  };
+};
+
 // Mock sessionStorage
 const mockStorage: Record<string, string> = {};
 Object.defineProperty(window, 'sessionStorage', {
@@ -175,39 +206,35 @@ describe('Fit Analysis Integration Flow', () => {
     });
 
     it('displays results after successful analysis', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            id: 'test-1',
-            timestamp: new Date().toISOString(),
-            jobDescriptionPreview: 'Test job description...',
-            confidenceScore: 'strong_match',
-            alignmentAreas: [
-              {
-                id: 'align-1',
-                title: 'TypeScript',
-                description: 'Strong TypeScript skills',
-                evidence: [
-                  {
-                    type: 'project',
-                    title: 'Portfolio',
-                    reference: 'portfolio-site',
-                    excerpt: 'Built with TypeScript',
-                  },
-                ],
-              },
-            ],
-            gapAreas: [],
-            recommendation: {
-              type: 'proceed',
-              summary: 'Excellent fit',
-              details: 'All requirements met.',
+      mockFetch.mockResolvedValueOnce(
+        makeSseResponse({
+          id: 'test-1',
+          timestamp: new Date().toISOString(),
+          jobDescriptionPreview: 'Test job description...',
+          confidenceScore: 'strong_match',
+          alignmentAreas: [
+            {
+              id: 'align-1',
+              title: 'TypeScript',
+              description: 'Strong TypeScript skills',
+              evidence: [
+                {
+                  type: 'project',
+                  title: 'Portfolio',
+                  reference: 'portfolio-site',
+                  excerpt: 'Built with TypeScript',
+                },
+              ],
             },
+          ],
+          gapAreas: [],
+          recommendation: {
+            type: 'proceed',
+            summary: 'Excellent fit',
+            details: 'All requirements met.',
           },
-        }),
-      });
+        })
+      );
 
       renderFitAnalysis();
 
@@ -258,25 +285,21 @@ describe('Fit Analysis Integration Flow', () => {
 
   describe('new analysis flow', () => {
     it('allows starting a new analysis after results', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          assessment: {
-            id: 'test-1',
-            timestamp: new Date().toISOString(),
-            jobDescriptionPreview: 'Test job description...',
-            confidenceScore: 'partial_match',
-            alignmentAreas: [],
-            gapAreas: [],
-            recommendation: {
-              type: 'consider',
-              summary: 'Worth considering',
-              details: 'Good fit overall.',
-            },
+      mockFetch.mockResolvedValueOnce(
+        makeSseResponse({
+          id: 'test-1',
+          timestamp: new Date().toISOString(),
+          jobDescriptionPreview: 'Test job description...',
+          confidenceScore: 'partial_match',
+          alignmentAreas: [],
+          gapAreas: [],
+          recommendation: {
+            type: 'consider',
+            summary: 'Worth considering',
+            details: 'Good fit overall.',
           },
-        }),
-      });
+        })
+      );
 
       renderFitAnalysis();
 

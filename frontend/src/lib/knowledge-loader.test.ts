@@ -344,6 +344,7 @@ describe('Knowledge Loader Edge Cases', () => {
         bio: '',
         valueProposition: '',
       },
+      blogPosts: [],
       rawKnowledge: [],
     };
 
@@ -373,6 +374,7 @@ describe('Knowledge Loader Edge Cases', () => {
         bio: '',
         valueProposition: '',
       },
+      blogPosts: [],
       rawKnowledge: [],
     };
 

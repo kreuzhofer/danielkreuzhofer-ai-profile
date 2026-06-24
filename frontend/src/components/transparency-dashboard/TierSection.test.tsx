@@ -140,8 +140,8 @@ describe('TierSection', () => {
         );
 
         const section = screen.getByTestId('tier-section-core_strength');
-        expect(section).toHaveClass('bg-emerald-50/50');
-        expect(section).toHaveClass('border-emerald-200');
+        expect(section).toHaveClass('bg-emerald-500/10');
+        expect(section).toHaveClass('border-emerald-500/30');
       });
 
       it('uses larger heading for core_strength tier', () => {
@@ -172,8 +172,8 @@ describe('TierSection', () => {
         );
 
         const section = screen.getByTestId('tier-section-working_knowledge');
-        expect(section).toHaveClass('bg-blue-50/30');
-        expect(section).toHaveClass('border-blue-200');
+        expect(section).toHaveClass('bg-[var(--primary-500)]/10');
+        expect(section).toHaveClass('border-[var(--primary-500)]/30');
       });
 
       it('uses medium heading for working_knowledge tier', () => {
@@ -204,8 +204,8 @@ describe('TierSection', () => {
         );
 
         const section = screen.getByTestId('tier-section-explicit_gap');
-        expect(section).toHaveClass('bg-slate-50/50');
-        expect(section).toHaveClass('border-slate-200');
+        expect(section).toHaveClass('bg-slate-500/10');
+        expect(section).toHaveClass('border-slate-500/30');
       });
 
       it('uses smaller heading for explicit_gap tier', () => {

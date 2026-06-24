@@ -74,38 +74,38 @@ describe('ProficiencyIndicator', () => {
       const indicator = screen.getByRole('img', { name: /proficiency: expert/i });
       expect(indicator).toBeInTheDocument();
       
-      // Check that all 3 bars are filled (have green color)
+      // Check that all 3 bars are filled (have expert/green color)
       const bars = indicator.querySelectorAll('span');
       expect(bars).toHaveLength(3);
       bars.forEach((bar) => {
-        expect(bar).toHaveClass('bg-green-500');
+        expect(bar).toHaveClass('bg-emerald-500');
       });
     });
 
     it('renders 2 filled bars for proficient level', () => {
       render(<ProficiencyIndicator level="proficient" variant="bars" />);
-      
+
       const indicator = screen.getByRole('img', { name: /proficiency: proficient/i });
       const bars = indicator.querySelectorAll('span');
       expect(bars).toHaveLength(3);
-      
-      // First 2 should be filled (blue), last should be empty
-      expect(bars[0]).toHaveClass('bg-blue-500');
-      expect(bars[1]).toHaveClass('bg-blue-500');
-      expect(bars[2]).toHaveClass('bg-gray-200');
+
+      // First 2 should be filled (primary), last should be empty
+      expect(bars[0]).toHaveClass('bg-[var(--primary-500)]');
+      expect(bars[1]).toHaveClass('bg-[var(--primary-500)]');
+      expect(bars[2]).toHaveClass('bg-[var(--border)]');
     });
 
     it('renders 1 filled bar for familiar level', () => {
       render(<ProficiencyIndicator level="familiar" variant="bars" />);
-      
+
       const indicator = screen.getByRole('img', { name: /proficiency: familiar/i });
       const bars = indicator.querySelectorAll('span');
       expect(bars).toHaveLength(3);
-      
-      // First should be filled (yellow), rest should be empty
-      expect(bars[0]).toHaveClass('bg-yellow-500');
-      expect(bars[1]).toHaveClass('bg-gray-200');
-      expect(bars[2]).toHaveClass('bg-gray-200');
+
+      // First should be filled (amber/yellow), rest should be empty
+      expect(bars[0]).toHaveClass('bg-amber-500');
+      expect(bars[1]).toHaveClass('bg-[var(--border)]');
+      expect(bars[2]).toHaveClass('bg-[var(--border)]');
     });
   });
 
@@ -118,31 +118,31 @@ describe('ProficiencyIndicator', () => {
       expect(dots).toHaveLength(3);
       
       dots.forEach((dot) => {
-        expect(dot).toHaveClass('bg-green-500');
+        expect(dot).toHaveClass('bg-emerald-500');
         expect(dot).toHaveClass('rounded-full');
       });
     });
 
     it('renders 2 filled dots for proficient level', () => {
       render(<ProficiencyIndicator level="proficient" variant="dots" />);
-      
+
       const indicator = screen.getByRole('img', { name: /proficiency: proficient/i });
       const dots = indicator.querySelectorAll('span');
-      
-      expect(dots[0]).toHaveClass('bg-blue-500');
-      expect(dots[1]).toHaveClass('bg-blue-500');
-      expect(dots[2]).toHaveClass('bg-gray-200');
+
+      expect(dots[0]).toHaveClass('bg-[var(--primary-500)]');
+      expect(dots[1]).toHaveClass('bg-[var(--primary-500)]');
+      expect(dots[2]).toHaveClass('bg-[var(--border)]');
     });
 
     it('renders 1 filled dot for familiar level', () => {
       render(<ProficiencyIndicator level="familiar" variant="dots" />);
-      
+
       const indicator = screen.getByRole('img', { name: /proficiency: familiar/i });
       const dots = indicator.querySelectorAll('span');
-      
-      expect(dots[0]).toHaveClass('bg-yellow-500');
-      expect(dots[1]).toHaveClass('bg-gray-200');
-      expect(dots[2]).toHaveClass('bg-gray-200');
+
+      expect(dots[0]).toHaveClass('bg-amber-500');
+      expect(dots[1]).toHaveClass('bg-[var(--border)]');
+      expect(dots[2]).toHaveClass('bg-[var(--border)]');
     });
   });
 
@@ -151,21 +151,21 @@ describe('ProficiencyIndicator', () => {
       render(<ProficiencyIndicator level="expert" variant="label" />);
       
       expect(screen.getByText('Expert')).toBeInTheDocument();
-      expect(screen.getByText('Expert')).toHaveClass('text-green-700');
+      expect(screen.getByText('Expert')).toHaveClass('text-emerald-400');
     });
 
     it('renders "Proficient" label for proficient level', () => {
       render(<ProficiencyIndicator level="proficient" variant="label" />);
-      
+
       expect(screen.getByText('Proficient')).toBeInTheDocument();
-      expect(screen.getByText('Proficient')).toHaveClass('text-blue-700');
+      expect(screen.getByText('Proficient')).toHaveClass('text-[var(--primary-400)]');
     });
 
     it('renders "Familiar" label for familiar level', () => {
       render(<ProficiencyIndicator level="familiar" variant="label" />);
-      
+
       expect(screen.getByText('Familiar')).toBeInTheDocument();
-      expect(screen.getByText('Familiar')).toHaveClass('text-yellow-700');
+      expect(screen.getByText('Familiar')).toHaveClass('text-amber-400');
     });
   });
 
@@ -218,8 +218,8 @@ describe('SkillItem', () => {
 
   it('renders years of experience when provided', () => {
     render(<SkillItem skill={sampleSkill} />);
-    
-    expect(screen.getByText('5y')).toBeInTheDocument();
+
+    expect(screen.getByText('5 years')).toBeInTheDocument();
   });
 
   it('does not render years when not provided', () => {
@@ -265,8 +265,17 @@ describe('SkillItem', () => {
 
   it('uses specified indicator variant', () => {
     render(<SkillItem skill={sampleSkill} indicatorVariant="label" />);
-    
-    expect(screen.getByText('Expert')).toBeInTheDocument();
+
+    // Label variant renders the proficiency indicator as a labelled badge.
+    // The metadata line also shows the level label, so "Expert" appears twice:
+    // once as the indicator badge (aria-labelled) and once as the metadata label.
+    const expertElements = screen.getAllByText('Expert');
+    expect(expertElements).toHaveLength(2);
+    expect(
+      expertElements.some(
+        (el) => el.getAttribute('aria-label') === 'Proficiency: Expert'
+      )
+    ).toBe(true);
   });
 
   it('applies custom className', () => {
@@ -332,11 +341,13 @@ describe('SkillCategoryCard', () => {
 
   it('uses specified indicator variant for all skills', () => {
     render(<SkillCategoryCard category={sampleSkillCategory} indicatorVariant="label" />);
-    
-    // Should have label-style indicators
-    expect(screen.getAllByText('Expert')).toHaveLength(2); // React and TypeScript
-    expect(screen.getByText('Proficient')).toBeInTheDocument(); // Vue.js
-    expect(screen.getByText('Familiar')).toBeInTheDocument(); // Svelte
+
+    // Should have label-style indicators. Each SkillItem shows the level twice
+    // (once as the label-variant indicator badge, once as the metadata label),
+    // so counts are doubled relative to the number of skills at each level.
+    expect(screen.getAllByText('Expert')).toHaveLength(4); // React and TypeScript (x2 each)
+    expect(screen.getAllByText('Proficient')).toHaveLength(2); // Vue.js (x2)
+    expect(screen.getAllByText('Familiar')).toHaveLength(2); // Svelte (x2)
   });
 
   it('applies custom className', () => {

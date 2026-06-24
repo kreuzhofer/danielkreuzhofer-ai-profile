@@ -201,12 +201,12 @@ describe('Responsive Layouts - Requirements 5.1, 5.3', () => {
       expect(grid).toBeInTheDocument();
     });
 
-    it('skill items within category use responsive grid', () => {
+    it('skill items within category use a vertical stack layout', () => {
       const { container } = render(<SkillsSection skillCategories={[sampleSkillCategory]} />);
-      
-      // Skills within category use grid-cols-1 sm:grid-cols-2
-      const skillsGrid = container.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2');
-      expect(skillsGrid).toBeInTheDocument();
+
+      // Skills within a category card stack vertically (space-y-2)
+      const skillsStack = container.querySelector('.space-y-2');
+      expect(skillsStack).toBeInTheDocument();
     });
 
     it('has responsive padding for different viewport sizes', () => {

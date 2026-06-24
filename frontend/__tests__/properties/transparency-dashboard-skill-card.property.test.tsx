@@ -17,20 +17,30 @@ describe('Property 3: Skill Card Content Completeness', () => {
     cleanup();
   });
 
+  // Non-empty text whose whitespace is collapsed/trimmed, so the value
+  // round-trips through the DOM's whitespace normalization that
+  // `toHaveTextContent` applies (a raw "a  b" would otherwise render/normalize
+  // to "a b" and fail the substring check — a test artifact, not a component bug).
+  const cleanText = (maxLength: number) =>
+    fc
+      .string({ minLength: 1, maxLength })
+      .map((s) => s.replace(/\s+/g, ' ').trim())
+      .filter((s) => s.length > 0);
+
   // Arbitrary for generating valid skills
   const skillArbitrary = fc.record({
     id: fc.uuid(),
-    name: fc.string({ minLength: 1, maxLength: 50 }).filter((s) => s.trim().length > 0),
+    name: cleanText(50),
     tier: fc.constantFrom<SkillTier>('core_strength', 'working_knowledge', 'explicit_gap'),
-    context: fc.string({ minLength: 1, maxLength: 200 }).filter((s) => s.trim().length > 0),
+    context: cleanText(200),
     yearsOfExperience: fc.option(fc.integer({ min: 1, max: 30 }), { nil: undefined }),
-    category: fc.string({ minLength: 1, maxLength: 30 }).filter((s) => s.trim().length > 0),
+    category: cleanText(30),
     evidence: fc.array(
       fc.record({
         id: fc.uuid(),
         type: fc.constantFrom('project' as const, 'experience' as const, 'certification' as const),
-        title: fc.string({ minLength: 1, maxLength: 50 }).filter((s) => s.trim().length > 0),
-        reference: fc.string({ minLength: 1, maxLength: 100 }).filter((s) => s.trim().length > 0),
+        title: cleanText(50),
+        reference: cleanText(100),
       }),
       { minLength: 0, maxLength: 5 }
     ),
