@@ -82,5 +82,5 @@ Work completed after the core specs, grouped by area.
 *(Content/video ideas — like a "5 Hebel" video that re-promotes the KFC lead magnet — live in the vault video backlog, not here.)*
 
 ### Infrastructure
-- [x] Dependency security — cleared **all 7 prod high-severity** Dependabot vulns (next, ws, form-data, hono, nodemailer, fast-uri, @xmldom/xmldom) via surgical npm `overrides` + targeted bumps (NOT `npm audit fix` — it re-resolves the whole tree and breaks the jest/babel test tooling)
-- [ ] Remaining ~9 prod **moderate** vulns — 5 cleanly override-able (qs, ip-address, express-rate-limit, dompurify, @hono/node-server); 4 behind risky majors / low real risk (js-yaml↔gray-matter frontmatter parsing, postcss↔next build-time XSS)
+- [x] Dependency security — cleared **all 7 prod high** + **4 moderate** Dependabot vulns (next, ws, form-data, hono, nodemailer, fast-uri, @xmldom/xmldom, qs, ip-address, express-rate-limit, dompurify) via surgical npm `overrides` + targeted bumps (NOT `npm audit fix` — it re-resolves the whole tree and breaks the jest/babel test tooling). Prod now **0 high / 5 moderate**.
+- [ ] Remaining 5 prod **moderate** vulns — all need risky majors / low real risk: @hono/node-server 1→2 (tooling, not run as a server), js-yaml↔gray-matter (frontmatter parsing, like the xmldom-0.9 break), postcss↔next (build-time CSS XSS, no runtime untrusted input)
