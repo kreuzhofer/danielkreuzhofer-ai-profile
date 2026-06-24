@@ -60,7 +60,7 @@ jest.mock("next/server", () => ({
   },
 }));
 
-import { POST } from "./route";
+import { POST, isValidBody } from "./route";
 
 function post(slug: string, body: unknown, ip = "9.9.9.9"): Promise<Response> {
   const req = new MockNextRequest(`http://localhost/api/scorecard/${slug}/submit`, {
@@ -133,4 +133,13 @@ describe("POST /api/scorecard/[slug]/submit", () => {
     const blocked = await post("sample", { email: "lead@firma.de", answers }, "7.7.7.7");
     expect(blocked.status).toBe(429);
   });
+});
+
+test("accepts answers containing string[] values (multi-select)", () => {
+  const body = { email: "a@b.de", answers: { Q_TOOLS: ["chatgpt", "claude"], C1: "gf" } };
+  expect(isValidBody(body)).toBe(true);
+});
+
+test("rejects answers with a non-string array element", () => {
+  expect(isValidBody({ email: "a@b.de", answers: { Q: [1, 2] } })).toBe(false);
 });

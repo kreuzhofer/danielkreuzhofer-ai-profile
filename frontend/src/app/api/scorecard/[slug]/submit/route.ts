@@ -9,14 +9,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createLogger } from "@/lib/logger";
 import { getScorecard } from "@/lib/scorecard/registry";
-import { buildResult } from "@/lib/scorecard/result";
+import { resolveResult } from "@/lib/scorecard/result";
 import { newToken, baseUrl } from "@/lib/scorecard/tokens";
 import { createRateLimiter } from "@/lib/scorecard/rate-limit";
 import { sendScorecardDoi } from "@/lib/scorecard/email";
 import { EmailNotConfiguredError } from "@/lib/email/send";
 import { insertScorecardSubmission } from "@/db/scorecard-submissions";
 import { isDatabaseConfigured } from "@/db/client";
-import type { Answers } from "@/lib/scorecard/types";
 
 const log = createLogger("ScorecardSubmitAPI");
 
@@ -28,25 +27,27 @@ const limiter = createRateLimiter({ max: 5, windowMs: 10 * 60 * 1000 });
 
 interface SubmitBody {
   email: string;
-  answers: Answers;
+  answers: Record<string, string | string[]>;
   tid?: string;
 }
 
 // Bound the stored jsonb: no real scorecard has anywhere near this many questions.
 const MAX_ANSWERS = 100;
+const MAX_MULTI = 30; // upper bound on selected options per multi question
 
-function isValidBody(body: unknown): body is SubmitBody {
+export function isValidBody(body: unknown): body is SubmitBody {
   if (!body || typeof body !== "object") return false;
   const b = body as Record<string, unknown>;
   if (typeof b.email !== "string") return false;
   if (b.tid !== undefined && typeof b.tid !== "string") return false;
   const answers = b.answers;
   if (typeof answers !== "object" || answers === null || Array.isArray(answers)) return false;
-  // The schema (and CleverReach/analytics) assume string→string answers; enforce it
-  // at the boundary so malformed/oversized payloads never reach the DB (§3/§8).
   const entries = Object.entries(answers as Record<string, unknown>);
   if (entries.length > MAX_ANSWERS) return false;
-  return entries.every(([, v]) => typeof v === "string");
+  return entries.every(([, v]) => {
+    if (typeof v === "string") return true;
+    return Array.isArray(v) && v.length <= MAX_MULTI && v.every((e) => typeof e === "string");
+  });
 }
 
 function clientIp(request: NextRequest): string {
@@ -96,7 +97,7 @@ export async function POST(
     );
   }
 
-  const result = buildResult(registration.definition, body.answers);
+  const result = resolveResult(registration, body.answers);
   const doiToken = newToken();
   const reportToken = newToken();
   const tid = typeof body.tid === "string" && TID_RE.test(body.tid) ? body.tid : null;
@@ -105,7 +106,7 @@ export async function POST(
     await insertScorecardSubmission({
       scorecard: slug,
       email,
-      answers: body.answers as Record<string, string>,
+      answers: body.answers,
       result,
       doiToken,
       reportToken,
