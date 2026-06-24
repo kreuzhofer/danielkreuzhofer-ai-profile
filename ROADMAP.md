@@ -82,4 +82,5 @@ Work completed after the core specs, grouped by area.
 *(Content/video ideas — like a "5 Hebel" video that re-promotes the KFC lead magnet — live in the vault video backlog, not here.)*
 
 ### Infrastructure
-- [x] Address GitHub Dependabot security vulnerabilities
+- [x] Dependency security — cleared **all 7 prod high-severity** Dependabot vulns (next, ws, form-data, hono, nodemailer, fast-uri, @xmldom/xmldom) via surgical npm `overrides` + targeted bumps (NOT `npm audit fix` — it re-resolves the whole tree and breaks the jest/babel test tooling)
+- [ ] Remaining ~9 prod **moderate** vulns — 5 cleanly override-able (qs, ip-address, express-rate-limit, dompurify, @hono/node-server); 4 behind risky majors / low real risk (js-yaml↔gray-matter frontmatter parsing, postcss↔next build-time XSS)
