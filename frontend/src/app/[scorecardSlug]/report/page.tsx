@@ -31,6 +31,24 @@ export default async function ScorecardReportPage({
   const reg = getScorecard(scorecardSlug);
   if (!reg) notFound();
 
+  if (reg.ReportDoc) {
+    const ReportDoc = reg.ReportDoc;
+    return (
+      <div className="sc-doc">
+        <header className="scd-header">
+          <div className="scd-header-inner">
+            <Link href="/" className="scd-brand" aria-label={`Zur Startseite von ${reg.branding.brandAuthor}`}>
+              <span className="scd-brand-name">{reg.branding.brandName}</span>
+              <span className="scd-brand-sub">{reg.branding.brandAuthor} · Report</span>
+            </Link>
+            <PrintButton label="Als PDF speichern" />
+          </div>
+        </header>
+        <ReportDoc registration={reg} result={submission.result} answers={submission.answers} />
+      </div>
+    );
+  }
+
   // A misconfigured registration (outcome without a content block) must not 500
   // on external token input — fail to a 404 instead.
   let model: ScorecardReport;
