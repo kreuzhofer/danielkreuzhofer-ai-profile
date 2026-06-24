@@ -77,8 +77,9 @@ Work completed after the core specs, grouped by area.
 
 ### Lead-Magnet Funnels
 - [ ] **In-app self-scheduling retention purge** (S) — the DSGVO purge (deletes unconfirmed opt-ins older than 7 days, both funnel tables) lives at `GET /api/cron/purge` and currently needs an *external* trigger (server crontab / cron-job.org / GitHub Actions, `CRON_SECRET`-gated). Move the schedule *into* the app — in-process scheduler in a server singleton or `instrumentation.ts`; viable because prod runs a persistent Docker container (`npm run start`)
-- [ ] (idea) Video #07 pitching the KFC "5 Hebel" report → re-promote the KFC lead magnet
 - [ ] New scorecards are now "data not code" — register via `src/scorecards/<slug>/` (definition + content + branding) when the next one is ready
+
+*(Content/video ideas — like a "5 Hebel" video that re-promotes the KFC lead magnet — live in the vault video backlog, not here.)*
 
 ### Infrastructure
 - [x] Address GitHub Dependabot security vulnerabilities
