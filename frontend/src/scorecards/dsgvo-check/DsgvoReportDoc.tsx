@@ -50,9 +50,23 @@ export function DsgvoReportDoc({ result }: ScorecardReportDocProps) {
 
       <section className="dsgr-section dsgr-reward">
         <h2 className="dsgr-h2">{dsgvoCopy.rewardHeading}</h2>
-        <ul className="dsgr-list">
-          {dsgvoCopy.rewardItems.map((t) => <li key={t.title}><strong>{t.title}:</strong> {t.body}</li>)}
-        </ul>
+        <p className="dsgr-reward-note">{dsgvoCopy.rewardNote}</p>
+        {dsgvoCopy.templates.map((tpl) => (
+          <article key={tpl.title} className="dsgr-template">
+            <h3 className="dsgr-template-title">{tpl.icon} {tpl.title}</h3>
+            <p className="dsgr-template-intro">{tpl.intro}</p>
+            {tpl.sections.map((s) => (
+              <div key={s.heading} className="dsgr-template-section">
+                <h4 className="dsgr-template-h4">{s.heading}</h4>
+                <ul className="dsgr-list">
+                  {s.items.map((it, i) => (
+                    <li key={i}>{it}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </article>
+        ))}
       </section>
 
       <p className="dsgr-update">{dsgvoCopy.updateNote}</p>

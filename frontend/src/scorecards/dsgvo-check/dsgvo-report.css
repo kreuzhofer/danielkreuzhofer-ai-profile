@@ -211,6 +211,46 @@
   print-color-adjust: exact;
 }
 
+.dsgr-reward-note {
+  font-size: 0.85rem;
+  color: #8a5a1f;
+  margin: 0 0 1.25rem;
+}
+
+.dsgr-template {
+  background: #ffffff;
+  border: 1px solid #ead9c4;
+  border-radius: 8px;
+  padding: 1.1rem 1.25rem;
+  margin-top: 1rem;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.dsgr-template-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+}
+
+.dsgr-template-intro {
+  font-size: 0.85rem;
+  color: #52525b;
+  margin: 0 0 0.9rem;
+}
+
+.dsgr-template-section {
+  margin-top: 0.9rem;
+  break-inside: avoid;
+}
+
+.dsgr-template-h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
 /* ── Footer notes ───────────────────────────────────────────────────────── */
 .dsgr-update {
   font-size: 0.82rem;
