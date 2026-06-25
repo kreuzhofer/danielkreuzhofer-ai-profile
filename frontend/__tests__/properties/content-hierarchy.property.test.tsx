@@ -48,9 +48,13 @@ const isoDateArbitrary = fc
 /**
  * Arbitrary for generating non-empty strings (for required text fields)
  */
+// Normalize to the form the accessibility-name algorithm uses (trim + collapse
+// whitespace runs). Two distinct generated values then never collide under the
+// `getByRole({ name })` normalizer, so list queries stay unambiguous.
 const nonEmptyStringArbitrary = fc
   .string({ minLength: 1, maxLength: 50 })
-  .filter((s) => s.trim().length > 0);
+  .map((s) => s.replace(/\s+/g, " ").trim())
+  .filter((s) => s.length > 0);
 
 /**
  * Arbitrary for generating skill proficiency levels

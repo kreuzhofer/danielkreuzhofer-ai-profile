@@ -20,10 +20,10 @@ describe('Property 2: Gap Explanations Display', () => {
   // Arbitrary for generating valid explicit gaps
   const gapArbitrary = fc.record({
     id: fc.uuid(),
-    name: fc.string({ minLength: 1, maxLength: 50 }).filter((s) => s.trim().length > 0),
-    explanation: fc.string({ minLength: 1, maxLength: 200 }).filter((s) => s.trim().length > 0),
+    name: fc.string({ minLength: 1, maxLength: 50 }).map((s) => s.replace(/\s+/g, " ").trim()).filter((s) => s.length > 0),
+    explanation: fc.string({ minLength: 1, maxLength: 200 }).map((s) => s.replace(/\s+/g, " ").trim()).filter((s) => s.length > 0),
     alternativeFocus: fc.option(
-      fc.string({ minLength: 1, maxLength: 100 }).filter((s) => s.trim().length > 0),
+      fc.string({ minLength: 1, maxLength: 100 }).map((s) => s.replace(/\s+/g, " ").trim()).filter((s) => s.length > 0),
       { nil: undefined }
     ),
   });

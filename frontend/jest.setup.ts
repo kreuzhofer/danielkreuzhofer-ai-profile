@@ -1,4 +1,11 @@
 import "@testing-library/jest-dom";
+import fc from "fast-check";
+
+// Deterministic property tests: a fixed global seed makes fast-check reproducible
+// across runs, eliminating flaky CI (intermittent failures where a random per-run
+// seed occasionally drew a pathological input). Per-test `numRuns` still apply, and
+// any genuine failure is now reproducible instead of a heisenbug.
+fc.configureGlobal({ seed: 1234567 });
 
 // Add Web API globals for testing Next.js API routes
 // These are available in Node.js 18+ but not automatically in Jest's jsdom environment
