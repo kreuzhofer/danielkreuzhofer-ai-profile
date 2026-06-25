@@ -216,21 +216,21 @@ describe('Navigation Component', () => {
   describe('Route link active state (segment-aware)', () => {
     it('marks /blog active on /blog and on a /blog sub-path, but not on /', () => {
       mockUsePathname.mockReturnValue('/blog');
-      const { rerender } = render(<Navigation sections={DEFAULT_SECTIONS} />);
+      const { rerender } = render(<Navigation sections={DEFAULT_SECTIONS} currentSection="" />);
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveAttribute('aria-current', 'page');
 
       mockUsePathname.mockReturnValue('/blog/my-post');
-      rerender(<Navigation sections={DEFAULT_SECTIONS} />);
+      rerender(<Navigation sections={DEFAULT_SECTIONS} currentSection="" />);
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveAttribute('aria-current', 'page');
 
       mockUsePathname.mockReturnValue('/');
-      rerender(<Navigation sections={DEFAULT_SECTIONS} />);
+      rerender(<Navigation sections={DEFAULT_SECTIONS} currentSection="" />);
       expect(screen.getByRole('link', { name: 'Blog' })).not.toHaveAttribute('aria-current');
     });
 
     it('does not mark /blog active on a prefix-colliding route like /blogging', () => {
       mockUsePathname.mockReturnValue('/blogging');
-      render(<Navigation sections={DEFAULT_SECTIONS} />);
+      render(<Navigation sections={DEFAULT_SECTIONS} currentSection="" />);
       expect(screen.getByRole('link', { name: 'Blog' })).not.toHaveAttribute('aria-current');
     });
   });
