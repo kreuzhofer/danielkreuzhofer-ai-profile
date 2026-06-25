@@ -47,7 +47,9 @@ describe('Button', () => {
     it('applies secondary variant classes', () => {
       render(<Button variant="secondary">Secondary</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[var(--secondary-500)]');
+      expect(button).toHaveClass('border');
+      expect(button).toHaveClass('border-[var(--secondary-400)]');
+      expect(button).toHaveClass('text-[var(--secondary-400)]');
     });
 
     it('applies outline variant classes', () => {

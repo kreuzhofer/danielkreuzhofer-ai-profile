@@ -32,15 +32,15 @@ type AnchorElementProps = ButtonProps & Omit<AnchorHTMLAttributes<HTMLAnchorElem
 function getVariantClasses(variant: ButtonProps['variant']): string {
   switch (variant) {
     case 'primary':
-      return 'bg-[var(--primary-500)] text-white hover:bg-[var(--primary-400)] focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
+      return 'bg-[var(--primary-500)] text-[var(--accent-ink)] hover:bg-[var(--primary-400)] focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
     case 'secondary':
-      return 'bg-[var(--secondary-500)] text-white hover:bg-[var(--secondary-400)] focus:ring-[var(--secondary-500)] focus:ring-offset-[var(--background)]';
+      return 'border border-[var(--secondary-400)] text-[var(--secondary-400)] hover:bg-[var(--secondary-400)]/10 focus:ring-[var(--secondary-400)] focus:ring-offset-[var(--background)]';
     case 'outline':
       return 'border-2 border-[var(--primary-500)] text-[var(--primary-400)] hover:bg-[var(--primary-500)]/20 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
     case 'ghost':
       return 'text-[var(--primary-400)] hover:bg-[var(--primary-500)]/20 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
     default:
-      return 'bg-[var(--primary-500)] text-white hover:bg-[var(--primary-400)] focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
+      return 'bg-[var(--primary-500)] text-[var(--accent-ink)] hover:bg-[var(--primary-400)] focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]';
   }
 }
 
@@ -64,7 +64,7 @@ function getSizeClasses(size: ButtonProps['size']): string {
  * Enhanced Button component with variants, sizes, and hover effects.
  *
  * Features:
- * - Multiple variants: primary (teal), secondary (amber), outline, ghost
+ * - Multiple variants: primary (orange), secondary (cyan outline), outline, ghost
  * - Multiple sizes: sm, md, lg with appropriate padding and font sizes
  * - Hover transitions with color/scale feedback
  * - Supports both button and anchor rendering via href prop
