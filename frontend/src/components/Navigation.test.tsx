@@ -213,6 +213,28 @@ describe('Navigation Component', () => {
     });
   });
 
+  describe('Route link active state (segment-aware)', () => {
+    it('marks /blog active on /blog and on a /blog sub-path, but not on /', () => {
+      mockUsePathname.mockReturnValue('/blog');
+      const { rerender } = render(<Navigation sections={DEFAULT_SECTIONS} />);
+      expect(screen.getByRole('link', { name: 'Blog' })).toHaveAttribute('aria-current', 'page');
+
+      mockUsePathname.mockReturnValue('/blog/my-post');
+      rerender(<Navigation sections={DEFAULT_SECTIONS} />);
+      expect(screen.getByRole('link', { name: 'Blog' })).toHaveAttribute('aria-current', 'page');
+
+      mockUsePathname.mockReturnValue('/');
+      rerender(<Navigation sections={DEFAULT_SECTIONS} />);
+      expect(screen.getByRole('link', { name: 'Blog' })).not.toHaveAttribute('aria-current');
+    });
+
+    it('does not mark /blog active on a prefix-colliding route like /blogging', () => {
+      mockUsePathname.mockReturnValue('/blogging');
+      render(<Navigation sections={DEFAULT_SECTIONS} />);
+      expect(screen.getByRole('link', { name: 'Blog' })).not.toHaveAttribute('aria-current');
+    });
+  });
+
   describe('Navigation Callback (Requirement 1.1)', () => {
     it('calls onNavigate with section ID when link is clicked', async () => {
       const handleNavigate = jest.fn();

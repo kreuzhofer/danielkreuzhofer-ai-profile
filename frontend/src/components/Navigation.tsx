@@ -6,6 +6,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 /**
+ * Route-link active state: true when the current path IS the href or a sub-path of
+ * it (segment-aware), not a mere string prefix. Prevents e.g. "/blog" lighting up
+ * on an unrelated "/blogging" route, and a "/" link being active everywhere.
+ */
+function isRouteActive(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(href + '/');
+}
+
+/**
  * Props for the NavLink component
  */
 export interface NavLinkProps {
@@ -204,7 +213,7 @@ export function MobileMenu({
    */
   const isLinkActive = (href: string): boolean => {
     if (!href.startsWith('#')) {
-      return pathname.startsWith(href);
+      return isRouteActive(pathname, href);
     }
     const sectionId = href.replace('#', '');
     return currentSection === sectionId;
@@ -549,7 +558,7 @@ export function Navigation({
   const isLinkActive = (href: string): boolean => {
     if (!href.startsWith('#')) {
       // Route-based link: check if current pathname starts with the href
-      return pathname.startsWith(href);
+      return isRouteActive(pathname, href);
     }
     // Anchor-based link: check against currentSection
     const sectionId = href.replace('#', '');
