@@ -10,6 +10,7 @@ export function Footer() {
           <Link href="/impressum">Impressum</Link>
           <Link href="/datenschutz">Datenschutz</Link>
         </nav>
+        <img src="/brand/k-bug-dark.svg" alt="" aria-hidden="true" style={{ height: "18px", width: "auto" }} />
       </div>
     </footer>
   );

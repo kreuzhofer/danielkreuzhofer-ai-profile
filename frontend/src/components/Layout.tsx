@@ -109,12 +109,16 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
           <div className="flex h-16 items-center justify-between">
             {/* Logo/Site title area */}
             <div className="flex-shrink-0">
-              <a 
-                href="#" 
+              <a
+                href="#"
                 aria-label="Daniel Kreuzhofer - Go to top of page"
                 className="text-xl font-semibold text-[var(--foreground)] hover:text-[var(--primary-400)] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)] rounded-md"
               >
-                Daniel Kreuzhofer
+                <img
+                  src="/brand/kreuzhofer-wordmark-dark.svg"
+                  alt="kreuzhofer."
+                  className="h-6 w-auto"
+                />
               </a>
             </div>
 
