@@ -459,7 +459,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
 
       const fitAnalysisLink = screen.getByRole('link', { name: 'Fit Analysis' });
       expect(fitAnalysisLink).toHaveClass('focus:ring-2');
-      expect(fitAnalysisLink).toHaveClass('focus:ring-[var(--secondary-500)]');
+      expect(fitAnalysisLink).toHaveClass('focus:ring-[var(--secondary-400)]');
     });
 
     it('focus indicators use ring-offset for visibility', () => {
