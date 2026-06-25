@@ -210,8 +210,18 @@ html {
 }
 
 .heading-section {
-  font-weight: 600;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  font-weight: 700;
   letter-spacing: -0.01em;
+}
+
+/* Brand display — Anton, ALLCAPS condensed. Hero / rare title moments only. */
+.brand-display {
+  font-family: var(--font-anton), "Arial Narrow", sans-serif;
+  text-transform: uppercase;
+  font-weight: 400; /* Anton is already heavy */
+  letter-spacing: -0.01em;
+  line-height: 0.95;
 }
 
 

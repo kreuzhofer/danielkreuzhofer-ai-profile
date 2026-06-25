@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
+import { Anton } from "next/font/google";
 import "./globals.css";
 import { ChatProvider } from "@/context/ChatContext";
 import { ChatWrapper } from "@/components/chat/ChatWrapper";
@@ -17,6 +18,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const anton = Anton({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-anton",
+});
+
 export const metadata: Metadata = {
   title: "Daniel Kreuzhofer - Cloud. AI. Clarity.",
   description: "Senior AI Solutions Architect helping companies leverage Cloud and AI with substance, not hype. 20+ years of experience in enterprise architecture, migrations, and GenAI implementation.",
@@ -30,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${geistMono.variable} antialiased font-sans`}
+        className={`${inter.variable} ${geistMono.variable} ${anton.variable} antialiased font-sans`}
       >
         <ChatProvider>
           {children}
