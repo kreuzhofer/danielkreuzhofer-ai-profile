@@ -51,6 +51,8 @@ export interface DsgvoTemplate {
   title: string;
   intro: string;
   sections: DsgvoTemplateSection[];
+  /** Official chamber/association sources & ready-made templates (verified). */
+  quellen?: { label: string; url: string }[];
 }
 
 /** DSGVO-specific copy used only by DsgvoResultView / DsgvoReportDoc. */
@@ -116,6 +118,16 @@ export const dsgvoCopy = {
           ],
         },
       ],
+      quellen: [
+        {
+          label: "IHK Schwaben – Muster-KI-Richtlinie (Word, kostenlos)",
+          url: "https://www.ihk.de/blueprint/servlet/resource/blob/6644920/f6ce0e19333d88d09fe6368d8c9068b4/muster-ki-richtlinie-data.docx",
+        },
+        {
+          label: "GDD e.V. – Musterrichtlinie KI (PDF, Mai 2025)",
+          url: "https://www.gdd.de/wp-content/uploads/2025/06/GDD-Musterrichtlinie-KI.pdf",
+        },
+      ],
     },
     {
       icon: "✅",
@@ -152,6 +164,16 @@ export const dsgvoCopy = {
             "Der AVV ist aktiv unterzeichnet (nicht nur „verfügbar“) und liegt dokumentiert vor.",
             "Eine Liste aller KI-Anbieter mit AVV-Status wird gepflegt.",
           ],
+        },
+      ],
+      quellen: [
+        {
+          label: "GDD e.V. – Muster-AVV nach Art. 28 mit Erläuterungen (PDF + Word)",
+          url: "https://www.gdd.de/wp-content/uploads/2023/06/GDD-Praxishilfe-DS-GVO-Mustervertrag-zur-Auftragsverarbeitung-gemaess-Art.-28-DS-GVO-Vers.-2.1.pdf",
+        },
+        {
+          label: "Bitkom – Praxisleitfaden & Mustervertragsanlage Auftragsverarbeitung",
+          url: "https://www.bitkom.org/Bitkom/Publikationen/Praxisleitfaeden-zur-Auftragsverarbeitung",
         },
       ],
     },
@@ -193,6 +215,20 @@ export const dsgvoCopy = {
             "Kurze Verständnis-Bestätigung am Ende (Quiz/Unterschrift).",
             "Auffrischung mindestens jährlich und bei wesentlichen Rechtsänderungen.",
           ],
+        },
+      ],
+      quellen: [
+        {
+          label: "BIHK – AI-Act-Webinarreihe inkl. Art. 4 (kostenlose Folien)",
+          url: "https://www.bihk.de/aiact-webinare.html",
+        },
+        {
+          label: "Bitkom – Umsetzungsleitfaden KI-Verordnung (PDF, kostenlos)",
+          url: "https://www.bitkom.org/sites/main/files/2024-10/241028-bitkom-umsetzungsleitfaden-ki.pdf",
+        },
+        {
+          label: "DIHK-Bildungs-GmbH – KI-Weiterbildung / Art.-4-Kurse (kostenpflichtig)",
+          url: "https://www.dihk-bildungs-gmbh.de/weiterbildung/themenfeld-kuenstliche-intelligenz-",
         },
       ],
     },

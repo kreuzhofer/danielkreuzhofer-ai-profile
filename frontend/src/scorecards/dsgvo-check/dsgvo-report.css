@@ -251,6 +251,19 @@
   margin: 0 0 0.35rem;
 }
 
+.dsgr-template-quellen {
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed #ead9c4;
+  break-inside: avoid;
+}
+
+.dsgr-template-quellen a {
+  color: #1f6feb;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+
 /* ── Footer notes ───────────────────────────────────────────────────────── */
 .dsgr-update {
   font-size: 0.82rem;

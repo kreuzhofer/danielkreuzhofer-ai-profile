@@ -65,6 +65,20 @@ export function DsgvoReportDoc({ result }: ScorecardReportDocProps) {
                 </ul>
               </div>
             ))}
+            {tpl.quellen && tpl.quellen.length > 0 && (
+              <div className="dsgr-template-quellen">
+                <h4 className="dsgr-template-h4">Offizielle Vorlagen & Quellen</h4>
+                <ul className="dsgr-list">
+                  {tpl.quellen.map((q) => (
+                    <li key={q.url}>
+                      <a href={q.url} target="_blank" rel="noopener noreferrer">
+                        {q.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </article>
         ))}
       </section>

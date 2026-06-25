@@ -7,7 +7,8 @@ test("renders full plan, a DPA link, the reward templates and the Rechtsstand ba
   render(<DsgvoReportDoc result={recommend(answers)} answers={answers} />);
   // "Stand der Recherche" appears in both the badge and the disclaimer — use getAllByText
   expect(screen.getAllByText(/Stand der Recherche/i).length).toBeGreaterThan(0);
-  expect(screen.getByRole("link", { name: /AVV|DPA/i })).toBeInTheDocument();
+  // the per-tool DPA link in the matrix (specific name — reference links also contain "AVV")
+  expect(screen.getByRole("link", { name: /dieses Anbieters/i })).toBeInTheDocument();
 });
 
 test("the gated report contains the ACTUAL template content, not just titles", () => {
@@ -20,4 +21,8 @@ test("the gated report contains the ACTUAL template content, not just titles", (
   expect(screen.getByText(/Halluzinationen/i)).toBeInTheDocument();               // AI-Literacy-Plan
   // the "Vorlage – Platzhalter anpassen / keine Rechtsberatung" note
   expect(screen.getByText(/eckigen Klammern/i)).toBeInTheDocument();
+  // official chamber/association references rendered as links, one block per template
+  expect(screen.getAllByText(/Offizielle Vorlagen & Quellen/i)).toHaveLength(3);
+  expect(screen.getByRole("link", { name: /IHK Schwaben/i })).toHaveAttribute("href", expect.stringContaining("ihk.de"));
+  expect(screen.getByRole("link", { name: /BIHK/i })).toBeInTheDocument();
 });
