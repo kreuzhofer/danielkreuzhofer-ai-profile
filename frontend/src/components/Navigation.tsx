@@ -376,11 +376,11 @@ export function MobileMenu({
             className="
               flex items-center justify-center gap-2
               w-full px-4 py-3 min-h-[44px]
-              bg-[var(--secondary-500)] hover:bg-[var(--secondary-600)]
-              text-white font-medium text-base
+              bg-[var(--secondary-400)] hover:bg-[var(--secondary-300)]
+              text-[var(--accent-ink)] font-medium text-base
               rounded-lg
               transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary-500)] focus:ring-offset-[var(--surface)]
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary-400)] focus:ring-offset-[var(--surface)]
             "
           >
             <svg
@@ -604,11 +604,11 @@ export function Navigation({
           href="/fit-analysis"
           className="
             px-4 py-2
-            bg-[var(--secondary-500)] hover:bg-[var(--secondary-600)]
-            text-white text-sm font-medium
+            bg-[var(--secondary-400)] hover:bg-[var(--secondary-300)]
+            text-[var(--accent-ink)] text-sm font-medium
             rounded-lg
             transition-colors duration-200
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary-500)] focus:ring-offset-[var(--background)]
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary-400)] focus:ring-offset-[var(--background)]
           "
         >
           Fit Analysis
