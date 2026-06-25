@@ -40,37 +40,36 @@ function getCssVariableName(palette: ColorPalette, shade: ColorShade): string {
 /**
  * Expected token values per palette.
  *
- * The rendered theme is the dark "Cinematic Tech" palette defined in
- * `src/app/globals.css`, which is the single source of truth for the CSS
- * custom properties this test inspects. The `primary` palette there is teal,
- * whereas the `colors` export in `src/lib/design-tokens.ts` still documents the
- * older indigo "Thoughtful Innovator" palette and is not consumed by any
- * production code. We therefore source the expected `primary` values from the
- * live CSS palette, while `secondary` and `neutral` still match the design
- * tokens module exactly.
+ * The rendered theme uses the brand-orange primary and brand-cyan secondary
+ * palettes defined in `src/app/globals.css`, which is the single source of
+ * truth for the CSS custom properties this test inspects. The `colors` export
+ * in `src/lib/design-tokens.ts` is not consumed by production code for these
+ * palettes. We therefore source the expected `primary` and `secondary` values
+ * from the live CSS palette, while `neutral` still matches the design tokens
+ * module exactly.
  */
-const PRIMARY_TEAL: Record<ColorShade, string> = {
-  '50': '#f0fdfa',
-  '100': '#ccfbf1',
-  '200': '#99f6e4',
-  '300': '#5eead4',
-  '400': '#2dd4bf',
-  '500': '#14b8a6',
-  '600': '#0d9488',
-  '700': '#0f766e',
-  '800': '#115e59',
-  '900': '#134e4a',
-  '950': '#042f2e',
+
+// Brand-Orange ramp — must match globals.css --primary-* exactly.
+const PRIMARY_ORANGE: Record<ColorShade, string> = {
+  '50': '#fdf3e9', '100': '#f9e1c6', '200': '#f3c490', '300': '#eea75a',
+  '400': '#eb9b48', '500': '#e89244', '600': '#d4761f', '700': '#a85a18',
+  '800': '#864718', '900': '#6e3b18', '950': '#3b1d0a',
+};
+
+// Brand-Cyan ramp — must match globals.css --secondary-* exactly.
+const SECONDARY_CYAN: Record<ColorShade, string> = {
+  '50': '#ecfafc', '100': '#cef1f7', '200': '#a3e3ef', '300': '#6fd0e3',
+  '400': '#4dbed4', '500': '#2ba7c0', '600': '#2189a1', '700': '#226d80',
+  '800': '#235a6a', '900': '#214b59', '950': '#103039',
 };
 
 /**
  * Returns the expected token value for a palette/shade, using the live CSS
- * palette as the source of truth for `primary`.
+ * palette as the source of truth for `primary` and `secondary`.
  */
 function getExpectedTokenValue(palette: ColorPalette, shade: ColorShade): string {
-  if (palette === 'primary') {
-    return PRIMARY_TEAL[shade];
-  }
+  if (palette === 'primary') return PRIMARY_ORANGE[shade];
+  if (palette === 'secondary') return SECONDARY_CYAN[shade];
   return colors[palette][shade];
 }
 
