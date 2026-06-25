@@ -2,52 +2,49 @@
 
 :root {
   /* =============================================================================
-     COLOR PALETTE: "Cinematic Tech"
-     
-     Personality: Warm & approachable meets tech-forward & innovative
-     Inspiration: Film color grading, teal/orange complementary palette
-     
-     This is a dark-mode-first design — no light mode switching.
+     BRAND PALETTE — Video-Brand-Kit (§4): near-black canvas, warm-orange action
+     accent, cool-cyan secondary. Anti-Hype, substance-plakativ. Dark-mode-first.
+     Matches the scorecard funnels (sc.css BrandTokens).
      ============================================================================= */
-  
-  /* Background layers (Charcoal family) */
-  --background: #1a1a2e;
-  --surface: #16213e;
-  --surface-elevated: #1f2b47;
-  --surface-overlay: #0f0f1a;
 
-  /* Foreground (Warm whites) */
-  --foreground: #eaf0f6;
-  --foreground-muted: #94a3b8;
-  --foreground-subtle: #64748b;
+  /* Background layers (near-black) */
+  --background: #0A0A0A;
+  --surface: #161616;
+  --surface-elevated: #1e1e1e;
+  --surface-overlay: #0A0A0A;
 
-  /* Primary palette - Teal (modern, fresh, innovative) */
-  --primary-50: #f0fdfa;
-  --primary-100: #ccfbf1;
-  --primary-200: #99f6e4;
-  --primary-300: #5eead4;
-  --primary-400: #2dd4bf;
-  --primary-500: #14b8a6;
-  --primary-600: #0d9488;
-  --primary-700: #0f766e;
-  --primary-800: #115e59;
-  --primary-900: #134e4a;
-  --primary-950: #042f2e;
+  /* Foreground (white → muted → subtle) */
+  --foreground: #ffffff;
+  --foreground-muted: #b4b4b4;
+  --foreground-subtle: #8a8a8a;
 
-  /* Secondary palette - Warm Orange (energy, warmth, action) */
-  --secondary-50: #fff7ed;
-  --secondary-100: #ffedd5;
-  --secondary-200: #fed7aa;
-  --secondary-300: #fdba74;
-  --secondary-400: #fb923c;
-  --secondary-500: #f97316;
-  --secondary-600: #ea580c;
-  --secondary-700: #c2410c;
-  --secondary-800: #9a3412;
-  --secondary-900: #7c2d12;
-  --secondary-950: #431407;
+  /* Primary palette — Brand-Orange (action / CTA) */
+  --primary-50: #fdf3e9;
+  --primary-100: #f9e1c6;
+  --primary-200: #f3c490;
+  --primary-300: #eea75a;
+  --primary-400: #eb9b48;
+  --primary-500: #e89244;
+  --primary-600: #d4761f;
+  --primary-700: #a85a18;
+  --primary-800: #864718;
+  --primary-900: #6e3b18;
+  --primary-950: #3b1d0a;
 
-  /* Neutral palette - Slate (for borders, dividers, subtle elements) */
+  /* Secondary palette — Brand-Cyan (eyebrows / links / focus / outlines) */
+  --secondary-50: #ecfafc;
+  --secondary-100: #cef1f7;
+  --secondary-200: #a3e3ef;
+  --secondary-300: #6fd0e3;
+  --secondary-400: #4dbed4;
+  --secondary-500: #2ba7c0;
+  --secondary-600: #2189a1;
+  --secondary-700: #226d80;
+  --secondary-800: #235a6a;
+  --secondary-900: #214b59;
+  --secondary-950: #103039;
+
+  /* Neutral palette — unchanged (Slate; used for borders/dividers) */
   --neutral-50: #f8fafc;
   --neutral-100: #f1f5f9;
   --neutral-200: #e2e8f0;
@@ -60,29 +57,35 @@
   --neutral-900: #0f172a;
   --neutral-950: #020617;
 
-  /* Semantic colors (adjusted for dark background) */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #06b6d4;
+  /* Semantic colors — brand pain/solution */
+  --success: #58D68D;
+  --warning: #E89244;
+  --error: #E63946;
+  --info: #4DBED4;
 
-  /* Gradients - cinematic, subtle depth */
-  --gradient-hero: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #1a1a2e 100%);
+  /* Dark text for use ON the orange accent (CTA labels) */
+  --accent-ink: #1a1206;
+
+  /* Gradients — studio mixed-light (warm-orange bottom-left + cool-cyan top-right) */
+  --gradient-hero:
+    radial-gradient(ellipse at 0% 100%, rgba(232, 146, 68, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 0%, rgba(77, 190, 212, 0.16) 0%, transparent 55%),
+    #0A0A0A;
   --gradient-section: linear-gradient(180deg, var(--background) 0%, var(--surface) 100%);
-  --gradient-glow-teal: radial-gradient(ellipse at 50% 0%, rgba(20, 184, 166, 0.15) 0%, transparent 50%);
-  --gradient-glow-orange: radial-gradient(ellipse at 50% 100%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+  --gradient-glow-teal: radial-gradient(ellipse at 100% 0%, rgba(77, 190, 212, 0.12) 0%, transparent 50%);
+  --gradient-glow-orange: radial-gradient(ellipse at 0% 100%, rgba(232, 146, 68, 0.12) 0%, transparent 50%);
 
-  /* Shadows - warm-tinted for film look */
+  /* Shadows — neutral film-look (no neon glow) */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.3);
-  --shadow-glow-teal: 0 0 20px rgba(20, 184, 166, 0.3);
-  --shadow-glow-orange: 0 0 20px rgba(249, 115, 22, 0.3);
+  --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.35);
+  --shadow-glow-teal: none;
+  --shadow-glow-orange: none;
 
   /* Border colors */
-  --border: #2a3a5c;
-  --border-muted: #1f2b47;
+  --border: #3A3A3A;
+  --border-muted: #2a2a2a;
 }
 
 @theme inline {
