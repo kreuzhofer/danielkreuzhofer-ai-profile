@@ -128,6 +128,20 @@ describe("ScorecardApp", () => {
     expect(screen.getByText("Wie oft?")).toBeInTheDocument();
   });
 
+  it("shows a 'Mehrfachauswahl möglich' hint on multi-select questions only", () => {
+    render(<ScorecardApp registration={MULTI_REGISTRATION} />);
+    fireEvent.click(screen.getByRole("button", { name: "Check starten" }));
+    // multi question "Pick" → hint present
+    expect(screen.getByText("Pick")).toBeInTheDocument();
+    expect(screen.getByText(/Mehrfachauswahl möglich/i)).toBeInTheDocument();
+    // advance to the single-select "Wie oft?" → hint absent
+    const group = screen.getByRole("group");
+    fireEvent.click(within(group).getByRole("checkbox", { name: /X/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Weiter →" }));
+    expect(screen.getByText("Wie oft?")).toBeInTheDocument();
+    expect(screen.queryByText(/Mehrfachauswahl möglich/i)).not.toBeInTheDocument();
+  });
+
   it("renders registration.ResultView at result phase", () => {
     const CustomResultView: ComponentType<ScorecardResultViewProps> = () => (
       <div data-testid="custom-result" />

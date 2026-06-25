@@ -195,6 +195,13 @@
   margin: 0 0 1.4rem;
 }
 
+.sc-question-hint {
+  margin: -0.9rem 0 1.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--sc-accent-2);
+}
+
 .sc-options {
   display: flex;
   flex-direction: column;

@@ -245,6 +245,7 @@ function Quiz({
       </div>
 
       <h2 id="sc-question" className="sc-question">{question.prompt}</h2>
+      {isMulti && <p className="sc-question-hint">Mehrfachauswahl möglich</p>}
 
       <div
         className="sc-options"
