@@ -85,14 +85,14 @@ export function RecruiterCTASection({ className = '' }: RecruiterCTASectionProps
         {/* Section intro */}
         <div className="text-center mb-10">
           <p className="text-sm font-medium text-[var(--primary-400)] uppercase tracking-wide mb-2">
-            For Recruiters & Hiring Managers
+            Was ich gebaut habe
           </p>
           <h2 className="text-2xl md:text-3xl font-bold text-[var(--foreground)] mb-3">
-            I believe in radical transparency
+            Transparenz statt Behauptungen
           </h2>
           <p className="text-[var(--foreground-muted)] max-w-2xl mx-auto">
-            Skip the guesswork. Get honest insights into my expertise and an AI-powered 
-            assessment of how I match your specific requirements.
+            Zwei Tools, die ich selbst gebaut habe — als Beweis, wie ich mit KI und ehrlicher
+            Selbsteinschätzung arbeite. Schauen Sie rein.
           </p>
         </div>
 
