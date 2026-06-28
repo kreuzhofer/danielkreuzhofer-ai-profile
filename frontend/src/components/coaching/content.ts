@@ -190,8 +190,8 @@ export const coachingContent = {
         href: '/dsgvo-check',
       },
     ] as LeadMagnet[],
-    /** Daniel füllt die YouTube-Kanal-URL; leer = Block wird nicht gerendert. */
-    youtubeUrl: '',
+    /** YouTube-Kanal (https erzwungen — externer Link). Leer = Block wird nicht gerendert. */
+    youtubeUrl: 'https://www.youtube.com/@DanielKreuzhofer',
     youtubeText: 'Neueste Videos auf YouTube',
   },
   finalCta: {
