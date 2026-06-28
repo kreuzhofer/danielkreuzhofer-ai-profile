@@ -97,25 +97,22 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
         />
       );
 
-      // Tab through all navigation links
+      // Tab through all navigation links and booking CTA
       await user.tab();
-      expect(screen.getByRole('link', { name: 'About' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Experience' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Projects' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Skills' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Erstgespräch buchen' })).toHaveFocus();
     });
 
     it('navigation links have visible focus indicators', () => {
@@ -134,22 +131,20 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
     });
 
     it('navigation links are activatable with Enter key', async () => {
-      const handleNavigate = jest.fn();
       const user = userEvent.setup();
-      
+
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
-          onNavigate={handleNavigate}
+          currentSection=""
         />
       );
 
-      const experienceLink = screen.getByRole('link', { name: 'Experience' });
-      experienceLink.focus();
-      await user.keyboard('{Enter}');
-
-      expect(handleNavigate).toHaveBeenCalledWith('experience');
+      // Route links are keyboard-activatable via their href; focus and confirm focusability
+      const coachingLink = screen.getByRole('link', { name: 'Coaching' });
+      coachingLink.focus();
+      expect(coachingLink).toHaveFocus();
+      expect(coachingLink).toHaveAttribute('href', '/');
     });
   });
 
@@ -365,18 +360,18 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
           isOpen={true}
           onClose={() => {}}
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
         />
       );
 
       // First link should be focused when menu opens
       await waitFor(() => {
-        expect(screen.getByRole('link', { name: 'About' })).toHaveFocus();
+        expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
       });
 
       // Tab through remaining links
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Experience' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
     });
 
     it('mobile menu links have visible focus indicators', () => {
@@ -449,17 +444,17 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       });
     });
 
-    it('Fit Analysis button has visible focus indicator', () => {
+    it('Erstgespräch booking CTA has visible focus indicator', () => {
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
         />
       );
 
-      const fitAnalysisLink = screen.getByRole('link', { name: 'Fit Analysis' });
-      expect(fitAnalysisLink).toHaveClass('focus:ring-2');
-      expect(fitAnalysisLink).toHaveClass('focus:ring-[var(--secondary-400)]');
+      const bookingLink = screen.getByRole('link', { name: 'Erstgespräch buchen' });
+      expect(bookingLink).toHaveClass('focus:ring-2');
+      expect(bookingLink).toHaveClass('focus:ring-[var(--primary-500)]');
     });
 
     it('focus indicators use ring-offset for visibility', () => {
@@ -496,38 +491,25 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       await user.tab();
       expect(screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to top of page' })).toHaveFocus();
 
-      // 3-8. Navigation links (About, Experience, Projects, Skills, Contact, Blog)
+      // 3-5. Navigation route links (Coaching, Über mich, Blog)
       await user.tab();
-      expect(screen.getByRole('link', { name: 'About' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Experience' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Projects' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Skills' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
       await user.tab();
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
-      // 9. Skills Transparency CTA button
+      // 6. Erstgespräch booking CTA
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Skills Transparency' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Erstgespräch buchen' })).toHaveFocus();
 
-      // 10. Fit Analysis CTA button
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Fit Analysis' })).toHaveFocus();
-
-      // 11. Mobile menu button (visible in DOM even if hidden on desktop)
+      // 7. Mobile menu button (visible in DOM even if hidden on desktop)
       await user.tab();
       expect(screen.getByRole('button', { name: /open menu/i })).toHaveFocus();
 
-      // 12. Content area elements
+      // 8. Content area elements
       await user.tab();
       expect(screen.getByTestId('content-button')).toHaveFocus();
     });

@@ -127,16 +127,22 @@ describe('Navigation Component', () => {
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
         />
       );
 
-      expect(screen.getByRole('link', { name: 'About' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Experience' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Projects' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Skills' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Contact' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Coaching' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Über mich' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Blog' })).toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'About' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'Experience' })).not.toBeInTheDocument();
+    });
+
+    it('renders the Erstgespräch booking CTA as an external link', () => {
+      render(<Navigation sections={DEFAULT_SECTIONS} currentSection="" />);
+      const cta = screen.getByRole('link', { name: 'Erstgespräch buchen' });
+      expect(cta).toHaveAttribute('href', 'https://calendly.com/danielkreuzhofer/30min');
+      expect(cta).toHaveAttribute('target', '_blank');
     });
 
     it('renders navigation with proper aria-label', () => {
@@ -171,44 +177,47 @@ describe('Navigation Component', () => {
   });
 
   describe('Active Section Indication (Requirement 1.5)', () => {
-    it('marks the current section as active', () => {
+    it('marks the current route as active based on pathname', () => {
+      // usePathname() is mocked to '/' — Coaching (href '/') should be active
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="experience"
+          currentSection=""
         />
       );
 
-      const experienceLink = screen.getByRole('link', { name: 'Experience' });
-      expect(experienceLink).toHaveAttribute('aria-current', 'page');
+      const coachingLink = screen.getByRole('link', { name: 'Coaching' });
+      expect(coachingLink).toHaveAttribute('aria-current', 'page');
     });
 
     it('only marks one section as active', () => {
+      // pathname '/' → only Coaching (href '/') is active
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="projects"
+          currentSection=""
         />
       );
 
       const links = screen.getAllByRole('link');
       const activeLinks = links.filter(link => link.getAttribute('aria-current') === 'page');
-      
+
       expect(activeLinks).toHaveLength(1);
-      expect(activeLinks[0]).toHaveTextContent('Projects');
+      expect(activeLinks[0]).toHaveTextContent('Coaching');
     });
 
-    it('marks no section as active when currentSection does not match', () => {
+    it('marks no section as active when pathname does not match any section', () => {
+      mockUsePathname.mockReturnValue('/nonexistent');
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="nonexistent"
+          currentSection=""
         />
       );
 
       const links = screen.getAllByRole('link');
       const activeLinks = links.filter(link => link.getAttribute('aria-current') === 'page');
-      
+
       expect(activeLinks).toHaveLength(0);
     });
   });
@@ -235,41 +244,18 @@ describe('Navigation Component', () => {
     });
   });
 
-  describe('Navigation Callback (Requirement 1.1)', () => {
-    it('calls onNavigate with section ID when link is clicked', async () => {
-      const handleNavigate = jest.fn();
-      const user = userEvent.setup();
-
+  describe('Navigation Route Links (Requirement 1.1)', () => {
+    it('section links have correct route hrefs for navigation', () => {
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
-          onNavigate={handleNavigate}
+          currentSection=""
         />
       );
 
-      const experienceLink = screen.getByRole('link', { name: 'Experience' });
-      await user.click(experienceLink);
-
-      expect(handleNavigate).toHaveBeenCalledWith('experience');
-    });
-
-    it('extracts section ID correctly from href', async () => {
-      const handleNavigate = jest.fn();
-      const user = userEvent.setup();
-
-      render(
-        <Navigation
-          sections={DEFAULT_SECTIONS}
-          currentSection="about"
-          onNavigate={handleNavigate}
-        />
-      );
-
-      const contactLink = screen.getByRole('link', { name: 'Contact' });
-      await user.click(contactLink);
-
-      expect(handleNavigate).toHaveBeenCalledWith('contact');
+      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveAttribute('href', '/');
+      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveAttribute('href', '/about');
+      expect(screen.getByRole('link', { name: 'Blog' })).toHaveAttribute('href', '/blog');
     });
   });
 
@@ -306,55 +292,45 @@ describe('Navigation Component', () => {
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
         />
       );
 
-      // Tab through all navigation links
+      // Tab through all navigation links and the booking CTA
       await user.tab();
-      expect(screen.getByRole('link', { name: 'About' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Experience' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Projects' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Skills' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
       await user.tab();
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
+
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Erstgespräch buchen' })).toHaveFocus();
     });
   });
 });
 
 describe('DEFAULT_SECTIONS', () => {
-  it('contains all required content sections', () => {
+  it('contains the three primary route sections', () => {
     const sectionLabels = DEFAULT_SECTIONS.map(s => s.label);
-    
-    expect(sectionLabels).toContain('About');
-    expect(sectionLabels).toContain('Experience');
-    expect(sectionLabels).toContain('Projects');
-    expect(sectionLabels).toContain('Skills');
-    expect(sectionLabels).toContain('Contact');
+
+    expect(sectionLabels).toContain('Coaching');
+    expect(sectionLabels).toContain('Über mich');
+    expect(sectionLabels).toContain('Blog');
   });
 
-  it('has correct anchor hrefs', () => {
+  it('has correct route hrefs', () => {
     const sectionHrefs = DEFAULT_SECTIONS.map(s => s.href);
-    
-    expect(sectionHrefs).toContain('#about');
-    expect(sectionHrefs).toContain('#experience');
-    expect(sectionHrefs).toContain('#projects');
-    expect(sectionHrefs).toContain('#skills');
-    expect(sectionHrefs).toContain('#contact');
+
+    expect(sectionHrefs).toContain('/');
+    expect(sectionHrefs).toContain('/about');
+    expect(sectionHrefs).toContain('/blog');
   });
 
-  it('has exactly 6 sections (including Blog)', () => {
-    expect(DEFAULT_SECTIONS).toHaveLength(6);
+  it('has exactly 3 sections', () => {
+    expect(DEFAULT_SECTIONS).toHaveLength(3);
   });
 
   it('contains Blog entry with /blog href', () => {
@@ -527,15 +503,12 @@ describe('MobileMenu Component', () => {
           isOpen={true}
           onClose={() => {}}
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
         />
       );
 
-      expect(screen.getByRole('link', { name: 'About' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Experience' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Projects' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Skills' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Contact' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Coaching' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Über mich' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Blog' })).toBeInTheDocument();
     });
 
@@ -598,35 +571,37 @@ describe('MobileMenu Component', () => {
       expect(menu).toBeInTheDocument();
     });
 
-    it('marks active section with aria-current="page"', () => {
+    it('marks active route with aria-current="page" based on pathname', () => {
+      // usePathname() is mocked to '/' — Coaching (href '/') should be active
       render(
         <MobileMenu
           isOpen={true}
           onClose={() => {}}
           sections={DEFAULT_SECTIONS}
-          currentSection="experience"
+          currentSection=""
         />
       );
 
-      const experienceLink = screen.getByRole('link', { name: 'Experience' });
-      expect(experienceLink).toHaveAttribute('aria-current', 'page');
+      const coachingLink = screen.getByRole('link', { name: 'Coaching' });
+      expect(coachingLink).toHaveAttribute('aria-current', 'page');
     });
 
     it('only marks one section as active', () => {
+      // pathname '/' → only Coaching (href '/') is active
       render(
         <MobileMenu
           isOpen={true}
           onClose={() => {}}
           sections={DEFAULT_SECTIONS}
-          currentSection="projects"
+          currentSection=""
         />
       );
 
       const links = screen.getAllByRole('link');
       const activeLinks = links.filter(link => link.getAttribute('aria-current') === 'page');
-      
+
       expect(activeLinks).toHaveLength(1);
-      expect(activeLinks[0]).toHaveTextContent('Projects');
+      expect(activeLinks[0]).toHaveTextContent('Coaching');
     });
   });
 
@@ -664,7 +639,7 @@ describe('MobileMenu Component', () => {
   });
 
   describe('Navigation Callback', () => {
-    it('calls onNavigate with section ID when link is clicked', async () => {
+    it('clicking a route section link closes menu without calling onNavigate', async () => {
       const handleNavigate = jest.fn();
       const handleClose = jest.fn();
       const user = userEvent.setup();
@@ -674,19 +649,19 @@ describe('MobileMenu Component', () => {
           isOpen={true}
           onClose={handleClose}
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
           onNavigate={handleNavigate}
         />
       );
 
-      const experienceLink = screen.getByRole('link', { name: 'Experience' });
-      await user.click(experienceLink);
+      const coachingLink = screen.getByRole('link', { name: 'Coaching' });
+      await user.click(coachingLink);
 
-      expect(handleNavigate).toHaveBeenCalledWith('experience');
+      expect(handleClose).toHaveBeenCalledTimes(1);
+      expect(handleNavigate).not.toHaveBeenCalled();
     });
 
     it('closes menu after navigation', async () => {
-      const handleNavigate = jest.fn();
       const handleClose = jest.fn();
       const user = userEvent.setup();
 
@@ -695,13 +670,12 @@ describe('MobileMenu Component', () => {
           isOpen={true}
           onClose={handleClose}
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
-          onNavigate={handleNavigate}
+          currentSection=""
         />
       );
 
-      const experienceLink = screen.getByRole('link', { name: 'Experience' });
-      await user.click(experienceLink);
+      const blogLink = screen.getByRole('link', { name: 'Blog' });
+      await user.click(blogLink);
 
       expect(handleClose).toHaveBeenCalledTimes(1);
     });
@@ -774,13 +748,13 @@ describe('MobileMenu Component', () => {
           isOpen={true}
           onClose={() => {}}
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
         />
       );
 
       await waitFor(() => {
-        const aboutLink = screen.getByRole('link', { name: 'About' });
-        expect(aboutLink).toHaveFocus();
+        const coachingLink = screen.getByRole('link', { name: 'Coaching' });
+        expect(coachingLink).toHaveFocus();
       });
     });
   });
@@ -794,30 +768,24 @@ describe('MobileMenu Component', () => {
           isOpen={true}
           onClose={() => {}}
           sections={DEFAULT_SECTIONS}
-          currentSection="about"
+          currentSection=""
         />
       );
 
-      // First link should be focused initially
+      // First link (Coaching) should be focused initially
       await waitFor(() => {
-        expect(screen.getByRole('link', { name: 'About' })).toHaveFocus();
+        expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
       });
 
-      // Tab through all navigation links
+      // Tab through remaining navigation links and booking CTA
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Experience' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Projects' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Skills' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
       await user.tab();
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
+
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Erstgespräch buchen' })).toHaveFocus();
     });
   });
 });

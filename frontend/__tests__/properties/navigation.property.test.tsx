@@ -237,8 +237,8 @@ describe("Property 1: Navigation Accessibility", () => {
             return hasHref && isInDocument;
           });
 
-          // sections.length + 2 for the Skills Transparency and Fit Analysis CTA buttons
-          return allLinksAccessible && links.length === sections.length + 2;
+          // sections.length + 1 for the Erstgespräch booking CTA
+          return allLinksAccessible && links.length === sections.length + 1;
         }),
         { numRuns: 5 }
       );

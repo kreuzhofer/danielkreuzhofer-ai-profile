@@ -110,7 +110,7 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
             {/* Logo/Site title area */}
             <div className="flex-shrink-0">
               <a
-                href="#"
+                href="/"
                 aria-label="Daniel Kreuzhofer - Go to top of page"
                 className="text-xl font-semibold text-[var(--foreground)] hover:text-[var(--primary-400)] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)] rounded-md"
               >

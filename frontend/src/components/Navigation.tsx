@@ -339,66 +339,25 @@ export function MobileMenu({
           })}
         </ul>
 
-        {/* CTA Buttons */}
-        <div className="px-4 py-4 border-t border-[var(--border)] space-y-3">
-          <Link
-            href="/transparency"
+        {/* CTA */}
+        <div className="px-4 py-4 border-t border-[var(--border)]">
+          <a
+            href="https://calendly.com/danielkreuzhofer/30min"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={onClose}
             className="
-              flex items-center justify-center gap-2
+              flex items-center justify-center
               w-full px-4 py-3 min-h-[44px]
-              bg-[var(--surface-elevated)] hover:bg-[var(--primary-900)]
-              text-[var(--foreground)] font-medium text-base
+              bg-[var(--primary-500)] hover:bg-[var(--primary-400)]
+              text-[var(--accent-ink)] font-medium text-base
               rounded-lg
               transition-colors duration-200
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--surface)]
             "
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-            Skills Transparency
-          </Link>
-          <Link
-            href="/fit-analysis"
-            onClick={onClose}
-            className="
-              flex items-center justify-center gap-2
-              w-full px-4 py-3 min-h-[44px]
-              bg-[var(--secondary-400)] hover:bg-[var(--secondary-300)]
-              text-[var(--accent-ink)] font-medium text-base
-              rounded-lg
-              transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary-400)] focus:ring-offset-[var(--surface)]
-            "
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-              />
-            </svg>
-            Fit Analysis
-          </Link>
+            Erstgespräch buchen
+          </a>
         </div>
       </nav>
     </div>
@@ -499,11 +458,8 @@ export interface NavigationProps {
  * Default navigation sections for the portfolio
  */
 export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
-  { href: '#about', label: 'About' },
-  { href: '#experience', label: 'Experience' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#skills', label: 'Skills' },
-  { href: '#contact', label: 'Contact' },
+  { href: '/', label: 'Coaching' },
+  { href: '/about', label: 'Über mich' },
   { href: '/blog', label: 'Blog' },
 ];
 
@@ -515,7 +471,7 @@ export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
  * - Provides access to all sections within 2 clicks (Requirement 1.1)
  * - Indicates current active section (Requirement 1.5)
  * - Keyboard navigable with visible focus states
- * - Includes Fit Analysis CTA button
+ * - Includes Erstgespräch booking CTA button
  * - Supports route-based links (e.g., /blog) alongside anchor links
  * - Determines active state for route links via pathname
  * 
@@ -585,34 +541,23 @@ export function Navigation({
         );
       })}
       
-      {/* CTA Buttons */}
-      <div className="flex items-center ml-4 space-x-2">
-        <Link
-          href="/transparency"
+      {/* Booking CTA */}
+      <div className="flex items-center ml-4">
+        <a
+          href="https://calendly.com/danielkreuzhofer/30min"
+          target="_blank"
+          rel="noopener noreferrer"
           className="
             px-4 py-2
-            bg-[var(--surface-elevated)] hover:bg-[var(--primary-900)]
-            text-[var(--foreground)] text-sm font-medium
+            bg-[var(--primary-500)] hover:bg-[var(--primary-400)]
+            text-[var(--accent-ink)] text-sm font-medium
             rounded-lg
             transition-colors duration-200
             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]
           "
         >
-          Skills Transparency
-        </Link>
-        <Link
-          href="/fit-analysis"
-          className="
-            px-4 py-2
-            bg-[var(--secondary-400)] hover:bg-[var(--secondary-300)]
-            text-[var(--accent-ink)] text-sm font-medium
-            rounded-lg
-            transition-colors duration-200
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--secondary-400)] focus:ring-offset-[var(--background)]
-          "
-        >
-          Fit Analysis
-        </Link>
+          Erstgespräch buchen
+        </a>
       </div>
     </nav>
   );
