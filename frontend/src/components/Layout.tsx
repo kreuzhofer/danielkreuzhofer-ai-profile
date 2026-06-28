@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import Link from 'next/link';
 import { Navigation, MobileMenuButton, MobileMenu, DEFAULT_SECTIONS } from './Navigation';
 import { useActiveSection, useScrollProgress, useReducedMotion } from '../hooks';
 
@@ -109,9 +110,9 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
           <div className="flex h-16 items-center justify-between">
             {/* Logo/Site title area */}
             <div className="flex-shrink-0">
-              <a
+              <Link
                 href="/"
-                aria-label="Daniel Kreuzhofer - Go to top of page"
+                aria-label="Daniel Kreuzhofer - Go to homepage"
                 className="text-xl font-semibold text-[var(--foreground)] hover:text-[var(--primary-400)] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)] rounded-md"
               >
                 <img
@@ -119,7 +120,7 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
                   alt="kreuzhofer."
                   className="h-6 w-auto"
                 />
-              </a>
+              </Link>
             </div>
 
             {/* Navigation component for desktop */}

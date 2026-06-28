@@ -493,7 +493,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
 
       // 2. Logo link
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to top of page' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to homepage' })).toHaveFocus();
 
       // 3-5. Navigation route links (Coaching, Über mich, Blog)
       await user.tab();
