@@ -339,12 +339,10 @@ export function MobileMenu({
           })}
         </ul>
 
-        {/* CTA */}
+        {/* Micro-magnet CTA */}
         <div className="px-4 py-4 border-t border-[var(--border)]">
-          <a
-            href="https://calendly.com/danielkreuzhofer/30min"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/engpass-check"
             onClick={onClose}
             className="
               flex items-center justify-center
@@ -356,8 +354,8 @@ export function MobileMenu({
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--surface)]
             "
           >
-            Erstgespräch buchen
-          </a>
+            Engpass-Check
+          </Link>
         </div>
       </nav>
     </div>
@@ -458,7 +456,8 @@ export interface NavigationProps {
  * Default navigation sections for the portfolio
  */
 export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
-  { href: '/', label: 'Coaching' },
+  { href: '/', label: 'Start' },
+  { href: '/coaching', label: 'Coaching' },
   { href: '/about', label: 'Über mich' },
   { href: '/blog', label: 'Blog' },
 ];
@@ -541,12 +540,10 @@ export function Navigation({
         );
       })}
       
-      {/* Booking CTA */}
+      {/* Micro-magnet CTA */}
       <div className="flex items-center ml-4">
-        <a
-          href="https://calendly.com/danielkreuzhofer/30min"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/engpass-check"
           className="
             px-4 py-2
             bg-[var(--primary-500)] hover:bg-[var(--primary-400)]
@@ -556,8 +553,8 @@ export function Navigation({
             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]
           "
         >
-          Erstgespräch buchen
-        </a>
+          Engpass-Check
+        </Link>
       </div>
     </nav>
   );

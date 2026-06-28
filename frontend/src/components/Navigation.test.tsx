@@ -138,12 +138,11 @@ describe('Navigation Component', () => {
       expect(screen.queryByRole('link', { name: 'Experience' })).not.toBeInTheDocument();
     });
 
-    it('renders the Erstgespräch booking CTA as an external link', () => {
+    it('renders the Engpass-Check micro-magnet CTA as an internal link', () => {
       render(<Navigation sections={DEFAULT_SECTIONS} currentSection="" />);
-      const cta = screen.getByRole('link', { name: 'Erstgespräch buchen' });
-      expect(cta).toHaveAttribute('href', 'https://calendly.com/danielkreuzhofer/30min');
-      expect(cta).toHaveAttribute('target', '_blank');
-      expect(cta).toHaveAttribute('rel', 'noopener noreferrer');
+      const cta = screen.getByRole('link', { name: 'Engpass-Check' });
+      expect(cta).toHaveAttribute('href', '/engpass-check');
+      expect(cta).not.toHaveAttribute('target');
     });
 
     it('renders navigation with proper aria-label', () => {
@@ -179,7 +178,7 @@ describe('Navigation Component', () => {
 
   describe('Active Section Indication (Requirement 1.5)', () => {
     it('marks the current route as active based on pathname', () => {
-      // usePathname() is mocked to '/' — Coaching (href '/') should be active
+      // usePathname() is mocked to '/' — Start (href '/') should be active
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
@@ -187,12 +186,12 @@ describe('Navigation Component', () => {
         />
       );
 
-      const coachingLink = screen.getByRole('link', { name: 'Coaching' });
-      expect(coachingLink).toHaveAttribute('aria-current', 'page');
+      const startLink = screen.getByRole('link', { name: 'Start' });
+      expect(startLink).toHaveAttribute('aria-current', 'page');
     });
 
     it('only marks one section as active', () => {
-      // pathname '/' → only Coaching (href '/') is active
+      // pathname '/' → only Start (href '/') is active
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
@@ -204,7 +203,7 @@ describe('Navigation Component', () => {
       const activeLinks = links.filter(link => link.getAttribute('aria-current') === 'page');
 
       expect(activeLinks).toHaveLength(1);
-      expect(activeLinks[0]).toHaveTextContent('Coaching');
+      expect(activeLinks[0]).toHaveTextContent('Start');
     });
 
     it('marks no section as active when pathname does not match any section', () => {
@@ -254,7 +253,8 @@ describe('Navigation Component', () => {
         />
       );
 
-      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveAttribute('href', '/');
+      expect(screen.getByRole('link', { name: 'Start' })).toHaveAttribute('href', '/');
+      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveAttribute('href', '/coaching');
       expect(screen.getByRole('link', { name: 'Über mich' })).toHaveAttribute('href', '/about');
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveAttribute('href', '/blog');
     });
@@ -297,7 +297,10 @@ describe('Navigation Component', () => {
         />
       );
 
-      // Tab through all navigation links and the booking CTA
+      // Tab through all navigation links and the micro-magnet CTA
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
+
       await user.tab();
       expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
 
@@ -308,15 +311,16 @@ describe('Navigation Component', () => {
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Erstgespräch buchen' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Engpass-Check' })).toHaveFocus();
     });
   });
 });
 
 describe('DEFAULT_SECTIONS', () => {
-  it('contains the three primary route sections', () => {
+  it('contains the primary route sections', () => {
     const sectionLabels = DEFAULT_SECTIONS.map(s => s.label);
 
+    expect(sectionLabels).toContain('Start');
     expect(sectionLabels).toContain('Coaching');
     expect(sectionLabels).toContain('Über mich');
     expect(sectionLabels).toContain('Blog');
@@ -326,12 +330,13 @@ describe('DEFAULT_SECTIONS', () => {
     const sectionHrefs = DEFAULT_SECTIONS.map(s => s.href);
 
     expect(sectionHrefs).toContain('/');
+    expect(sectionHrefs).toContain('/coaching');
     expect(sectionHrefs).toContain('/about');
     expect(sectionHrefs).toContain('/blog');
   });
 
-  it('has exactly 3 sections', () => {
-    expect(DEFAULT_SECTIONS).toHaveLength(3);
+  it('has exactly 4 sections', () => {
+    expect(DEFAULT_SECTIONS).toHaveLength(4);
   });
 
   it('contains Blog entry with /blog href', () => {
@@ -573,7 +578,7 @@ describe('MobileMenu Component', () => {
     });
 
     it('marks active route with aria-current="page" based on pathname', () => {
-      // usePathname() is mocked to '/' — Coaching (href '/') should be active
+      // usePathname() is mocked to '/' — Start (href '/') should be active
       render(
         <MobileMenu
           isOpen={true}
@@ -583,12 +588,12 @@ describe('MobileMenu Component', () => {
         />
       );
 
-      const coachingLink = screen.getByRole('link', { name: 'Coaching' });
-      expect(coachingLink).toHaveAttribute('aria-current', 'page');
+      const startLink = screen.getByRole('link', { name: 'Start' });
+      expect(startLink).toHaveAttribute('aria-current', 'page');
     });
 
     it('only marks one section as active', () => {
-      // pathname '/' → only Coaching (href '/') is active
+      // pathname '/' → only Start (href '/') is active
       render(
         <MobileMenu
           isOpen={true}
@@ -602,7 +607,7 @@ describe('MobileMenu Component', () => {
       const activeLinks = links.filter(link => link.getAttribute('aria-current') === 'page');
 
       expect(activeLinks).toHaveLength(1);
-      expect(activeLinks[0]).toHaveTextContent('Coaching');
+      expect(activeLinks[0]).toHaveTextContent('Start');
     });
   });
 
@@ -754,8 +759,8 @@ describe('MobileMenu Component', () => {
       );
 
       await waitFor(() => {
-        const coachingLink = screen.getByRole('link', { name: 'Coaching' });
-        expect(coachingLink).toHaveFocus();
+        const startLink = screen.getByRole('link', { name: 'Start' });
+        expect(startLink).toHaveFocus();
       });
     });
   });
@@ -773,12 +778,15 @@ describe('MobileMenu Component', () => {
         />
       );
 
-      // First link (Coaching) should be focused initially
+      // First link (Start) should be focused initially
       await waitFor(() => {
-        expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
+        expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
       });
 
-      // Tab through remaining navigation links and booking CTA
+      // Tab through remaining navigation links and the micro-magnet CTA
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
+
       await user.tab();
       expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
@@ -786,7 +794,7 @@ describe('MobileMenu Component', () => {
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Erstgespräch buchen' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Engpass-Check' })).toHaveFocus();
     });
   });
 });

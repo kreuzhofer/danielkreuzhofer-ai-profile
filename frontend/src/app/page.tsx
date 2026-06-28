@@ -1,47 +1,45 @@
 import { Metadata } from 'next';
 import { Layout } from '@/components/Layout';
 import {
-  CoachingHero,
-  ProofStrip,
-  LandingSection,
-  MethodTimeline,
-  InvestmentCard,
-  FaqSection,
-  LeadMagnetsSection,
-  FinalCtaSection,
-  coachingContent,
-} from '@/components/coaching';
+  ContentHero,
+  VideosSection,
+  MicroMagnetSection,
+  BlogTeaser,
+  AboutTeaser,
+  CoachingPointer,
+} from '@/components/home';
+import { getBlogPosts } from '@/lib/content';
 
 export const metadata: Metadata = {
-  title: '90-Tage AI Win — KI-Coaching mit Kante | Daniel Kreuzhofer',
+  title: 'Daniel Kreuzhofer — KI-Coaching mit Kante',
   description:
-    'Done-With-You-Coaching für Bereichsleiter im Mittelstand: in 90 Tagen einen risikoarmen, messbaren KI-Pilot planen, umsetzen und beweisen.',
+    'Klartext zu KI für Führungskräfte im Mittelstand: Videos, Tools und der 3-Minuten-Engpass-Check. Selbst getestet, ohne Hype.',
   openGraph: {
-    title: '90-Tage AI Win — KI-Coaching mit Kante',
+    title: 'Daniel Kreuzhofer — KI-Coaching mit Kante',
     description:
-      'In 90 Tagen einen risikoarmen, messbaren KI-Pilot planen, umsetzen und beweisen. Done-With-You für Bereichsleiter mit KI-Mandat.',
+      'Klartext zu KI für Führungskräfte im Mittelstand: Videos, Tools und der 3-Minuten-Engpass-Check.',
     type: 'website',
   },
 };
 
 /**
- * Home = coaching sales landing for the 90-Tage AI Win offer (Stufe 2).
- * Profile content now lives at /about.
+ * Home = top-of-funnel CONTENT entry point. Promotes Daniel's content (videos/POV)
+ * and routes visitors to the micro-magnet (Engpass-Check). The offer + Erstgespräch
+ * live on /coaching for warm leads only.
  */
 export default function Home() {
-  const { forWhom, problem, result } = coachingContent;
+  const posts = [...getBlogPosts()]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 3);
+
   return (
     <Layout>
-      <CoachingHero />
-      <ProofStrip />
-      <LandingSection id="for-whom" {...forWhom} />
-      <LandingSection id="problem" {...problem} />
-      <MethodTimeline />
-      <LandingSection id="result" {...result} />
-      <InvestmentCard />
-      <FaqSection />
-      <LeadMagnetsSection />
-      <FinalCtaSection />
+      <ContentHero />
+      <VideosSection />
+      <MicroMagnetSection />
+      <BlogTeaser posts={posts} />
+      <AboutTeaser />
+      <CoachingPointer />
     </Layout>
   );
 }

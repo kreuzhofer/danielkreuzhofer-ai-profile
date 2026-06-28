@@ -101,7 +101,10 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
         />
       );
 
-      // Tab through all navigation links and booking CTA
+      // Tab through all navigation links and the micro-magnet CTA
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
+
       await user.tab();
       expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
 
@@ -112,7 +115,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Erstgespräch buchen' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Engpass-Check' })).toHaveFocus();
     });
 
     it('navigation links have visible focus indicators', () => {
@@ -148,7 +151,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       expect(coachingLink).toHaveFocus();
       await user.keyboard('{Enter}');
       expect(coachingLink).toHaveFocus();
-      expect(coachingLink).toHaveAttribute('href', '/');
+      expect(coachingLink).toHaveAttribute('href', '/coaching');
     });
   });
 
@@ -370,12 +373,12 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
 
       // First link should be focused when menu opens
       await waitFor(() => {
-        expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
+        expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
       });
 
       // Tab through remaining links
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
     });
 
     it('mobile menu links have visible focus indicators', () => {
@@ -448,7 +451,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       });
     });
 
-    it('Erstgespräch booking CTA has visible focus indicator', () => {
+    it('Engpass-Check micro-magnet CTA has visible focus indicator', () => {
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
@@ -456,9 +459,9 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
         />
       );
 
-      const bookingLink = screen.getByRole('link', { name: 'Erstgespräch buchen' });
-      expect(bookingLink).toHaveClass('focus:ring-2');
-      expect(bookingLink).toHaveClass('focus:ring-[var(--primary-500)]');
+      const ctaLink = screen.getByRole('link', { name: 'Engpass-Check' });
+      expect(ctaLink).toHaveClass('focus:ring-2');
+      expect(ctaLink).toHaveClass('focus:ring-[var(--primary-500)]');
     });
 
     it('focus indicators use ring-offset for visibility', () => {
@@ -495,7 +498,10 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       await user.tab();
       expect(screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to homepage' })).toHaveFocus();
 
-      // 3-5. Navigation route links (Coaching, Über mich, Blog)
+      // 3-6. Navigation route links (Start, Coaching, Über mich, Blog)
+      await user.tab();
+      expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
+
       await user.tab();
       expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
 
@@ -505,9 +511,9 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       await user.tab();
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
-      // 6. Erstgespräch booking CTA
+      // 7. Engpass-Check micro-magnet CTA
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Erstgespräch buchen' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Engpass-Check' })).toHaveFocus();
 
       // 7. Mobile menu button (visible in DOM even if hidden on desktop)
       await user.tab();
