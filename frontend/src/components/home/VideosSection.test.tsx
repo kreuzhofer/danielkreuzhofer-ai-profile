@@ -2,12 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { VideosSection } from './VideosSection';
 
 describe('VideosSection', () => {
-  it('embeds the privacy-friendly latest-videos playlist', () => {
-    const { container } = render(<VideosSection />);
-    const iframe = container.querySelector('iframe');
-    expect(iframe).not.toBeNull();
-    expect(iframe?.getAttribute('src')).toContain('youtube-nocookie.com');
-    expect(iframe?.getAttribute('src')).toContain('UUAtR5ksFgUGuehXA4BMJwCw');
+  it('renders featured video cards that link to the YouTube watch page', () => {
+    render(<VideosSection />);
+    const card = screen.getByRole('link', { name: /Bevor du KI kaufst/ });
+    expect(card.getAttribute('href')).toContain('watch?v=C9jW0jqhRtY');
+    expect(card).toHaveAttribute('target', '_blank');
   });
 
   it('links to the YouTube channel', () => {

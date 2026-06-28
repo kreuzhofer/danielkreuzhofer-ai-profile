@@ -4,10 +4,25 @@
 // call CTA — the Erstgespräch lives on /coaching for warm leads only.
 
 export const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@DanielKreuzhofer';
-/** Uploads playlist (UU + channelId tail) — embeds the channel's latest videos without an API key. */
-export const YOUTUBE_UPLOADS_PLAYLIST = 'UUAtR5ksFgUGuehXA4BMJwCw';
-/** Privacy-enhanced embed (youtube-nocookie) of the latest-uploads playlist. */
-export const YOUTUBE_EMBED_URL = `https://www.youtube-nocookie.com/embed/videoseries?list=${YOUTUBE_UPLOADS_PLAYLIST}`;
+
+export interface FeaturedVideo {
+  id: string;
+  title: string;
+}
+
+/**
+ * Featured videos = the channel's latest, seeded from the YouTube RSS feed (2026-06-28).
+ * Rendered as click-to-play thumbnail cards (no YouTube player loads until click — privacy
+ * friendly + reliable). Update this list when new videos land (or wire a build-time RSS fetch).
+ */
+export const FEATURED_VIDEOS: FeaturedVideo[] = [
+  { id: 'OPuHZxOnkJw', title: 'Warum nutzt Dein Team keine KI? Der Grund bist Du.' },
+  { id: 'C9jW0jqhRtY', title: 'Bevor du KI kaufst: Wo hakt dein Vertrieb wirklich?' },
+  { id: 'hjEzcQncAIg', title: 'Freitag 17 Uhr, Last-Minute vom Chef — 30 Min mit KI statt Wochenende' },
+];
+
+export const youtubeThumb = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+export const youtubeWatch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
 
 export const ENGPASS_HREF = '/engpass-check';
 export const COACHING_HREF = '/coaching';

@@ -1,6 +1,26 @@
 // src/components/home/VideosSection.tsx
 import React from 'react';
-import { homeContent, YOUTUBE_EMBED_URL, YOUTUBE_CHANNEL_URL } from './content';
+import {
+  homeContent,
+  FEATURED_VIDEOS,
+  youtubeThumb,
+  youtubeWatch,
+  YOUTUBE_CHANNEL_URL,
+} from './content';
+
+function PlayIcon() {
+  return (
+    <span
+      aria-hidden="true"
+      className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-500)]/90
+                 text-[var(--accent-ink)] shadow-lg transition-transform group-hover:scale-110"
+    >
+      <svg className="h-5 w-5 translate-x-[1px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </span>
+  );
+}
 
 export function VideosSection() {
   const { videos } = homeContent;
@@ -23,16 +43,32 @@ export function VideosSection() {
           </a>
         </div>
         <p className="text-[var(--foreground-muted)] mb-6 max-w-2xl">{videos.intro}</p>
-        <div className="aspect-video w-full overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]">
-          <iframe
-            className="h-full w-full"
-            src={YOUTUBE_EMBED_URL}
-            title="Neueste Videos von Daniel Kreuzhofer"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
+        <div className="grid gap-5 sm:grid-cols-3">
+          {FEATURED_VIDEOS.map((video) => (
+            <a
+              key={video.id}
+              href={youtubeWatch(video.id)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block"
+            >
+              <div className="relative aspect-video overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={youtubeThumb(video.id)}
+                  alt=""
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <span className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <PlayIcon />
+                </span>
+              </div>
+              <h3 className="mt-3 text-sm font-medium leading-snug text-[var(--foreground)] group-hover:text-[var(--secondary-400)]">
+                {video.title}
+              </h3>
+            </a>
+          ))}
         </div>
       </div>
     </section>
