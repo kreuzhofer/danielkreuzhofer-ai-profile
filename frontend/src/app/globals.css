@@ -221,7 +221,7 @@ html {
   text-transform: uppercase;
   font-weight: 400; /* Anton is already heavy */
   letter-spacing: -0.01em;
-  line-height: 1.05; /* clears descenders on wrapped multi-line headlines (was 0.95 → lines overlapped) */
+  line-height: 1.18; /* enough leading that uppercase umlaut dots (Ü/Ä/Ö) on a wrapped line clear the line above */
 }
 
 
