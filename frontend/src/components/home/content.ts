@@ -32,7 +32,7 @@ export const BLOG_HREF = '/blog';
 export const homeContent = {
   hero: {
     eyebrow: 'KI-Coaching mit Kante',
-    headline: 'Klartext zu KI — für Führungskräfte, die Ergebnisse liefern müssen',
+    headline: 'Klartext zu KI — für Führungskräfte, die liefern müssen',
     tagline:
       'Ich teste KI in der Praxis und zeige, was wirklich funktioniert — ohne Hype, mit Kante. Fangen Sie mit einem Video oder dem 3-Minuten-Check an.',
     primaryCta: 'Engpass-Check (3 Min)',

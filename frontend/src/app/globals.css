@@ -68,8 +68,8 @@
 
   /* Gradients — studio mixed-light (warm-orange bottom-left + cool-cyan top-right) */
   --gradient-hero:
-    radial-gradient(ellipse at 0% 100%, rgba(232, 146, 68, 0.22) 0%, transparent 55%),
-    radial-gradient(ellipse at 100% 0%, rgba(77, 190, 212, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 0% 100%, rgba(232, 146, 68, 0.32) 0%, transparent 62%),
+    radial-gradient(ellipse at 100% 0%, rgba(77, 190, 212, 0.22) 0%, transparent 62%),
     #0A0A0A;
   --gradient-section: linear-gradient(180deg, var(--background) 0%, var(--surface) 100%);
   --gradient-glow-teal: radial-gradient(ellipse at 100% 0%, rgba(77, 190, 212, 0.12) 0%, transparent 50%);
@@ -221,7 +221,7 @@ html {
   text-transform: uppercase;
   font-weight: 400; /* Anton is already heavy */
   letter-spacing: -0.01em;
-  line-height: 0.95;
+  line-height: 1.05; /* clears descenders on wrapped multi-line headlines (was 0.95 → lines overlapped) */
 }
 
 

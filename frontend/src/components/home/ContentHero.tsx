@@ -9,8 +9,8 @@ export function ContentHero() {
     <section
       id="hero"
       aria-label="Hero"
-      className="relative flex min-h-[calc(80vh-4rem)] flex-col items-center justify-center
-                 bg-[var(--gradient-hero)] px-4 pb-10 -mx-4 sm:-mx-6 lg:-mx-8 -mt-8 text-center"
+      className="relative flex flex-col items-center
+                 bg-[var(--gradient-hero)] px-4 py-20 md:py-28 -mx-4 sm:-mx-6 lg:-mx-8 -mt-8 text-center"
     >
       <div className="relative z-10 mx-auto max-w-4xl">
         <p className="text-[var(--secondary-400)] text-xs font-bold tracking-[0.18em] uppercase mb-3">
