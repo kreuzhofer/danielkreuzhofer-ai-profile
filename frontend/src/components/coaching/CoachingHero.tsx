@@ -9,10 +9,10 @@ export function CoachingHero() {
     <section
       id="hero"
       aria-label="Hero"
-      className="relative min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center
-                 bg-[var(--gradient-hero)] px-4 pb-20 -mx-4 sm:-mx-6 lg:-mx-8 -mt-8 text-center"
+      className="relative flex min-h-[calc(86vh-4rem)] flex-col items-center
+                 bg-[var(--gradient-hero)] px-4 pb-6 -mx-4 sm:-mx-6 lg:-mx-8 -mt-8 text-center"
     >
-      <div className="relative z-10 max-w-4xl mx-auto flex-1 flex flex-col justify-center">
+      <div className="relative z-10 mx-auto flex max-w-4xl flex-1 flex-col justify-center">
         <p className="text-[var(--secondary-400)] text-xs font-bold tracking-[0.18em] uppercase mb-3">
           {hero.eyebrow}
         </p>
@@ -31,6 +31,18 @@ export function CoachingHero() {
           </Button>
         </div>
       </div>
+
+      {/* Scroll cue — a visible lead-over into the sections below (Beweis peeks above the fold). */}
+      <a
+        href="#proof"
+        aria-label="Weiter zu den Inhalten"
+        className="relative z-10 mt-4 inline-flex flex-col items-center gap-1 text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+      >
+        <span className="text-[11px] font-semibold uppercase tracking-[0.16em]">Mehr erfahren</span>
+        <svg className="h-5 w-5 motion-safe:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </a>
     </section>
   );
 }
