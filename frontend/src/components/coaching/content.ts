@@ -60,9 +60,9 @@ export const coachingContent = {
     intro:
       'Und Marketing-, Service- oder Operations-Verantwortliche, die mit KI schnell ein belastbares Ergebnis liefern müssen — aktueller Schwerpunkt: Vertrieb.',
     bullets: [
-      'Sie suchen einen schnellen, risikoarmen Einstieg — keine Pilot-Friedhöfe',
-      'Sie wollen strategische Führung statt Tool-Spielerei',
-      'Der Rahmen passt in Ihre Budget-Hoheit — kein Procurement, kein Eskalationsgespräch mit der Geschäftsführung',
+      'Du suchst einen schnellen, risikoarmen Einstieg — keine Pilot-Friedhöfe',
+      'Du willst strategische Führung statt Tool-Spielerei',
+      'Der Rahmen passt in Deine Budget-Hoheit — kein Procurement, kein Eskalationsgespräch mit der Geschäftsführung',
       'Nicht geeignet für Startups, Hobby-Teams oder Rollen ohne Linien-Verantwortung und KI-Mandat',
     ],
     accent: 'secondary',
@@ -73,7 +73,7 @@ export const coachingContent = {
     intro:
       'Angebote noch von Hand, CRM-Einträge lückenhaft, Forecast auf Zuruf — und das KI-Mandat liegt trotzdem auf dem Tisch.',
     bullets: [
-      'Manuelle Schritte und verpasste Chancen kosten Ihr Team täglich Zeit',
+      'Manuelle Schritte und verpasste Chancen kosten Dein Team täglich Zeit',
       'Viele Tools, wenig Klarheit — und nicht freigegebene KI-Nutzung im Team',
       'Wer jetzt auf Durchzug stellt, erklärt im Herbst, warum der Pilot noch aussteht',
     ],
@@ -107,7 +107,7 @@ export const coachingContent = {
         weeks: 'Woche 4–10',
         points: [
           '4 × 45-min Abstimmungen',
-          'Sie setzen um — ich begleite, optimiere, räume Blocker aus',
+          'Du setzt um — ich begleite, optimiere, räume Blocker aus',
           'Unterstützung per E-Mail zwischen den Terminen',
         ],
       },
@@ -125,11 +125,11 @@ export const coachingContent = {
   result: {
     eyebrow: 'Das Ergebnis',
     heading: 'Beweis statt Theorie — in 90 Tagen',
-    intro: 'Nach 90 Tagen haben Sie kein Konzept, sondern einen Beweis.',
+    intro: 'Nach 90 Tagen hast Du kein Konzept, sondern einen Beweis.',
     bullets: [
       'Ein konkreter, umgesetzter KI-Pilot',
       'Messbarer Effekt im Vertriebsprozess — mehr Tempo, weniger Fehler',
-      'Eine Referenz, mit der Sie intern für den nächsten Schritt argumentieren — belegt, nicht versprochen',
+      'Eine Referenz, mit der Du intern für den nächsten Schritt argumentierst — belegt, nicht versprochen',
     ],
     accent: 'secondary',
   } as ListSection,
@@ -143,7 +143,7 @@ export const coachingContent = {
       'Feedback zu internen Präsentationen und Pilotplänen',
       'Zugang zum 90-Tage-Pilot-System + Vorlagen',
       'Klarer Fahrplan vom ersten Engpass bis zum messbaren Ergebnis',
-      'Im Rahmen Ihrer Budget-Hoheit — kein Procurement, kein Eskalationsgespräch',
+      'Im Rahmen Deiner Budget-Hoheit — kein Procurement, kein Eskalationsgespräch',
     ],
     cta: 'Erstgespräch buchen',
   },
@@ -153,11 +153,11 @@ export const coachingContent = {
     items: [
       {
         q: 'Mein Kalender ist voll — wie viel Zeit brauche ich wirklich?',
-        a: 'Etwa 1–2 Stunden pro Woche für unsere Calls. Den Rest führen Sie mit Ihrem Team; ich gebe Struktur und kläre Blocker dazwischen. Die meisten Piloten laufen gut neben dem Tagesgeschäft.',
+        a: 'Etwa 1–2 Stunden pro Woche für unsere Calls. Den Rest führst Du mit Deinem Team; ich gebe Struktur und kläre Blocker dazwischen. Die meisten Piloten laufen gut neben dem Tagesgeschäft.',
       },
       {
         q: 'Ist das Coaching oder Umsetzung?',
-        a: 'Gemeinsam, nicht für Sie. Sie führen — ich unterstütze mit Struktur, Klarheit und Strategie.',
+        a: 'Gemeinsam, nicht für Dich. Du führst — ich unterstütze mit Struktur, Klarheit und Strategie.',
       },
       {
         q: 'Mit welchen Tools arbeiten wir?',
@@ -165,7 +165,7 @@ export const coachingContent = {
       },
       {
         q: 'Was, wenn ich nicht technisch bin?',
-        a: 'Kein Problem. Sie müssen nicht programmieren — Sie müssen führen. Ich übersetze Technik in Strategie und Entscheidungsgrundlagen.',
+        a: 'Kein Problem. Du musst nicht programmieren — Du musst führen. Ich übersetze Technik in Strategie und Entscheidungsgrundlagen.',
       },
     ] as FaqItem[],
   },
@@ -173,21 +173,21 @@ export const coachingContent = {
     eyebrow: 'Noch nicht bereit?',
     heading: 'Erste Schritte ohne Risiko',
     intro:
-      'Verschaffen Sie sich in wenigen Minuten Klarheit — und bleiben Sie über den Newsletter zu konkreten KI-Hebeln im Vertrieb auf dem Laufenden.',
+      'Verschaff Dir in wenigen Minuten Klarheit — und bleib über den Newsletter zu konkreten KI-Hebeln im Vertrieb auf dem Laufenden.',
     magnets: [
       {
         title: 'KI-Engpass-Check',
-        description: 'In 3 Minuten: Welcher Schritt in Ihrem Vertriebsprozess kostet am meisten?',
+        description: 'In 3 Minuten: Welcher Schritt in Deinem Vertriebsprozess kostet am meisten?',
         href: '/engpass-check',
       },
       {
         title: 'KI-Führungs-Check',
-        description: 'Wie souverän führen Sie Ihr Team beim KI-Einsatz?',
+        description: 'Wie souverän führst Du Dein Team beim KI-Einsatz?',
         href: '/ki-fuehrungs-check',
       },
       {
         title: 'DSGVO-Check',
-        description: 'Darf Ihr Team Kundendaten in KI-Tools eingeben? Klare Antwort in wenigen Fragen.',
+        description: 'Darf Dein Team Kundendaten in KI-Tools eingeben? Klare Antwort in wenigen Fragen.',
         href: '/dsgvo-check',
       },
     ] as LeadMagnet[],
@@ -196,7 +196,7 @@ export const coachingContent = {
     youtubeText: 'Neueste Videos auf YouTube',
   },
   finalCta: {
-    heading: 'Ihr nächster Schritt',
+    heading: 'Dein nächster Schritt',
     body:
       'Kurzes Erstgespräch, unverbindlich — kein Verkaufsgespräch. Wenn es für beide Seiten passt, planen wir den Start.',
     cta: 'Erstgespräch buchen',

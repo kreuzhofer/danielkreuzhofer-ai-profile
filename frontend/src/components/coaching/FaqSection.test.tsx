@@ -12,6 +12,6 @@ describe('FaqSection', () => {
 
   it('renders each answer text', () => {
     render(<FaqSection />);
-    expect(screen.getByText(/Gemeinsam, nicht für Sie/)).toBeInTheDocument();
+    expect(screen.getByText(/Gemeinsam, nicht für Dich/)).toBeInTheDocument();
   });
 });

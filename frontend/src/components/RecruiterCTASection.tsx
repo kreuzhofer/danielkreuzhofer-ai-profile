@@ -92,7 +92,7 @@ export function RecruiterCTASection({ className = '' }: RecruiterCTASectionProps
           </h2>
           <p className="text-[var(--foreground-muted)] max-w-2xl mx-auto">
             Zwei Tools, die ich selbst gebaut habe — als Beweis, wie ich mit KI und ehrlicher
-            Selbsteinschätzung arbeite. Schauen Sie rein.
+            Selbsteinschätzung arbeite. Schau rein.
           </p>
         </div>
 

@@ -34,7 +34,7 @@ export const homeContent = {
     eyebrow: 'KI-Coaching mit Kante',
     headline: 'Klartext zu KI — für Führungskräfte, die liefern müssen',
     tagline:
-      'Ich teste KI in der Praxis und zeige, was wirklich funktioniert — ohne Hype, mit Kante. Fangen Sie mit einem Video oder dem 3-Minuten-Check an.',
+      'Ich teste KI in der Praxis und zeige, was wirklich funktioniert — ohne Hype, mit Kante. Fang mit einem Video oder dem 3-Minuten-Check an.',
     primaryCta: 'Engpass-Check (3 Min)',
     primaryHref: ENGPASS_HREF,
     secondaryCta: 'Videos ansehen',
@@ -47,10 +47,10 @@ export const homeContent = {
     channelCta: 'Zum YouTube-Kanal',
   },
   microMagnet: {
-    eyebrow: 'Ihr erster Schritt',
-    heading: 'Wo verliert Ihr Vertrieb täglich die meiste Zeit?',
+    eyebrow: 'Dein erster Schritt',
+    heading: 'Wo verliert Dein Vertrieb täglich die meiste Zeit?',
     body:
-      'Schauen Sie ein Video — und machen Sie dann den 3-Minuten-Engpass-Check: In wenigen Fragen sehen Sie Ihren größten KI-Hebel und den passenden ersten Schritt.',
+      'Schau ein Video — und mach dann den 3-Minuten-Engpass-Check: In wenigen Fragen siehst Du Deinen größten KI-Hebel und den passenden ersten Schritt.',
     cta: 'Engpass-Check starten',
     href: ENGPASS_HREF,
   },
@@ -69,7 +69,7 @@ export const homeContent = {
     href: BLOG_HREF,
   },
   coachingPointer: {
-    heading: 'Sie wollen KI in Ihrem Bereich konkret umsetzen?',
+    heading: 'Du willst KI in Deinem Bereich konkret umsetzen?',
     body:
       'Das 90-Tage-Pilot-System bringt Bereichsleitern im Mittelstand einen belastbaren ersten KI-Pilot — begleitet und messbar.',
     cta: 'Coaching ansehen',
