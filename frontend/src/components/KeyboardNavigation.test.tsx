@@ -140,9 +140,13 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
         />
       );
 
-      // Route links are keyboard-activatable via their href; focus and confirm focusability
+      // Route links are keyboard-activatable via their href; focus, press Enter
+      // (must not throw — JSDOM can't perform the navigation itself), and confirm
+      // the link remains a real, focusable anchor pointing at the route.
       const coachingLink = screen.getByRole('link', { name: 'Coaching' });
       coachingLink.focus();
+      expect(coachingLink).toHaveFocus();
+      await user.keyboard('{Enter}');
       expect(coachingLink).toHaveFocus();
       expect(coachingLink).toHaveAttribute('href', '/');
     });

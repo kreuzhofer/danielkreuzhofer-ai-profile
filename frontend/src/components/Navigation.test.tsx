@@ -143,6 +143,7 @@ describe('Navigation Component', () => {
       const cta = screen.getByRole('link', { name: 'Erstgespräch buchen' });
       expect(cta).toHaveAttribute('href', 'https://calendly.com/danielkreuzhofer/30min');
       expect(cta).toHaveAttribute('target', '_blank');
+      expect(cta).toHaveAttribute('rel', 'noopener noreferrer');
     });
 
     it('renders navigation with proper aria-label', () => {
