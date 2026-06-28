@@ -9,6 +9,7 @@ import {
   CoachingPointer,
 } from '@/components/home';
 import { getBlogPosts } from '@/lib/content';
+import { getLatestVideos } from '@/lib/youtube';
 
 export const metadata: Metadata = {
   title: 'Daniel Kreuzhofer — KI-Coaching mit Kante',
@@ -23,11 +24,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * Home = top-of-funnel CONTENT entry point. Promotes Daniel's content (videos/POV)
- * and routes visitors to the micro-magnet (Engpass-Check). The offer + Erstgespräch
- * live on /coaching for warm leads only.
+ * Home = top-of-funnel CONTENT entry point. Promotes Daniel's content (latest videos
+ * fetched from the channel RSS) and routes visitors to the micro-magnet (Engpass-Check).
+ * The offer + Erstgespräch live on /coaching for warm leads only.
  */
-export default function Home() {
+export default async function Home() {
+  const videos = await getLatestVideos(3);
   const posts = [...getBlogPosts()]
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 3);
@@ -35,7 +37,7 @@ export default function Home() {
   return (
     <Layout>
       <ContentHero />
-      <VideosSection />
+      <VideosSection videos={videos} />
       <MicroMagnetSection />
       <BlogTeaser posts={posts} />
       <AboutTeaser />

@@ -6,6 +6,7 @@ import {
   youtubeThumb,
   youtubeWatch,
   YOUTUBE_CHANNEL_URL,
+  type FeaturedVideo,
 } from './content';
 
 function PlayIcon() {
@@ -22,29 +23,34 @@ function PlayIcon() {
   );
 }
 
-export function VideosSection() {
-  const { videos } = homeContent;
+export interface VideosSectionProps {
+  /** Videos to feature; defaults to the seeded latest snapshot. */
+  videos?: FeaturedVideo[];
+}
+
+export function VideosSection({ videos = FEATURED_VIDEOS }: VideosSectionProps) {
+  const copy = homeContent.videos;
   return (
-    <section id="videos" aria-label={videos.heading} className="py-12 md:py-16">
+    <section id="videos" aria-label={copy.heading} className="py-12 md:py-16">
       <div className="max-w-4xl mx-auto">
         <p className="text-xs font-bold tracking-[0.18em] uppercase mb-3 text-[var(--secondary-400)]">
-          {videos.eyebrow}
+          {copy.eyebrow}
         </p>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-6">
-          <h2 className="heading-section text-2xl md:text-3xl text-[var(--foreground)]">{videos.heading}</h2>
+          <h2 className="heading-section text-2xl md:text-3xl text-[var(--foreground)]">{copy.heading}</h2>
           <a
             href={YOUTUBE_CHANNEL_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center text-sm font-medium text-[var(--secondary-400)] hover:text-[var(--secondary-300)]"
           >
-            {videos.channelCta}
+            {copy.channelCta}
             <span aria-hidden="true" className="ml-1">→</span>
           </a>
         </div>
-        <p className="text-[var(--foreground-muted)] mb-6 max-w-2xl">{videos.intro}</p>
+        <p className="text-[var(--foreground-muted)] mb-6 max-w-2xl">{copy.intro}</p>
         <div className="grid gap-5 sm:grid-cols-3">
-          {FEATURED_VIDEOS.map((video) => (
+          {videos.map((video) => (
             <a
               key={video.id}
               href={youtubeWatch(video.id)}
