@@ -4,7 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-AI-powered interactive portfolio for Daniel Kreuzhofer (Senior Solutions Architect, AWS). Built with Next.js 16 + React 19 + TypeScript. Features an OpenAI-powered chatbot, fit analysis module (job description matching), transparency dashboard, and blog. All content is MDX-based in `frontend/content/`.
+AI-powered interactive portfolio for Daniel Kreuzhofer (Senior Solutions Architect, AWS). Built with Next.js 16 + React 19 + TypeScript. Features an OpenAI-powered chatbot, fit analysis module (job description matching), transparency dashboard, and blog. All content is MDX-based in `frontend/content/`. The site is evolving toward a coaching business + YouTube channel (see "Brand & Content" below and the funnel/scorecard modules).
+
+## Brand, Positioning & Content — Source of Truth
+
+**Daniel's Obsidian vault is the single source of truth for brand, positioning, target audience, voice, and the offer.** It lives **locally at `~/Documents/vault`** (NOT in this repo). Before writing or changing any user-facing copy, positioning, brand visuals, or audience framing, **consult these files** — do not invent brand/voice/audience from scratch:
+
+- `05-knowledge/video-brand-kit.md` — brand claim ("KI-Coaching mit Kante"), palette (orange `#E89244` / cyan `#4DBED4`), fonts (Anton + Inter), anti-Hype doctrine, buyer/reach split (70% Führungskräfte buyers / 30% Wissensarbeiter reach).
+- `05-knowledge/ICP - Vertriebsleiter Mittelstand.md` — buyer persona (beach-head **Vertriebsleiter im Mittelstand mit KI-Mandat**; Ring-0 use cases: Angebote, CRM, Lead-Scoring, Forecast; personal stakes: Quartalsziele/Bonus-KPI).
+- `05-knowledge/Positionierung - Tiefeninterview.md` — positioning / messaging source.
+- `05-knowledge/Content-Leitfaden Anders mit klarer Kante.md` — **voice/tone** (Klartext, anti-Hype, "mit Kante", *Sie*, no English-jargon/funnel-guru aesthetic, take a position).
+- `05-knowledge/90 Day AI Win - Offer - Deutsch.md` — the coaching offer (90-Tage AI Win, 5.900 € netto, Done-With-You, Smart-AI-Wins method, Erstgespräch CTA → Calendly).
+- `06-assets/branding/` — logo SVGs (wordmark + k-bug, light/dark/mono).
+
+Lead-magnet funnels/scorecards and the coaching landing copy must stay consistent with the above. When the vault and the code disagree, the vault wins (then update the code).
 
 ## Commands
 
