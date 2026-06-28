@@ -9,8 +9,11 @@ describe('LeadMagnetsSection', () => {
     expect(screen.getByRole('link', { name: /DSGVO-Check/ })).toHaveAttribute('href', '/dsgvo-check');
   });
 
-  it('does not render a YouTube link when no channel URL is configured', () => {
+  it('renders the YouTube channel link as an external link', () => {
     render(<LeadMagnetsSection />);
-    expect(screen.queryByRole('link', { name: /YouTube/ })).not.toBeInTheDocument();
+    const yt = screen.getByRole('link', { name: /YouTube/ });
+    expect(yt).toHaveAttribute('href', 'https://www.youtube.com/@DanielKreuzhofer');
+    expect(yt).toHaveAttribute('target', '_blank');
+    expect(yt).toHaveAttribute('rel', expect.stringContaining('noopener'));
   });
 });

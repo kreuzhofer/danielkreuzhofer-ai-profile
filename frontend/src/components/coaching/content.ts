@@ -36,19 +36,19 @@ export interface LeadMagnet {
 export const coachingContent = {
   hero: {
     eyebrow: 'KI-Coaching mit Kante',
-    headline: 'Zeig, dass KI funktioniert — in 90 Tagen, ohne Chaos',
+    headline: 'In 90 Tagen zum KI-Pilot, der intern zählt',
     tagline:
-      'Done-With-You-Pilot für Bereichsleiter im Mittelstand mit KI-Mandat. Schnell, risikoarm, messbar — statt Theorie und Ideenparken.',
+      'Für Vertriebsleiter im Mittelstand mit KI-Mandat: ein strukturierter erster Pilot — begleitet, belastbar, ohne Pilot-Friedhof.',
     primaryCta: 'Erstgespräch buchen',
     secondaryCta: 'Engpass-Check (3 Min)',
     secondaryHref: ENGPASS_HREF,
   },
   proof: {
     eyebrow: 'Warum ich',
-    heading: 'Senior AI Solutions Architect bei AWS',
+    heading: 'Ich sehe täglich, warum KI-Piloten liefern — oder scheitern',
     points: [
-      '20+ Jahre Enterprise- und Cloud-Architektur',
-      'Täglich KI-Systeme für Unternehmen im Einsatz — kein Hype, gebaute Praxis',
+      '25+ Jahre Softwareentwicklung & Enterprise-Architektur',
+      'Senior AI Solutions Architect bei AWS — KI in der Praxis, nicht in der Theorie',
       'Strategie statt Tool-Spielerei: Ergebnisse, die intern überzeugen',
     ],
     linkText: 'Mehr über mich',
@@ -56,14 +56,14 @@ export const coachingContent = {
   },
   forWhom: {
     eyebrow: 'Für wen',
-    heading: 'Bereichsleiter im Mittelstand mit KI-Mandat',
+    heading: 'Für Vertriebsleiter im Mittelstand mit KI-Mandat',
     intro:
-      'Vertriebs-, Marketing-, Service- oder Operations-Leitung, die unter Druck steht, mit KI schnell echten Business-Impact zu liefern.',
+      'Und Marketing-, Service- oder Operations-Verantwortliche, die mit KI schnell ein belastbares Ergebnis liefern müssen — aktueller Schwerpunkt: Vertrieb.',
     bullets: [
       'Sie suchen einen schnellen, risikoarmen Einstieg — keine Pilot-Friedhöfe',
       'Sie wollen strategische Führung statt Tool-Spielerei',
-      'Sie dürfen Bereichsbudget bis 10k netto eigenständig zeichnen',
-      'Nicht geeignet für Startups, Hobby-Teams oder Rollen ohne Linien-P&L und KI-Mandat',
+      'Der Rahmen passt in Ihre Budget-Hoheit — kein Procurement, kein Eskalationsgespräch mit der Geschäftsführung',
+      'Nicht geeignet für Startups, Hobby-Teams oder Rollen ohne Linien-Verantwortung und KI-Mandat',
     ],
     accent: 'secondary',
   } as ListSection,
@@ -71,25 +71,25 @@ export const coachingContent = {
     eyebrow: 'Das Problem',
     heading: 'KI-Druck von oben — aber wo anfangen?',
     intro:
-      'Ihr Vertriebs-, Service- oder Operations-Prozess ist zu manuell, zu langsam oder zu fehleranfällig. KI könnte helfen — doch zwischen Tool-Flut und Shadow-AI fehlt der erste belastbare Schritt.',
+      'Angebote noch von Hand, CRM-Einträge lückenhaft, Forecast auf Zuruf — und das KI-Mandat liegt trotzdem auf dem Tisch.',
     bullets: [
-      'Manuelle Schritte und verpasste Chancen kosten täglich Zeit',
-      'Viele Tools, wenig Klarheit, welcher Hebel wirklich zählt',
-      'Der erste Pilot soll sitzen — nicht im Sand verlaufen',
+      'Manuelle Schritte und verpasste Chancen kosten Ihr Team täglich Zeit',
+      'Viele Tools, wenig Klarheit — und nicht freigegebene KI-Nutzung im Team',
+      'Wer jetzt auf Durchzug stellt, erklärt im Herbst, warum der Pilot noch aussteht',
     ],
     accent: 'primary',
   } as ListSection,
   method: {
     eyebrow: 'Die Methode',
-    heading: 'Smart AI Wins System™',
-    subline: 'Bremsen lösen. Pilot planen. Impact liefern.',
+    heading: 'Das 90-Tage-Pilot-System',
+    subline: 'Bremsen lösen. Pilot planen. Ergebnis liefern.',
     phases: [
       {
         name: 'Kickoff & Analyse',
         weeks: 'Woche 1',
         points: [
           '90-min Strategiegespräch',
-          'Prozess analysieren, Engpässe & manuelle Schritte identifizieren',
+          'Vertriebsprozess analysieren: Engpässe & manuelle Schritte',
           '1–2 KI-Hebel mit hohem Potenzial auswählen',
         ],
       },
@@ -97,39 +97,39 @@ export const coachingContent = {
         name: 'Pilot planen',
         weeks: 'Woche 2–3',
         points: [
-          '2 × 60-min Co-Creation Sessions',
-          'Schlanken KI-Piloten entwickeln: Ziele, Erfolgskriterien, internes Buy-in',
+          '2 × 60-min Planungssessions',
+          'Schlanken Piloten entwickeln: Ziele, Erfolgskriterien, interne Zustimmung',
           'Ergebnis: präsentationsreife Pilotplanung',
         ],
       },
       {
-        name: 'Umsetzung & Coaching',
+        name: 'Umsetzung & Begleitung',
         weeks: 'Woche 4–10',
         points: [
-          '4 × 45-min Check-Ins',
-          'Sie setzen um — ich begleite, optimiere, beseitige Blocker',
-          'Asynchrone E-Mail-Unterstützung zwischen den Terminen',
+          '4 × 45-min Abstimmungen',
+          'Sie setzen um — ich begleite, optimiere, räume Blocker aus',
+          'Unterstützung per E-Mail zwischen den Terminen',
         ],
       },
       {
-        name: 'Impact Review',
+        name: 'Ergebnis-Check',
         weeks: 'Woche 11–12',
         points: [
           '60-min Abschlusssession',
-          'Erfolge messen & dokumentieren',
-          'Review der Stakeholder-Präsentation, nächste Schritte klären',
+          'Ergebnisse messen & dokumentieren',
+          'Review der Führungspräsentation, nächste Schritte klären',
         ],
       },
     ] as MethodPhase[],
   },
   result: {
     eyebrow: 'Das Ergebnis',
-    heading: 'Ein echter Win — als Basis zum Skalieren',
-    intro: 'Nach 90 Tagen haben Sie nicht mehr Theorie, sondern einen Beweis.',
+    heading: 'Beweis statt Theorie — in 90 Tagen',
+    intro: 'Nach 90 Tagen haben Sie kein Konzept, sondern einen Beweis.',
     bullets: [
       'Ein konkreter, umgesetzter KI-Pilot',
-      'Messbarer Impact im Prozess — mehr Effizienz, weniger Fehler',
-      'Internes Vertrauen durch belegte Ergebnisse + eine skalierbare Methode',
+      'Messbarer Effekt im Vertriebsprozess — mehr Tempo, weniger Fehler',
+      'Eine Referenz, mit der Sie intern für den nächsten Schritt argumentieren — belegt, nicht versprochen',
     ],
     accent: 'secondary',
   } as ListSection,
@@ -139,10 +139,11 @@ export const coachingContent = {
     subline: 'Einmalig. Klarer Rahmen. Kein Overhead.',
     includes: [
       '1:1 Coaching-Sessions (alle 2 Wochen, 3 Monate)',
-      'Asynchrone Unterstützung via E-Mail oder Loom',
+      'Begleitung per E-Mail zwischen den Terminen',
       'Feedback zu internen Präsentationen und Pilotplänen',
-      'Zugang zum Smart AI Wins System™ + Templates',
-      'Klarer Fahrplan vom ersten Friction-Point bis zum messbaren Ergebnis',
+      'Zugang zum 90-Tage-Pilot-System + Vorlagen',
+      'Klarer Fahrplan vom ersten Engpass bis zum messbaren Ergebnis',
+      'Im Rahmen Ihrer Budget-Hoheit — kein Procurement, kein Eskalationsgespräch',
     ],
     cta: 'Erstgespräch buchen',
   },
@@ -151,20 +152,20 @@ export const coachingContent = {
     heading: 'Häufige Fragen',
     items: [
       {
+        q: 'Mein Kalender ist voll — wie viel Zeit brauche ich wirklich?',
+        a: 'Etwa 1–2 Stunden pro Woche für unsere Calls. Den Rest führen Sie mit Ihrem Team; ich gebe Struktur und kläre Blocker dazwischen. Die meisten Piloten laufen gut neben dem Tagesgeschäft.',
+      },
+      {
         q: 'Ist das Coaching oder Umsetzung?',
-        a: 'Done-With-You, nicht Done-For-You. Sie führen — ich unterstütze mit Struktur, Klarheit und Strategie.',
+        a: 'Gemeinsam, nicht für Sie. Sie führen — ich unterstütze mit Struktur, Klarheit und Strategie.',
       },
       {
         q: 'Mit welchen Tools arbeiten wir?',
-        a: 'Technologie-unabhängig. Ich helfe, passende Tools zu wählen, Shadow-AI-Risiken zu vermeiden und clever zwischen Build und Buy zu entscheiden.',
-      },
-      {
-        q: 'Wie viel Zeit muss ich einplanen?',
-        a: 'Etwa 1–2 Stunden pro Woche für Calls und Vorbereitung — mehr, wenn Sie selbst umsetzen. Die meisten Piloten lassen sich gut in den Alltag integrieren.',
+        a: 'Technologie-unabhängig. Ich helfe, passende Tools zu wählen, nicht freigegebene KI-Nutzung im Team zu vermeiden und klug zwischen Eigenlösung und Standardsoftware zu entscheiden.',
       },
       {
         q: 'Was, wenn ich nicht technisch bin?',
-        a: 'Kein Problem. Sie müssen nicht coden — Sie müssen führen. Ich übersetze Tech in Strategie und Entscheidungsgrundlagen.',
+        a: 'Kein Problem. Sie müssen nicht programmieren — Sie müssen führen. Ich übersetze Technik in Strategie und Entscheidungsgrundlagen.',
       },
     ] as FaqItem[],
   },
@@ -172,21 +173,21 @@ export const coachingContent = {
     eyebrow: 'Noch nicht bereit?',
     heading: 'Erste Schritte ohne Risiko',
     intro:
-      'Verschaffen Sie sich in wenigen Minuten Klarheit — und bleiben Sie über den Newsletter zu konkreten KI-Hebeln auf dem Laufenden.',
+      'Verschaffen Sie sich in wenigen Minuten Klarheit — und bleiben Sie über den Newsletter zu konkreten KI-Hebeln im Vertrieb auf dem Laufenden.',
     magnets: [
       {
         title: 'KI-Engpass-Check',
-        description: 'In 3 Minuten zum größten Hebel in Ihrem Prozess.',
+        description: 'In 3 Minuten: Welcher Schritt in Ihrem Vertriebsprozess kostet am meisten?',
         href: '/engpass-check',
       },
       {
         title: 'KI-Führungs-Check',
-        description: 'Wie souverän führen Sie Ihr Team durch die KI-Transformation?',
+        description: 'Wie souverän führen Sie Ihr Team beim KI-Einsatz?',
         href: '/ki-fuehrungs-check',
       },
       {
         title: 'DSGVO-Check',
-        description: 'Welche KI-Tools Sie wie rechtssicher einsetzen können.',
+        description: 'Darf Ihr Team Kundendaten in KI-Tools eingeben? Klare Antwort in wenigen Fragen.',
         href: '/dsgvo-check',
       },
     ] as LeadMagnet[],
@@ -195,9 +196,9 @@ export const coachingContent = {
     youtubeText: 'Neueste Videos auf YouTube',
   },
   finalCta: {
-    heading: 'Startklar?',
+    heading: 'Ihr nächster Schritt',
     body:
-      'Kurzes Erstgespräch zum Kennenlernen. Wenn es passt, erhalten Sie noch am selben Tag Ihren Kalenderlink.',
+      'Kurzes Erstgespräch, unverbindlich — kein Verkaufsgespräch. Wenn es für beide Seiten passt, planen wir den Start.',
     cta: 'Erstgespräch buchen',
   },
 } as const;

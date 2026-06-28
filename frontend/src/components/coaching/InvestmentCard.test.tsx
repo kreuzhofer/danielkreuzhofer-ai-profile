@@ -5,7 +5,7 @@ describe('InvestmentCard', () => {
   it('renders the price and every included item', () => {
     render(<InvestmentCard />);
     expect(screen.getByRole('heading', { name: /5\.900 € netto/ })).toBeInTheDocument();
-    expect(screen.getByText(/Zugang zum Smart AI Wins System/)).toBeInTheDocument();
+    expect(screen.getByText(/Zugang zum 90-Tage-Pilot-System/)).toBeInTheDocument();
   });
 
   it('renders the booking CTA to Calendly in a new tab', () => {
