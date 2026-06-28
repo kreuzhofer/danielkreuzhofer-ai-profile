@@ -71,6 +71,7 @@ Work completed after the core specs, grouped by area.
 - [x] **Copy re-steered to the Vertriebsleiter ICP + anti-Hype voice** — grounded in the vault (ICP / Positionierung / Content-Leitfaden): lead with the Vertrieb beach-head + Ring-0 reality (Angebote/CRM/Forecast), de-Englished throughout (Done-With-You, Co-Creation, Impact Review, Shadow-AI, Friction-Point…), methodology → "Das 90-Tage-Pilot-System", fixed 20+→25+ Jahre, replaced the signing-authority line with a benefit, added the "keine Zeit" FAQ, fixed the final-CTA Calendly logic
 - [x] **Funnel re-architecture — `/` is now the top-of-funnel CONTENT entry** — per the Taki-Moore model (**Content → Micro-Magnet → Erstgespräch → Offer**): homepage promotes content (latest-videos thumbnail cards via channel RSS, click-to-play/privacy-friendly) + the Engpass-Check micro-magnet as the primary CTA (**no sales call** at top-of-funnel); offer moved to `/coaching`; nav content-first (Start · Coaching · Über mich · Blog) with the micro-magnet as the global CTA. Hero polish: compact (no 80vh void), one-line headline, fixed `.brand-display` leading (0.95→1.05, wrapped lines were overlapping), lifted hero gradient. 157 suites / 2025 tests green
 - [x] **Vault anchored as source of truth** — `CLAUDE.md` + auto-memory now point at `~/Documents/vault` (brand-kit, ICP, Positionierung, Content-Leitfaden, offer) as canonical for all brand / copy / audience work
+- [x] **Homepage videos auto-fetch from the channel RSS** — the "Neueste Videos" cards load via `getLatestVideos()` (build-time fetch of `youtube.com/feeds/videos.xml`, 6h ISR), resilient with a seeded `FEATURED_VIDEOS` fallback on network/parse failure; `/` is now an async server component, `VideosSection` is prop-driven
 
 ## Planned / In Progress
 
@@ -95,7 +96,6 @@ Work completed after the core specs, grouped by area.
 *(Content/video ideas — like a "5 Hebel" video that re-promotes the KFC lead magnet — live in the vault video backlog, not here.)*
 
 ### Brand & Positioning
-- [ ] **Featured videos: auto-fetch from RSS at build** (S) — the homepage "Neueste Videos" cards are a hardcoded snapshot of the latest 3 (seeded from the channel RSS 2026-06-28, in `home/content.ts` `FEATURED_VIDEOS`). Wire a build-time/ISR fetch of `youtube.com/feeds/videos.xml?channel_id=UCAtR5ksFgUGuehXA4BMJwCw` so they auto-update (keep it testable: load in the page server component or a small lib with a static fallback). Until then, refresh the list when new videos land
 - [ ] **`/coaching`: real cases / testimonials** (Daniel) — the Beweis section is authority-only (AWS, 25+ J.); add concrete cases/testimonials when available
 - [ ] **Final sales copy polish** (Daniel) — the re-steered copy is a strong first draft; Daniel finalizes wording in `coaching/content.ts` (one file). Sanity-check the hero headline + the insight-led Beweis framing (AWS title dropped for "ich sehe täglich, warum KI-Piloten liefern…")
 - [ ] **German blog content for the content-home** (Daniel) — the homepage blog teaser surfaces the existing English posts (recruiter-era), which clash on the German page; write German posts or hide the teaser until then
