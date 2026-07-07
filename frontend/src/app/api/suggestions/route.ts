@@ -11,6 +11,8 @@ import type { ConversationMessage } from '@/types/chat';
 import { PORTFOLIO_OWNER } from '@/lib/portfolio-owner';
 import { createLogger } from '@/lib/logger';
 import { clientIp, suggestionsLimiter, validateMessageBounds } from '@/lib/api-security';
+import { GuardrailsService, CHAT_GUARDRAIL_CONFIG } from '@/lib/guardrails/guardrails-service';
+import { createAnonymizedRequestId } from '@/lib/guardrails/security-logger';
 
 const log = createLogger('SuggestionsAPI');
 
@@ -69,6 +71,30 @@ export async function POST(request: NextRequest) {
         JSON.stringify({ suggestions: [] }),
         { headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    // VULN-004: validate the latest user message against guardrails. Reuses
+    // CHAT_GUARDRAIL_CONFIG for consistency with /api/chat. On block, return
+    // empty suggestions without calling the LLM.
+    const latestUserMessage = messages.filter(m => m.role === 'user').pop();
+    if (latestUserMessage) {
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (apiKey) {
+        const guardrailsService = new GuardrailsService(apiKey, 'chat');
+        const requestId = createAnonymizedRequestId(request);
+        const validationResult = await guardrailsService.validateInput(
+          latestUserMessage.content,
+          CHAT_GUARDRAIL_CONFIG,
+          requestId
+        );
+        if (!validationResult.passed) {
+          log.info('Guardrails blocked suggestions request', { requestId });
+          return new Response(
+            JSON.stringify({ suggestions: [] }),
+            { headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+      }
     }
 
     log.info('Generating follow-up suggestions', { messageCount: messages.length });
