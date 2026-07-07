@@ -71,6 +71,22 @@ export const FIT_ANALYSIS_GUARDRAIL_CONFIG: GuardrailConfig = {
 };
 
 /**
+ * Fail-mode policy per check type (VULN-005).
+ *
+ * Safety-critical checks (prompt injection, jailbreak, content moderation) fail
+ * CLOSED: if the guardrail provider is unavailable, the request is rejected.
+ * This prevents a provider outage from silently disabling the safety net.
+ *
+ * `off_topic` fails OPEN: it is a quality/relevance check, not a safety one,
+ * and failing closed would block legitimate users during a transient outage.
+ */
+const FAIL_CLOSED_CHECKS: ReadonlySet<GuardrailCheckType> = new Set([
+  'prompt_injection',
+  'jailbreak',
+  'content_moderation',
+]);
+
+/**
  * Default block threshold if not specified in config
  */
 const DEFAULT_BLOCK_THRESHOLD = 0.8;
@@ -169,8 +185,20 @@ export class GuardrailsService {
         checks,
       };
     } catch (error) {
-      // Fail-open: allow the request but log the failure
-      log.error('Guardrails check failed', error);
+      // VULN-005: fail-closed if any enabled check is safety-critical, else
+      // fail-open. The per-check methods below already handle their own errors
+      // according to policy; this catch covers unexpected failures in the
+      // orchestration logic (e.g. Promise.all rejection propagation).
+      log.error('Guardrails validation failed', error);
+      const hasSafetyCritical = config.enabledChecks.some((c) => FAIL_CLOSED_CHECKS.has(c));
+      if (hasSafetyCritical) {
+        return {
+          passed: false,
+          failedCheck: 'content_moderation',
+          userMessage: getRejectionMessage('content_moderation', this.endpoint as 'chat' | 'fit_analysis'),
+          checks,
+        };
+      }
       return {
         passed: true,
         userMessage: '',
@@ -221,11 +249,14 @@ export class GuardrailsService {
         checks,
       };
     } catch (error) {
-      // Fail-open for output validation
+      // VULN-005: output validation only runs content_moderation (safety-
+      // critical), so fail closed — do not return unvalidated output.
       log.error('Output validation failed', error);
       return {
-        passed: true,
-        userMessage: '',
+        passed: false,
+        failedCheck: 'content_moderation',
+        userMessage:
+          "I apologize, but I can't provide that response right now. Please try again in a moment.",
         checks,
       };
     }
@@ -256,11 +287,12 @@ export class GuardrailsService {
       };
     } catch (error) {
       log.error('Prompt injection check failed', error);
-      // Fail-open
+      // VULN-005: fail CLOSED — safety-critical check.
       return {
         checkType: 'prompt_injection',
-        passed: true,
-        confidence: 0,
+        passed: false,
+        confidence: 1.0,
+        details: 'Guardrail provider unavailable',
       };
     }
   }
@@ -288,11 +320,12 @@ export class GuardrailsService {
       };
     } catch (error) {
       log.error('Jailbreak check failed', error);
-      // Fail-open
+      // VULN-005: fail CLOSED — safety-critical check.
       return {
         checkType: 'jailbreak',
-        passed: true,
-        confidence: 0,
+        passed: false,
+        confidence: 1.0,
+        details: 'Guardrail provider unavailable',
       };
     }
   }
@@ -325,11 +358,12 @@ export class GuardrailsService {
       };
     } catch (error) {
       log.error('Content moderation check failed', error);
-      // Fail-open
+      // VULN-005: fail CLOSED — safety-critical check.
       return {
         checkType: 'content_moderation',
-        passed: true,
-        confidence: 0,
+        passed: false,
+        confidence: 1.0,
+        details: 'Guardrail provider unavailable',
       };
     }
   }
@@ -361,7 +395,8 @@ export class GuardrailsService {
       };
     } catch (error) {
       log.error('Off-topic check failed', error);
-      // Fail-open
+      // VULN-005: fail OPEN — off_topic is a quality check, not safety-
+      // critical. Failing closed would block legit users during outages.
       return {
         checkType: 'off_topic',
         passed: true,
