@@ -14,12 +14,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractTextFromFile, MAX_FILE_SIZE } from '@/lib/file-text-extractor';
 import { createLogger } from '@/lib/logger';
+import { clientIp, extractTextLimiter } from '@/lib/api-security';
 
 const log = createLogger('ExtractTextAPI');
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const requestId = Math.random().toString(36).substring(7);
   log.info('Text extraction request received', { requestId });
+
+  // VULN-002: per-IP rate limit before any file parsing (CPU/memory heavy).
+  if (!extractTextLimiter.check(clientIp(request) || 'unknown')) {
+    return NextResponse.json(
+      { success: false, error: 'Too many requests. Please wait a moment and try again.' },
+      { status: 429 }
+    );
+  }
 
   try {
     const formData = await request.formData();

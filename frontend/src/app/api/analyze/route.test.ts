@@ -81,6 +81,14 @@ jest.mock('@/lib/guardrails/security-logger', () => ({
   logSecurityEvent: jest.fn(),
 }));
 
+// Mock the API security helpers (rate limit + bounds for VULN-002)
+const mockAnalyzeLimiterCheck = jest.fn().mockReturnValue(true);
+jest.mock('@/lib/api-security', () => ({
+  clientIp: () => '127.0.0.1',
+  analyzeLimiter: { check: (...args: unknown[]) => mockAnalyzeLimiterCheck(...args) },
+  MAX_JOB_DESCRIPTION_LENGTH: 32000,
+}));
+
 // Mock NextRequest for testing
 class MockNextRequest {
   private body: string;
@@ -257,7 +265,9 @@ describe('POST /api/analyze', () => {
   beforeEach(() => {
     // Reset all mocks before each test
     jest.clearAllMocks();
-    
+    mockAnalyzeLimiterCheck.mockReset();
+    mockAnalyzeLimiterCheck.mockReturnValue(true);
+
     // Default mock implementations
     mockStreamChatCompletion.mockImplementation(() => 
       createMockStream([createValidLLMResponse()])
@@ -576,6 +586,46 @@ describe('POST /api/analyze', () => {
         expect(event.message).toBeDefined();
         expect(event.percent).toBeDefined();
       }
+    });
+  });
+
+  // ===========================================================================
+  // 8. Rate Limiting & Payload Bounds (VULN-002)
+  // ===========================================================================
+
+  describe('Rate Limiting & Bounds (VULN-002)', () => {
+    it('should return 429 when the per-IP analyze rate limit is exceeded', async () => {
+      mockAnalyzeLimiterCheck.mockReturnValue(false);
+      const requestBody: AnalyzeRequest = {
+        jobDescription: 'Senior Software Engineer with TypeScript experience.',
+      };
+      const request = createRequest(requestBody);
+      const response = await POST(request as unknown as Parameters<typeof POST>[0]);
+
+      expect(response.status).toBe(429);
+      // LLM and guardrails must not run for a rate-limited request.
+      expect(mockStreamChatCompletion).not.toHaveBeenCalled();
+      expect(mockValidateInput).not.toHaveBeenCalled();
+    });
+
+    it('should allow requests when under the rate limit', async () => {
+      const requestBody: AnalyzeRequest = {
+        jobDescription: 'Senior Software Engineer with TypeScript experience.',
+      };
+      const request = createRequest(requestBody);
+      const response = await POST(request as unknown as Parameters<typeof POST>[0]);
+      expect(response.status).toBe(200);
+    });
+
+    it('should return 400 when jobDescription exceeds MAX_JOB_DESCRIPTION_LENGTH', async () => {
+      const requestBody: AnalyzeRequest = {
+        jobDescription: 'x'.repeat(32001),
+      };
+      const request = createRequest(requestBody);
+      const response = await POST(request as unknown as Parameters<typeof POST>[0]);
+
+      expect(response.status).toBe(400);
+      expect(mockStreamChatCompletion).not.toHaveBeenCalled();
     });
   });
 });

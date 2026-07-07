@@ -16,6 +16,7 @@ import {
   CHAT_GUARDRAIL_CONFIG,
 } from '@/lib/guardrails/guardrails-service';
 import { createAnonymizedRequestId } from '@/lib/guardrails/security-logger';
+import { clientIp, chatLimiter, validateMessageBounds } from '@/lib/api-security';
 
 /**
  * User-friendly error messages mapped by error type
@@ -107,19 +108,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get the latest user message for guardrails validation
-    const latestUserMessage = messages.filter((m: ConversationMessage) => m.role === 'user').pop();
+    // VULN-002: per-IP rate limit before any LLM/guardrail work.
+    if (!chatLimiter.check(clientIp(request) || 'unknown')) {
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please wait a moment and try again.' }),
+        {
+          status: 429,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // VULN-002: bound the conversation history (count + per-message length).
+    const boundsError = validateMessageBounds(messages);
+    if (boundsError) {
+      return new Response(
+        JSON.stringify({ error: boundsError }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // VULN-001: validate ALL user turns against guardrails (concatenated), not
+    // just the latest. A client can otherwise smuggle injection text through
+    // earlier history while keeping the final message benign.
+    const userMessages = messages.filter((m: ConversationMessage) => m.role === 'user');
     
-    if (latestUserMessage) {
+    if (userMessages.length > 0) {
       // Initialize guardrails service
       const apiKey = process.env.OPENAI_API_KEY;
       if (apiKey) {
         const guardrailsService = new GuardrailsService(apiKey, 'chat');
         const requestId = createAnonymizedRequestId(request);
+        const combinedUserContent = userMessages.map((m: ConversationMessage) => m.content).join('\n\n');
         
         // Validate input against guardrails
         const validationResult = await guardrailsService.validateInput(
-          latestUserMessage.content,
+          combinedUserContent,
           CHAT_GUARDRAIL_CONFIG,
           requestId
         );

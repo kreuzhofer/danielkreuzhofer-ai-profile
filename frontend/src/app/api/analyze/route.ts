@@ -19,6 +19,7 @@ import {
   FIT_ANALYSIS_GUARDRAIL_CONFIG,
 } from '@/lib/guardrails/guardrails-service';
 import { createAnonymizedRequestId } from '@/lib/guardrails/security-logger';
+import { clientIp, analyzeLimiter, MAX_JOB_DESCRIPTION_LENGTH } from '@/lib/api-security';
 
 const log = createLogger('AnalyzeAPI');
 
@@ -137,6 +138,14 @@ export async function POST(request: NextRequest): Promise<Response> {
   const requestId = Math.random().toString(36).substring(7);
   log.info('Analysis request received', { requestId });
 
+  // VULN-002: per-IP rate limit before any parsing/guardrail/LLM work.
+  if (!analyzeLimiter.check(clientIp(request) || 'unknown')) {
+    return new Response(
+      createSSEMessage({ type: 'error', code: 'RATE_LIMITED', message: 'Too many requests. Please wait a moment and try again.' }),
+      { status: 429, headers: { 'Content-Type': 'text/event-stream' } }
+    );
+  }
+
   // Parse and validate request
   let body: unknown;
   try {
@@ -163,6 +172,15 @@ export async function POST(request: NextRequest): Promise<Response> {
     log.warn('Empty job description submitted', { requestId });
     return new Response(
       createSSEMessage({ type: 'error', code: ERROR_CODES.EMPTY_JOB_DESCRIPTION, message: 'Please enter a job description to analyze.' }),
+      { status: 400, headers: { 'Content-Type': 'text/event-stream' } }
+    );
+  }
+
+  // VULN-002: bound the job description length to cap LLM cost / payload abuse.
+  if (jobDescription.length > MAX_JOB_DESCRIPTION_LENGTH) {
+    log.warn('Job description too long', { requestId, length: jobDescription.length });
+    return new Response(
+      createSSEMessage({ type: 'error', code: ERROR_CODES.INVALID_REQUEST, message: `Job description too long (max ${MAX_JOB_DESCRIPTION_LENGTH} characters).` }),
       { status: 400, headers: { 'Content-Type': 'text/event-stream' } }
     );
   }

@@ -10,6 +10,7 @@ import { getChatCompletion } from '@/lib/llm-client';
 import type { ConversationMessage } from '@/types/chat';
 import { PORTFOLIO_OWNER } from '@/lib/portfolio-owner';
 import { createLogger } from '@/lib/logger';
+import { clientIp, suggestionsLimiter, validateMessageBounds } from '@/lib/api-security';
 
 const log = createLogger('SuggestionsAPI');
 
@@ -31,6 +32,14 @@ You MUST respond with a JSON object like: {"suggestions": ["question 1", "questi
  */
 export async function POST(request: NextRequest) {
   try {
+    // VULN-002: per-IP rate limit before any LLM work.
+    if (!suggestionsLimiter.check(clientIp(request) || 'unknown')) {
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please wait a moment and try again.' }),
+        { status: 429, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     const body = await request.json();
     const rawMessages: Array<{ role: string; content: string }> = body.messages;
 
@@ -38,6 +47,15 @@ export async function POST(request: NextRequest) {
       return new Response(
         JSON.stringify({ suggestions: [] }),
         { headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // VULN-002: bound the conversation history (count + per-message length).
+    const boundsError = validateMessageBounds(rawMessages);
+    if (boundsError) {
+      return new Response(
+        JSON.stringify({ error: boundsError }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
