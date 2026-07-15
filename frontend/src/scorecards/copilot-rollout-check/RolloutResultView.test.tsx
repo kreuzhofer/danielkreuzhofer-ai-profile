@@ -18,12 +18,14 @@ function renderView(a: Answers) {
   );
 }
 
-test("shows score, Typ, the four status rows and the weakest dimension as erster Auftrag", () => {
-  // S3 unbekannt (0), rest erledigt (3) → raw 9 → Score 75 · Fast startklar
+test("shows Typ, the four status rows and the weakest dimension as erster Auftrag, but NO numeric score", () => {
+  // S3 unbekannt (0), rest erledigt (3) → raw 9 → intern Score 75 · Fast startklar
   const a = answers({ S3: "weiss-nicht" });
   renderView(a);
 
-  expect(screen.getByText(/75 von 100/)).toBeInTheDocument();
+  // Kein numerischer Score sichtbar (Daniel 15.07.) — Score ist rein intern.
+  expect(screen.queryByText(/von 100/)).toBeNull();
+  expect(screen.queryByText(/\b75\b/)).toBeNull();
   expect(screen.getByText("Fast startklar")).toBeInTheDocument();
 
   // Vier Status-Zeilen: 3× erledigt, 1× unbekannt

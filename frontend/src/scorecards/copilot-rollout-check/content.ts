@@ -135,12 +135,8 @@ export const content: ScorecardContent = {
     "fast-startklar": "Fast startklar",
     "rollout-ready": "Rollout-ready",
   },
-  scoreParagraph: {
-    blindflug: "Dein Rollout-Score: {score} von 100.",
-    bauchgefuehl: "Dein Rollout-Score: {score} von 100.",
-    "fast-startklar": "Dein Rollout-Score: {score} von 100.",
-    "rollout-ready": "Dein Rollout-Score: {score} von 100.",
-  },
+  // KEIN scoreParagraph: numerischer Score bleibt unsichtbar (Daniel 15.07.,
+  // wie bei den anderen Checks) — er existiert nur intern für Bänder/Tags/hot.
   byOutcome: {
     blindflug: {
       diagnose:
@@ -207,7 +203,7 @@ export const content: ScorecardContent = {
   personalisierung: {
     questionId: "S1",
     byAnswer: {
-      "weiss-nicht": "Ein Punkt vorab, unabhängig von Deinem Score: " + AUTO_ENABLE_SATZ,
+      "weiss-nicht": "Ein Punkt vorab, unabhängig von Deinem Ergebnis: " + AUTO_ENABLE_SATZ,
     },
   },
   tipps,

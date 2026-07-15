@@ -20,8 +20,6 @@ export function RolloutResultView({ registration, answers, result }: ScorecardRe
 
   return (
     <article className="sc-report">
-      {model.scoreParagraph && <p className="sc-report-text">{model.scoreParagraph}</p>}
-
       <h2 className="sc-outcome-name">{model.outcomeLabel}</h2>
       {model.diagnose.split("\n\n").map((p, i) => (
         <p key={i} className="sc-report-text">
