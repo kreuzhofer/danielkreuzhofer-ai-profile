@@ -14,3 +14,11 @@ test("Q_TIER option ids match the Tier type", () => {
   const ids = definition.questions.find((q) => q.id === "Q_TIER")!.options.map((o) => o.id);
   expect(ids.sort()).toEqual(["business", "cloud", "free", "gemischt"]);
 });
+
+test("reports conversions under the legacy trackmysales code (history continuity)", () => {
+  // Regression pin: without the override the engine falls back to the slug
+  // ("dsgvo-check"), which has no ConversionLink in trackmysales — attribution
+  // would be dropped silently (non-fatal catch in scorecard confirm).
+  const { dsgvoCheck } = require("./index");
+  expect(dsgvoCheck.trackmysalesCode).toBe("dsgvo-checkliste");
+});

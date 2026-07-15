@@ -31,5 +31,10 @@ export const dsgvoCheck: ScorecardRegistration = {
   doiSubject: "Ein Klick noch, dann kommt Dein DSGVO-Report",
   deliverySubject: "Dein DSGVO-Report ist da",
   cleverreachSource: "dsgvo-check",
+  // Legacy ConversionLink code from the old doc-based funnel — keeps the
+  // conversion history continuous in trackmysales (decision 2026-07-15).
+  // Without this override the engine would default to the slug "dsgvo-check",
+  // which has no ConversionLink and would silently drop attribution.
+  trackmysalesCode: "dsgvo-checkliste",
   bookingUrl: "https://calendly.com/danielkreuzhofer/30min",
 };
