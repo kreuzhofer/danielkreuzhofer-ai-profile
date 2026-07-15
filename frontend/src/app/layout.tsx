@@ -25,6 +25,13 @@ const anton = Anton({
   variable: "--font-anton",
 });
 
+// Nonce-based CSP (middleware.ts, VULN-003) requires every HTML page to be
+// dynamically rendered: Next.js injects the per-request nonce into its script
+// tags only during request-time rendering. Statically prerendered pages ship
+// nonce-less script tags, which 'strict-dynamic' blocks entirely (broken
+// hydration site-wide). Do not remove without also removing the nonce CSP.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Daniel Kreuzhofer - Cloud. AI. Clarity.",
   description: "Senior AI Solutions Architect helping companies leverage Cloud and AI with substance, not hype. 20+ years of experience in enterprise architecture, migrations, and GenAI implementation.",
