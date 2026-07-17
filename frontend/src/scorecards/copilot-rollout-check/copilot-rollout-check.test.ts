@@ -261,10 +261,66 @@ describe("content (Spec-Texte + Copy-Regeln)", () => {
     expect(tipps[4].tipps).toHaveLength(4); // 4 Stufen der Eskalations-Leiter
   });
 
-  it("opt-in gate offers the Auftrags-Paket and names the sub-processors", () => {
+  it("every Auftrag-Hebel opens with the kopierbarer Auftrag and carries a Checkliste below it", () => {
+    const tipps = reg.content.tipps!;
+    for (const hebel of tipps.slice(0, 4)) {
+      expect(hebel.tipps[0].lead).toBe("Dein Auftrag:");
+      // Checkliste = at least one concrete Fundort/Prüfpunkt below the Auftrag
+      expect(hebel.tipps.length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("Checkliste 1 names the exact admin-center locations (tenant-verified paths)", () => {
+    const body = JSON.stringify(reg.content.tipps![0]);
+    expect(body).toMatch(/KI-Anbieter, die als Microsoft-Unterauftragsverarbeiter tätig sind/);
+    expect(body).toMatch(/admin\.microsoft\.com/);
+    expect(body).toMatch(/Enable External models/);
+    expect(body).toMatch(/25\. März 2026/); // Apps-Checkbox-Gotcha für neue EU-Tenants
+    expect(body).toMatch(/Message Center/);
+  });
+
+  it("Checkliste 2 maps all four Modell-Stufen to their Beleg-Quelle", () => {
+    const hebel = JSON.stringify(reg.content.tipps![1]);
+    expect(hebel).toMatch(/aren't used to train foundation LLMs/); // Stufe 1: Privacy-Doc-Zitat
+    expect(hebel).toMatch(/Product Terms/); // Stufe 2: Subprozessoren
+    expect(hebel).toMatch(/Mistral/); // Stufe 3: Fremd-Anbieter
+    expect(hebel).toMatch(/express permission/); // Stufe 4: Preview mit Retention
+    expect(hebel).toMatch(/24\. Juli 2026/); // Auto-Enable zählt als aktivierte Stufe
+  });
+
+  it("Checkliste 3 is honest about per-user reports and names the concrete tools", () => {
+    const hebel = JSON.stringify(reg.content.tipps![2]);
+    expect(hebel).toMatch(/gibt es tenant-weit nicht/);
+    expect(hebel).toMatch(/Data-Access-Governance/);
+    expect(hebel).toMatch(/SharePoint Advanced Management/);
+    expect(hebel).toMatch(/Berechtigungen überprüfen/); // Pro-Nutzer-Stichprobe
+    expect(hebel).toMatch(/DSPM/);
+  });
+
+  it("die neuen Aufträge 2 und 3 benennen Stufen bzw. Review-Weg statt vager Anweisungen", () => {
+    const hebelTexts = reg.content.tipps!;
+    const auftrag2 = hebelTexts[1].tipps[0].body;
+    expect(auftrag2).toMatch(/Microsoft-gehostete Modelle/);
+    expect(auftrag2).toMatch(/Beleg-Dokument/);
+    const auftrag3 = hebelTexts[2].tipps[0].body;
+    expect(auftrag3).toMatch(/Oversharing-Reports/);
+    expect(auftrag3).toMatch(/Stichprobe/);
+  });
+
+  it("opt-in gate sells the Auftrags-Paket (Outcome + Inventar) and names the sub-processors", () => {
+    expect(reg.content.optin.heading).toBe("Hol Dir das Auftrags-Paket für Deine IT");
+    expect(reg.content.optin.body).toMatch(/ohne Rückfragen/);
+    expect(reg.content.optin.body).toMatch(/Klickpfaden/);
     expect(reg.content.optin.body).toMatch(/Anbieter-Tabelle/);
     expect(reg.content.optin.datenschutzHinweis).toMatch(/CleverReach/);
     expect(reg.content.optin.datenschutzHinweis).toMatch(/IONOS/);
+  });
+
+  it("sources include the training commitment and the oversharing blueprint", () => {
+    const ids = reg.content.sources.map((s) => s.id);
+    expect(ids).toContain("ms-copilot-privacy");
+    expect(ids).toContain("ms-secure-govern-blueprint");
+    expect(reg.content.sources.length).toBe(6);
   });
 
   it("uses no em-dashes anywhere in the German copy (AI-Tell rule)", () => {
