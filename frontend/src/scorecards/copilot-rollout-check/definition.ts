@@ -1,18 +1,20 @@
 /**
  * Copilot-Rollout-Check — engine definition (scoring config).
- * Transcribed from vault `funnels/copilot-rollout-check/06-quiz-spec.md` (v1).
- * Higher score = better prepared. Σ S1–S4 (max 12) → bands = Rollout-Typ.
- * K1/K2 are wortgleich from the KI-Führungs-Check (lead-data consistency).
+ * v1 from vault `funnels/copilot-rollout-check/06-quiz-spec.md` (Video #09);
+ * v2 (27.07.2026, Video #10) adds the Nutzungs-Block N1–N4 from Beat 5 of
+ * `10-copilot-ausgerollt-keiner-nutzt`. Higher score = better prepared.
+ * Σ S1–S4 + N1–N4 (max 24) → bands. K1/K2 wortgleich KI-Führungs-Check.
  */
 
 import type { ScorecardDefinition } from "@/lib/scorecard/types";
 
 export const definition: ScorecardDefinition = {
   slug: "copilot-rollout-check",
-  scoring: { maxPoints: 12, direction: "higher-better" },
+  scoring: { maxPoints: 24, direction: "higher-better" },
   outcome: {
     type: "bands",
-    // Band names Daniel-approved 15.07.2026.
+    // Band KEYS are frozen: stored v1 results reference them (old report links).
+    // Only the LABELS were renamed for v2 (content.outcomeLabel).
     bands: [
       { key: "blindflug", min: 0, max: 25 },
       { key: "bauchgefuehl", min: 26, max: 50 },
@@ -20,7 +22,7 @@ export const definition: ScorecardDefinition = {
       { key: "rollout-ready", min: 76, max: 100 },
     ],
   },
-  // Weakest of the four Rollout-Entscheidungen = "Dein erster Auftrag an die IT".
+  // Weakest of the eight Dimensionen = "Dein erster Auftrag" (IT oder Entscheider).
   nextLever: { over: "category", pick: "min" },
   qualification: { requireQualifies: ["K1", "K2"] },
   attributePrefix: "rollout_",
@@ -125,7 +127,64 @@ export const definition: ScorecardDefinition = {
       ],
     },
 
-    // ── Block 3 — Kontext (Personalisierung) ────────────────────────────────
+    // ── Block 3 — Nutzungs-Führung (je 0–3; die vier Schritte aus Video #10) ─
+    {
+      id: "N1",
+      kind: "score",
+      category: "use-case",
+      prompt:
+        "Habt ihr einen konkreten Prozess benannt, den Copilot besser machen soll (z. B. Angebote, " +
+        "Reklamationen, Besprechungs-Nachbereitung)?",
+      options: [
+        { id: "benannt", label: "Ja, ein benannter Prozess mit Verantwortlichem", points: 3 },
+        { id: "ideen-liste", label: "Es gibt eine Ideen-Liste, entschieden ist nichts", points: 2 },
+        { id: "fuer-alle", label: "Nein, die Lizenzen sind für alle gedacht", points: 1 },
+        { id: "weiss-nicht", label: "Weiß nicht, wer das entschieden haben müsste", points: 0 },
+      ],
+    },
+    {
+      id: "N2",
+      kind: "score",
+      category: "basislinie",
+      prompt:
+        "Ist der Ist-Zustand dieses Prozesses gemessen (Dauer, Häufigkeit, Kosten), und gibt es " +
+        "eine aufgeschriebene Wert-Hypothese?",
+      options: [
+        { id: "gemessen", label: "Ja, gemessen und Hypothese schriftlich", points: 3 },
+        { id: "geschaetzt", label: "Grobe Schätzungen, aufgeschrieben ist nichts", points: 2 },
+        { id: "gefuehl", label: "Nein, Erfolg würden wir am Gefühl festmachen", points: 1 },
+        { id: "weiss-nicht", label: "Weiß nicht, was da zu messen wäre", points: 0 },
+      ],
+    },
+    {
+      id: "N3",
+      kind: "score",
+      category: "befaehigung",
+      prompt:
+        "Können die Menschen, deren Alltag dieser Prozess ist, heute damit arbeiten?",
+      options: [
+        { id: "arbeiten", label: "Ja, sie arbeiten damit und wissen, was sie tun", points: 3 },
+        { id: "schulung", label: "Es gab eine allgemeine Schulung, keine Einführung am eigenen Prozess", points: 2 },
+        { id: "nur-verteilt", label: "Nein, die Lizenz wurde verteilt, mehr nicht", points: 1 },
+        { id: "weiss-nicht", label: "Weiß nicht, ob überhaupt jemand damit arbeitet", points: 0 },
+      ],
+    },
+    {
+      id: "N4",
+      kind: "score",
+      category: "entscheid",
+      prompt:
+        "Gibt es einen festen Termin, an dem Basislinie gegen Ergebnis gehalten wird und die Daten " +
+        "über skalieren oder abschalten entscheiden?",
+      options: [
+        { id: "termin-steht", label: "Ja, Termin steht, Kriterien sind klar", points: 3 },
+        { id: "irgendwann", label: "Wir wollen irgendwann bewerten, fest ist nichts", points: 2 },
+        { id: "laeuft-weiter", label: "Nein, das Thema läuft einfach weiter", points: 1 },
+        { id: "weiss-nicht", label: "Weiß nicht, wer das bewerten würde", points: 0 },
+      ],
+    },
+
+    // ── Block 4 — Kontext (Personalisierung) ────────────────────────────────
     {
       id: "K4",
       kind: "context",

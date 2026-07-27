@@ -1,17 +1,25 @@
 import type { ScorecardRegistration } from "@/lib/scorecard/registry";
 import type { Answers, ScorecardResult } from "@/lib/scorecard/types";
 import { definition } from "./definition";
-import { content } from "./content";
+import { content, DIMENSIONEN } from "./content";
 import { branding } from "./branding";
 import { RolloutResultView } from "./RolloutResultView";
 
 /** K3-Antworten, die einen vorqualifizierten Programm-Lead markieren (Zustand A/B). */
 const HOT_COPILOT_STAND = new Set(["rollout-geplant", "gekauft-kaum-genutzt"]);
 
+/** Die Nutzungs-Kategorien (N1–N4), abgeleitet statt dupliziert; Summe speist nutzung-hot. */
+const NUTZUNG_CATEGORIES = DIMENSIONEN.filter((d) => d.block === "nutzung").map((d) => d.category);
+const NUTZUNG_HOT_MAX = 6; // ≤ die Hälfte von 12 Nutzungs-Punkten
+
 /**
- * CleverReach tags — the hot flag lives HERE, not in the engine (Bau-Anweisung 4):
- * always `copilot-stand:<K3>` + `bremse:<K4>`; `rollout-hot` exactly when
- * qualified AND K3 ∈ {rollout-geplant, gekauft-kaum-genutzt} AND Score ≤ 50.
+ * CleverReach tags — the hot flags live HERE, not in the engine (Bau-Anweisung 4):
+ * always `copilot-stand:<K3>` + `bremse:<K4>`.
+ * `rollout-hot` (#09-Lead, unverändert seit v1): qualified AND K3 ∈
+ * {rollout-geplant, gekauft-kaum-genutzt} AND Gesamt-Score ≤ 50.
+ * `nutzung-hot` (#10-Lead, v2): qualified AND K3 = gekauft-kaum-genutzt AND
+ * Nutzungs-Block ≤ 6/12 — fängt den sauber-eingeführt-aber-ungenutzt-Lead,
+ * der am Gesamt-Score vorbeirutscht. Ein Lead kann beide Tags tragen.
  */
 function tags(result: ScorecardResult, answers: Answers): string[] {
   const out: string[] = [];
@@ -19,6 +27,7 @@ function tags(result: ScorecardResult, answers: Answers): string[] {
   const bremse = answers.K4;
   if (typeof stand === "string") out.push(`copilot-stand:${stand}`);
   if (typeof bremse === "string") out.push(`bremse:${bremse}`);
+
   if (
     result.qualified &&
     typeof stand === "string" &&
@@ -26,6 +35,13 @@ function tags(result: ScorecardResult, answers: Answers): string[] {
     result.score <= 50
   ) {
     out.push("rollout-hot");
+  }
+  const nutzungSum = NUTZUNG_CATEGORIES.reduce(
+    (sum, c) => sum + (result.categoryScores?.[c] ?? 0),
+    0,
+  );
+  if (result.qualified && stand === "gekauft-kaum-genutzt" && nutzungSum <= NUTZUNG_HOT_MAX) {
+    out.push("nutzung-hot");
   }
   return out;
 }
@@ -37,10 +53,10 @@ export const copilotRolloutCheck: ScorecardRegistration = {
   ResultView: RolloutResultView,
   cleverreachTags: tags,
   meta: {
-    title: "Copilot-Rollout-Check: Welche der vier Entscheidungen sind bei euch offen?",
+    title: "Copilot-Rollout-Check: Läuft Copilot bei euch nur, oder liefert er?",
     description:
-      "8 Fragen, 2 Minuten: Danach weißt Du, welche der vier Rollout-Entscheidungen bei euch noch " +
-      "offen sind, und bekommst die offenen als fertig formulierte Aufträge für Deine IT. Stand " +
+      "12 Fragen, 3 Minuten: Danach weißt Du, ob Copilot bei euch sauber eingeführt ist und " +
+      "wirklich genutzt wird, mit fertig formulierten Aufträgen für Deine IT und für Dich. Stand " +
       "der Recherche Juli 2026.",
   },
   doiSubject: "Ein Klick noch, dann kommt Dein Auftrags-Paket",

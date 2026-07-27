@@ -8,10 +8,13 @@
 
 import type { ScorecardContent, Tipp, TippHebel } from "@/lib/scorecard/content";
 
-/** One of the four Rollout-Entscheidungen ("Dinge" aus Video #09). */
+/** One of the acht Dimensionen: vier Rollout-Entscheidungen (Video #09) plus
+ *  vier Nutzungs-Schritte (Video #10). */
 export interface RolloutDimension {
-  /** Scoring category on the definition (S1–S4). */
+  /** Scoring category on the definition (S1–S4, N1–N4). */
   category: string;
+  /** Report grouping: Einführung (IT-Aufträge) vs. Nutzung (Entscheider-Aufträge). */
+  block: "einfuehrung" | "nutzung";
   /** Short display label for the status rows. */
   label: string;
   /** Gated-report heading for this Auftrag. */
@@ -31,6 +34,7 @@ export const AUTO_ENABLE_SATZ =
 export const DIMENSIONEN: RolloutDimension[] = [
   {
     category: "anbieter",
+    block: "einfuehrung",
     label: "Anbieter-Schalter",
     auftragTitle: "Auftrag 1: Anbieter-Schalter dokumentieren",
     auftrag:
@@ -82,6 +86,7 @@ export const DIMENSIONEN: RolloutDimension[] = [
   },
   {
     category: "training",
+    block: "einfuehrung",
     label: "Training und Datennutzung",
     auftragTitle: "Auftrag 2: Modell-Training schriftlich ausschließen",
     auftrag:
@@ -134,6 +139,7 @@ export const DIMENSIONEN: RolloutDimension[] = [
   },
   {
     category: "berechtigungen",
+    block: "einfuehrung",
     label: "Berechtigungen",
     auftragTitle: "Auftrag 3: Berechtigungs-Review vor der ersten Lizenz",
     auftrag:
@@ -191,6 +197,7 @@ export const DIMENSIONEN: RolloutDimension[] = [
   },
   {
     category: "lizenz",
+    block: "einfuehrung",
     label: "Lizenz und Zahlweise",
     auftragTitle: "Auftrag 4: Lizenz-Schiene und Zahlweise prüfen",
     auftrag:
@@ -209,6 +216,88 @@ export const DIMENSIONEN: RolloutDimension[] = [
       },
     ],
   },
+
+  // ── Nutzungs-Block (Video #10): Entscheider-Aufträge, nicht delegierbar ────
+  {
+    category: "use-case",
+    block: "nutzung",
+    label: "Use-Case",
+    auftragTitle: "Auftrag 5: Einen Prozess wählen",
+    auftrag:
+      "Wähl einen einzigen Prozess, in dem messbar Zeit oder Geld steckt (Angebote, Reklamationen, " +
+      "Besprechungs-Nachbereitung), und benenn einen Verantwortlichen. Ein Use-Case, nicht zwanzig " +
+      "Lizenzen.",
+    checkliste: [
+      {
+        lead: "Woran Du einen guten ersten Prozess erkennst:",
+        body:
+          "Er tut weh, er läuft oft (mehrmals pro Woche), sein Aufwand ist messbar, und es gibt " +
+          "eine Person, deren Alltag er ist. Fehlt eines davon, nimm den nächsten Kandidaten.",
+        evidence: "practice",
+      },
+    ],
+  },
+  {
+    category: "basislinie",
+    block: "nutzung",
+    label: "Basislinie und Wert-Hypothese",
+    auftragTitle: "Auftrag 6: Basislinie messen, Wert-Hypothese aufschreiben",
+    auftrag:
+      "Miss den Ist-Zustand, bevor jemand einen Prompt schreibt: Wie lange dauert der Prozess " +
+      "heute, wie oft läuft er pro Woche, was kostet er. Dann schreib die Wert-Hypothese in einem " +
+      "Satz auf: Was genau soll sich um wie viel verbessern, bis wann.",
+    checkliste: [
+      {
+        lead: "Die Ein-Satz-Vorlage:",
+        body:
+          "„Wir senken [Messgröße, z. B. die Bearbeitungszeit pro Angebot] von [heute] auf [Ziel] " +
+          "bis [Datum].“ Ohne Basislinie kannst Du hinterher nicht wissen, ob KI etwas gebracht " +
+          "hat, Du kannst es nur glauben.",
+        evidence: "practice",
+      },
+    ],
+  },
+  {
+    category: "befaehigung",
+    block: "nutzung",
+    label: "Befähigung",
+    auftragTitle: "Auftrag 7: Die Nutzer befähigen, nicht die Firma schulen",
+    auftrag:
+      "Befähige die drei, vier Menschen, deren Alltag dieser Prozess ist, statt die ganze Firma zu " +
+      "schulen. Ein System ist erst fertig, wenn diese Leute damit arbeiten.",
+    checkliste: [
+      {
+        lead: "Woran Du Befähigung von Bereitstellung unterscheidest:",
+        body:
+          "Die Nutzer haben am eigenen Prozess geübt, nicht an Beispiel-Prompts. Die ersten echten " +
+          "Ergebnisse sind gemeinsam entstanden, und es gibt einen kurzen Draht für Rückfragen. " +
+          "Bereitstellen ohne Einführung produziert genau die ungenutzten Lizenzen, die Du gerade " +
+          "hast.",
+        evidence: "practice",
+      },
+    ],
+  },
+  {
+    category: "entscheid",
+    block: "nutzung",
+    label: "Daten-Entscheid",
+    auftragTitle: "Auftrag 8: Den Termin setzen, an dem die Daten entscheiden",
+    auftrag:
+      "Setz heute den Termin sechs bis acht Wochen nach Start, an dem Basislinie gegen Ergebnis " +
+      "gehalten wird. Ist der Wert da, skalierst Du auf den nächsten Prozess. Ist er nicht da, " +
+      "schaltest Du ab und nimmst die nächste Hypothese. Beides ist ein Ergebnis.",
+    checkliste: [
+      {
+        lead: "Damit der Termin hält:",
+        body:
+          "Leg vorab fest, wer am Tisch sitzt und ab welchem Wert skaliert wird. Zufriedene Nutzer " +
+          "sind nicht dasselbe wie belegter Wert: Im Copilot-Pilot der britischen Regierung (DBT, " +
+          "1.000 Lizenzen) waren 72 Prozent zufrieden, einen belastbaren Produktivitätsnachweis " +
+          "fand die Auswertung trotzdem nicht (Quelle unten).",
+        evidence: "data",
+      },
+    ],
+  },
 ];
 
 /** Status word per S-question points (spec: ✅ erledigt / 🟡 halb / 🔴 offen / ⚫ unbekannt). */
@@ -219,12 +308,15 @@ export const STATUS_BY_POINTS: Record<number, { icon: string; word: string }> = 
   0: { icon: "⚫", word: "unbekannt" },
 };
 
-/** Gated report: die vier Aufträge mit Checkliste (weakest first) + Anbieter-Tabelle. */
+/** Gated report: die acht Aufträge mit Checkliste (weakest first) + Anbieter-Tabelle. */
 const tipps: TippHebel[] = [
   ...DIMENSIONEN.map((d) => ({
     category: d.category,
     title: d.auftragTitle,
-    subtitle: "Den Auftrag kopieren und an die IT schicken. Die Checkliste darunter beantwortet die Rückfragen gleich mit.",
+    subtitle:
+      d.block === "einfuehrung"
+        ? "Den Auftrag kopieren und an die IT schicken. Die Checkliste darunter beantwortet die Rückfragen gleich mit."
+        : "Diesen Auftrag kannst Du nicht delegieren. Die Checkliste darunter macht ihn konkret.",
     tipps: [
       { lead: "Dein Auftrag:", body: d.auftrag, evidence: "practice" as const },
       ...d.checkliste,
@@ -271,34 +363,38 @@ export const content: ScorecardContent = {
   intro: {
     eyebrow: "Copilot-Rollout-Check",
     heading: "Der Copilot-Rollout-Check",
-    // Spec-Versprechen; Fragenzahl auf 8 korrigiert (K1–K4 + S1–S4).
+    // v2-Versprechen (Video #09 + #10): Einführung UND Nutzung.
     lead:
-      "8 Fragen, 2 Minuten. Danach weißt Du, welche der vier Entscheidungen bei euch noch offen " +
-      "sind, bevor Copilot ausrollt, und Du bekommst die offenen als fertig formulierte Aufträge " +
-      "für Deine IT.",
+      "12 Fragen, 3 Minuten. Danach weißt Du, welche der acht Entscheidungen bei euch offen sind, " +
+      "von der Einführung bis zur Nutzung, und Du bekommst die offenen als fertig formulierte " +
+      "Aufträge: vier für Deine IT, vier für Dich.",
     startLabel: "Check starten",
     meta: "Kostenlos · Stand der Recherche Juli 2026 · keine Rechtsberatung",
   },
   resultHeading: "Dein Ergebnis",
+  // Keys eingefroren (gespeicherte v1-Ergebnisse); obere zwei Labels umbenannt
+  // (Daniel 27.07.), weil ab v2 auch die Nutzung in den Score einfließt.
   outcomeLabel: {
     blindflug: "Blindflug",
     bauchgefuehl: "Bauchgefühl",
-    "fast-startklar": "Fast startklar",
-    "rollout-ready": "Rollout-ready",
+    "fast-startklar": "Auf halber Strecke",
+    "rollout-ready": "Läuft und liefert",
   },
   // KEIN scoreParagraph: numerischer Score bleibt unsichtbar (Daniel 15.07.,
   // wie bei den anderen Checks) — er existiert nur intern für Bänder/Tags/hot.
   byOutcome: {
     blindflug: {
       diagnose:
-        "Die vier Rollout-Entscheidungen sind bei euch schon gefallen, nur nicht von euch. " +
-        "Microsoft setzt die Standard-Schalter, der Händler wählt die Lizenz, und was Copilot sehen " +
-        "darf, ergibt sich aus gewachsenen Berechtigungen. Das ist kein Vorwurf, sondern der " +
-        "Normalzustand, wenn niemand die vier Fragen gestellt hat. Ab heute stellst Du sie.",
+        "Bei euch sind beide Hälften offen: die Entscheidungen der Einführung und die Führung der " +
+        "Nutzung. Copilot ist entweder noch nicht da, oder er liegt da, ohne dass jemand gesagt " +
+        "hat, welcher Prozess damit besser werden soll. Das ist kein Vorwurf, sondern der " +
+        "Normalzustand, wenn niemand die acht Fragen gestellt hat: Microsoft setzt die " +
+        "Standard-Schalter, der Händler wählt die Lizenz, und die Nutzung bleibt dem Zufall " +
+        "überlassen. Ab heute drehst Du das um.",
       schritte: [
-        "Nimm Deinen ersten Auftrag aus dem Report und schick ihn heute an Deine IT. Nicht als Frage, als Auftrag mit Termin.",
+        "Nimm Deinen ersten Auftrag aus dem Report und stoß ihn heute an: IT-Aufträge schickst Du weiter, Entscheider-Aufträge gehören Dir.",
         "Prüft als Erstes die Anbieter-Schalter im M365 Admin Center. " + AUTO_ENABLE_SATZ,
-        "Verteil keine weiteren Lizenzen, bevor die vier Aufträge beantwortet sind.",
+        "Verteil keine weiteren Lizenzen und wähl stattdessen den einen Prozess, an dem Copilot sich beweisen muss.",
       ],
       antiPattern:
         "Vermeide den Reflex, erst Lizenzen zu bestellen und die Fragen später zu klären. " +
@@ -307,47 +403,50 @@ export const content: ScorecardContent = {
     },
     bauchgefuehl: {
       diagnose:
-        "Ihr ahnt die Themen, aber dokumentiert ist nichts. Wenn morgen jemand fragt, wer welchen " +
-        "Anbieter-Schalter mit welcher Begründung aktiviert hat, steht ihr mit leeren Händen da. Die " +
-        "gute Nachricht: Der Weg zum sauberen Rollout besteht aus vier klaren Aufträgen an die IT, " +
-        "und die bekommst Du hier fertig formuliert.",
+        "Ihr ahnt die Themen, aber belegt ist nichts: Die Einführung ist nicht dokumentiert, und " +
+        "für die Nutzung gibt es weder Basislinie noch Wert-Hypothese. Wenn morgen jemand fragt, " +
+        "wer welchen Anbieter-Schalter aktiviert hat oder was Copilot konkret bringt, steht ihr " +
+        "mit leeren Händen da. Die gute Nachricht: Beides sind klare Aufträge, und die bekommst Du " +
+        "hier fertig formuliert.",
       schritte: [
-        "Mach aus dem Bauchgefühl Dokumente: Schick die offenen Aufträge an Deine IT und lass Dir die erledigten schriftlich bestätigen.",
-        "Setz einen Termin, an dem die vier Antworten vorliegen. Eine Woche reicht für den Anfang.",
+        "Mach aus dem Bauchgefühl Belege: Schick die offenen IT-Aufträge raus und lass Dir die erledigten schriftlich bestätigen.",
+        "Wähl den einen Prozess und schreib die Wert-Hypothese auf, bevor weitere Lizenzen verteilt werden.",
         "Prüft den Stand der Anbieter-Schalter zuerst. " + AUTO_ENABLE_SATZ,
       ],
       antiPattern:
-        "Vermeide, Dich auf mündliche Zusagen zu verlassen. Was nicht festgehalten ist, existiert " +
-        "bei der nächsten Nachfrage nicht, egal wie sicher sich heute jemand ist.",
+        "Vermeide, Dich auf mündliche Zusagen und gefühlte Erfolge zu verlassen. Was nicht " +
+        "festgehalten ist, existiert bei der nächsten Nachfrage nicht, und ein Nutzen ohne " +
+        "Basislinie ist ein Glaube, kein Beleg.",
     },
     "fast-startklar": {
       diagnose:
-        "Ihr habt die meisten Entscheidungen getroffen, ein bis zwei Aufträge sind noch offen. " +
-        "Genau die holst Du Dir jetzt: Unten steht Dein erster Auftrag, fertig formuliert für Deine " +
-        "IT. Damit wird aus fast startklar wirklich startklar.",
+        "Ein Teil steht, ein Teil fehlt: Entweder ist Copilot sauber eingeführt, aber niemand " +
+        "führt die Nutzung, oder die Nutzung läuft, während Einführungs-Entscheidungen offen sind. " +
+        "Die acht Zeilen unten zeigen Dir, welche Hälfte bei euch dran ist, und Dein erster " +
+        "Auftrag schließt genau diese Lücke.",
       schritte: [
-        "Schick die offenen Aufträge an Deine IT. Fertig formuliert findest Du sie im Auftrags-Paket.",
+        "Stoß die offenen Aufträge an: IT-Aufträge weiterleiten, Entscheider-Aufträge selbst anpacken.",
         "Lass Dir die erledigten Entscheidungen schriftlich bestätigen, ein Absatz pro Entscheidung reicht.",
-        "Leg fest, wer künftig neue KI-Schalter im Admin Center prüft, bevor sie aktiv werden.",
+        "Setz den Termin, an dem Basislinie gegen Ergebnis gehalten wird. Ohne Termin bleibt der Nutzen ein Gefühl.",
       ],
       antiPattern:
-        "Vermeide, die letzten offenen Punkte auf die Zeit nach dem Rollout zu verschieben. Ein " +
-        "Berechtigungs-Review nach der Lizenz-Verteilung kommt zu spät, dann hat Copilot die Lücken " +
-        "schon gesehen.",
+        "Vermeide, die offene Hälfte auf später zu verschieben. Ein Berechtigungs-Review nach der " +
+        "Lizenz-Verteilung kommt zu spät, und eine Nutzung ohne Messplan bleibt unbelegbar, egal " +
+        "wie gut sie sich anfühlt.",
     },
     "rollout-ready": {
       diagnose:
-        "Sauber: Die vier Rollout-Entscheidungen sind bei euch getroffen und dokumentiert, der " +
-        "Check bestätigt es. Was jetzt noch fehlt, ist wenig, aber wichtig: Lass Dir den Stand von " +
-        "der IT schriftlich bestätigen, damit er auch in sechs Monaten noch belastbar ist.",
+        "Sauber: Die Einführung ist entschieden und dokumentiert, die Nutzung wird geführt, der " +
+        "Check bestätigt es. Was jetzt zählt: den Stand halten und den belegten Wert nutzen, um " +
+        "den nächsten Prozess anzugehen.",
       schritte: [
-        "Lass Dir die vier Entscheidungen von der IT schriftlich bestätigen, mit Datum und Namen.",
+        "Lass Dir die Entscheidungen von der IT schriftlich bestätigen, mit Datum und Namen.",
         "Legt einen festen Rhythmus fest, in dem ihr neue Anbieter-Schalter und Vorschau-Modelle prüft. Microsoft ändert die Standards, zuletzt zum 24. Juli 2026.",
-        "Nutzt den sauberen Unterbau: Startet mit einem kleinen Pilot-Team und messt, was Copilot konkret bringt.",
+        "Skaliert mit System: Nimm den belegten Wert aus dem ersten Prozess und wiederhol das Muster am nächsten. Basislinie zuerst, dann bauen.",
       ],
       antiPattern:
-        "Vermeide, den Stand als dauerhaft erledigt abzuhaken. Die Schalter-Landschaft ändert sich, " +
-        "und eine Entscheidung von heute ist ohne Review-Rhythmus in einem halben Jahr wieder offen.",
+        "Vermeide, den Stand als dauerhaft erledigt abzuhaken. Die Schalter-Landschaft ändert " +
+        "sich, und ein Prozess mit belegtem Wert ist der Anfang, nicht das Ziel.",
     },
   },
   // Spec-Edge: S1 = 0 → Auto-Enable-Fakt betonen, unabhängig vom Gesamtscore.
@@ -399,15 +498,25 @@ export const content: ScorecardContent = {
         "Oversharing-Reports mit SharePoint Advanced Management + Purview (Doc-Stand 06.05.2026)",
       url: "https://learn.microsoft.com/en-us/microsoft-365/copilot/secure-govern-copilot-foundational-deployment-guidance",
     },
+    {
+      id: "uk-dbt-trial",
+      text:
+        "GOV.UK: M365-Copilot-Pilot des Department for Business and Trade (1.000 Lizenzen, 3 " +
+        "Monate): 72 Prozent zufrieden, aber „no robust evidence that time savings lead to " +
+        "improved productivity“ (veröffentlicht 2025)",
+      url: "https://www.gov.uk/government/publications/microsoft-365-copilot-pilot-dbt-evaluation-report",
+    },
   ],
   optin: {
-    heading: "Hol Dir das Auftrags-Paket für Deine IT",
+    heading: "Hol Dir das Auftrags-Paket für Deine IT und für Dich",
     body:
-      "Damit schickst Du Deiner IT heute vier Aufträge, die sie ohne Rückfragen abarbeiten kann. " +
-      "Zu jedem Auftrag: die Checkliste mit den exakten Klickpfaden im Admin Center, die Namen " +
-      "der Reports, die eure IT ziehen kann, und jede Aussage mit Quelle und Doc-Stand. Dazu die " +
-      "Anbieter-Tabelle fürs IT-Gespräch: vier Schalter, vier Rechtslagen, auf einen Blick. " +
-      "Dauerhaft abrufbar über Deinen persönlichen Link. Trag einfach Deine E-Mail ein.",
+      "Damit schickst Du Deiner IT heute vier Aufträge, die sie ohne Rückfragen abarbeiten kann, " +
+      "und bekommst vier dazu, die nur Du anstoßen kannst: Use-Case, Basislinie, Befähigung, " +
+      "Daten-Entscheid. Zu jedem Auftrag: die Checkliste mit den exakten Klickpfaden im Admin " +
+      "Center oder der passenden Vorlage, die Namen der Reports, die eure IT ziehen kann, und " +
+      "jede Aussage mit Quelle und Doc-Stand. Dazu die Anbieter-Tabelle fürs IT-Gespräch: vier " +
+      "Schalter, vier Rechtslagen, auf einen Blick. Dauerhaft abrufbar über Deinen persönlichen " +
+      "Link. Trag einfach Deine E-Mail ein.",
     button: "Auftrags-Paket anfordern",
     consent:
       "Mit „Auftrags-Paket anfordern“ willige ich ein, dass meine E-Mail-Adresse und meine " +
@@ -433,12 +542,13 @@ export const content: ScorecardContent = {
     emailLabel: "E-Mail-Adresse",
     emailPlaceholder: "dein.name@firma.de",
   },
-  // Video #09 launcht am 19.07.2026 — URL nach Launch auf das Video umstellen.
+  // Kanal-Link als Platzhalter — nach den Launches auf die Video-URLs umstellen.
   video: {
     intro:
-      "Die vier Entscheidungen im Detail, mit Blick ins Admin Center, zeige ich Dir im Video:",
-    title: "Copilot DSGVO-konform und günstig einführen",
-    label: "Video #09",
+      "Die vier Einführungs-Entscheidungen zeige ich Dir in Video #09, die vier " +
+      "Nutzungs-Schritte in Video #10. Beide findest Du auf dem Kanal:",
+    title: "Copilot sicher einführen und wirklich nutzen",
+    label: "Video #09 + #10",
     url: "https://www.youtube.com/@DanielKreuzhofer",
   },
 };

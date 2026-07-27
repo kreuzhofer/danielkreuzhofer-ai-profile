@@ -18,39 +18,49 @@ function renderView(a: Answers) {
   );
 }
 
-test("shows Typ, the four status rows and the weakest dimension as erster Auftrag, but NO numeric score", () => {
-  // S3 unbekannt (0), rest erledigt (3) → raw 9 → intern Score 75 · Fast startklar
+test("shows Typ, acht Status-Zeilen in zwei Gruppen and the weakest dimension as erster Auftrag, but NO numeric score", () => {
+  // S3 unbekannt (0), Rest erledigt (3) → raw 21 → intern 88 · Läuft und liefert
   const a = answers({ S3: "weiss-nicht" });
   renderView(a);
 
-  // Kein numerischer Score sichtbar (Daniel 15.07.) — Score ist rein intern.
   expect(screen.queryByText(/von 100/)).toBeNull();
-  expect(screen.queryByText(/\b75\b/)).toBeNull();
-  expect(screen.getByText("Fast startklar")).toBeInTheDocument();
+  expect(screen.getByText("Läuft und liefert")).toBeInTheDocument();
 
-  // Vier Status-Zeilen: 3× erledigt, 1× unbekannt
-  expect(screen.getAllByText(/erledigt/)).toHaveLength(3);
+  // Acht Status-Zeilen: 7× erledigt, 1× unbekannt, gruppiert nach Einführung/Nutzung
+  expect(screen.getAllByText(/erledigt/)).toHaveLength(7);
   expect(screen.getAllByText(/unbekannt/)).toHaveLength(1);
+  expect(screen.getByText("Einführung")).toBeInTheDocument();
+  expect(screen.getByText("Nutzung")).toBeInTheDocument();
 
-  // Erster Auftrag = schwächste Dimension (Berechtigungen), als kopierbarer Auftrag
+  // Erster Auftrag = schwächste Dimension (Berechtigungen) → IT-Auftrag
   expect(screen.getByText(/Dein erster Auftrag an die IT/)).toBeInTheDocument();
   expect(screen.getByText(/Berechtigungs-Review/)).toBeInTheDocument();
+});
+
+test("a weakest Nutzungs-Dimension addresses the Entscheider, not the IT", () => {
+  // N2 unbekannt (0), Rest erledigt → schwächste Dimension: Basislinie
+  const a = answers({ N2: "weiss-nicht" });
+  renderView(a);
+  expect(screen.getByText(/Dein erster Auftrag, und der ist Chefsache/)).toBeInTheDocument();
+  expect(screen.queryByText(/Dein erster Auftrag an die IT/)).toBeNull();
+  expect(screen.getByText(/Miss den Ist-Zustand, bevor jemand einen Prompt schreibt/)).toBeInTheDocument();
 });
 
 test("with everything answered 'weiß nicht', the Anbieter-Auftrag comes first (tie → S1)", () => {
   const a = answers({
     S1: "weiss-nicht", S2: "weiss-nicht", S3: "weiss-nicht", S4: "weiss-nicht",
+    N1: "weiss-nicht", N2: "weiss-nicht", N3: "weiss-nicht", N4: "weiss-nicht",
   });
   renderView(a);
   expect(screen.getByText("Blindflug")).toBeInTheDocument();
   expect(screen.getByText(/KI-Anbieter-Schalter im M365 Admin Center/)).toBeInTheDocument();
 });
 
-test("a perfect score switches the Auftrag frame to 'bestätigen lassen'", () => {
+test("a perfect score switches the Auftrag frame to 'bestätigen lassen' over acht Entscheidungen", () => {
   renderView(answers({}));
-  expect(screen.getByText("Rollout-ready")).toBeInTheDocument();
-  expect(screen.getByText(/keine der vier Entscheidungen offen/)).toBeInTheDocument();
-  expect(screen.getAllByText(/erledigt/)).toHaveLength(4);
+  expect(screen.getByText("Läuft und liefert")).toBeInTheDocument();
+  expect(screen.getByText(/keine der acht Entscheidungen offen/)).toBeInTheDocument();
+  expect(screen.getAllByText(/erledigt/)).toHaveLength(8);
 });
 
 test("S1 = weiß nicht surfaces the date-robust Auto-Enable paragraph", () => {
