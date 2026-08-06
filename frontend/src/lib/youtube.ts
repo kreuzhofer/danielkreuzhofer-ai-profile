@@ -21,14 +21,21 @@ export async function getLatestVideos(limit = 3): Promise<FeaturedVideo[]> {
   }
 }
 
-/** Pull videoId + title from each `<entry>` of the YouTube RSS feed. */
+/** Pull videoId + title from each longform `<entry>` of the YouTube RSS feed.
+ *  Shorts (entries whose `<link rel="alternate">` points at `/shorts/<id>`) are dropped;
+ *  only entries linking to `/watch?v=` are returned. */
 function parseFeed(xml: string): FeaturedVideo[] {
   const out: FeaturedVideo[] = [];
   // Each video is an <entry>; slice(1) drops the feed-level header (channel <title> etc.).
   for (const entry of xml.split('<entry>').slice(1)) {
     const id = entry.match(/<yt:videoId>([^<]+)<\/yt:videoId>/)?.[1];
     const title = entry.match(/<title>([^<]*)<\/title>/)?.[1];
-    if (id && title) out.push({ id, title: decodeXmlEntities(title.trim()) });
+    const link = entry.match(/<link[^>]*rel="alternate"[^>]*href="([^"]+)"/)?.[1]
+      ?? entry.match(/<link[^>]*href="([^"]+)"[^>]*rel="alternate"/)?.[1];
+    // Longforms link to /watch?v=; Shorts link to /shorts/. Drop Shorts.
+    if (id && title && link && link.includes('/watch?v=')) {
+      out.push({ id, title: decodeXmlEntities(title.trim()) });
+    }
   }
   return out;
 }

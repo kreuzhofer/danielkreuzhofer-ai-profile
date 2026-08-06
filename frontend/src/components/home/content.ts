@@ -11,14 +11,16 @@ export interface FeaturedVideo {
 }
 
 /**
- * Featured videos = the channel's latest, seeded from the YouTube RSS feed (2026-06-28).
+ * Featured videos = the channel's latest longforms, seeded snapshot (2026-08-06).
  * Rendered as click-to-play thumbnail cards (no YouTube player loads until click — privacy
- * friendly + reliable). Update this list when new videos land (or wire a build-time RSS fetch).
+ * friendly + reliable). Titles sourced from the YouTube watch page (oEmbed), not the RSS
+ * feed `<title>`, so the fallback state matches what visitors see on click-through.
+ * Update this list when new longforms land (or wire a build-time RSS fetch).
  */
 export const FEATURED_VIDEOS: FeaturedVideo[] = [
-  { id: 'OPuHZxOnkJw', title: 'Warum nutzt Dein Team keine KI? Der Grund bist Du.' },
+  { id: 'W_ItCApYJxg', title: 'Copilot gekauft, keiner nutzt ihn: was du als Entscheider jetzt tust' },
+  { id: 'OPuHZxOnkJw', title: 'Du hast KI gekauft, keiner nutzt sie. Schuld ist nicht das Team.' },
   { id: 'C9jW0jqhRtY', title: 'Bevor du KI kaufst: Wo hakt dein Vertrieb wirklich?' },
-  { id: 'hjEzcQncAIg', title: 'Freitag 17 Uhr, Last-Minute vom Chef — 30 Min mit KI statt Wochenende' },
 ];
 
 export const youtubeThumb = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
