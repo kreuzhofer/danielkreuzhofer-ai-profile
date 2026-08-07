@@ -6,7 +6,7 @@ import {
   WorkshopFramework,
   WorkshopDemarcation,
   WorkshopLegal,
-  WorkshopForm,
+  WorkshopFormPlaceholder,
 } from './WorkshopSections';
 import type { Workshop } from '@/db/schema';
 
@@ -101,19 +101,19 @@ describe('WorkshopLegal', () => {
   });
 });
 
-describe('WorkshopForm', () => {
+describe('WorkshopFormPlaceholder', () => {
   it('shows the not-bookable placeholder when bookable is false', () => {
-    render(<WorkshopForm bookable={false} />);
+    render(<WorkshopFormPlaceholder bookable={false} />);
     expect(screen.getByText(/Termin wird noch festgelegt/)).toBeInTheDocument();
   });
 
   it('shows the form section heading when bookable', () => {
-    render(<WorkshopForm bookable={true} />);
+    render(<WorkshopFormPlaceholder bookable={true} />);
     expect(screen.getByRole('heading', { name: /Platz reservieren/ })).toBeInTheDocument();
   });
 
   it('shows the newsletter consent text when bookable', () => {
-    render(<WorkshopForm bookable={true} />);
+    render(<WorkshopFormPlaceholder bookable={true} />);
     expect(screen.getByText(/E-Mail-Adresse/)).toBeInTheDocument();
     expect(screen.getByText(/Abmeldung/)).toBeInTheDocument();
   });

@@ -173,7 +173,7 @@ export function WorkshopLegal() {
   );
 }
 
-export function WorkshopForm({ bookable }: { bookable: boolean }) {
+export function WorkshopFormPlaceholder({ bookable }: { bookable: boolean }) {
   const { form, consent } = workshopContent;
   if (!bookable) {
     return (

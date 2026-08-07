@@ -8,8 +8,9 @@ import {
   WorkshopFramework,
   WorkshopDemarcation,
   WorkshopLegal,
-  WorkshopForm,
+  WorkshopFormPlaceholder,
 } from "@/components/workshop/WorkshopSections";
+import { WorkshopForm } from "@/components/workshop/WorkshopForm";
 import { workshopContent, KI_SOUVERAENITAET_SLUG } from "@/components/workshop/content";
 import { getWorkshopBySlug } from "@/lib/workshop/queries";
 
@@ -55,7 +56,11 @@ export default async function WorkshopPage({
       <WorkshopOutcome />
       <WorkshopFramework workshop={workshop} />
       <WorkshopDemarcation />
-      <WorkshopForm bookable={bookable} />
+      {bookable ? (
+        <WorkshopForm slug={slug} />
+      ) : (
+        <WorkshopFormPlaceholder bookable={false} />
+      )}
       <WorkshopLegal />
     </Layout>
   );
