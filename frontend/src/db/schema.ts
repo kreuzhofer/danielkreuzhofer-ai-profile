@@ -86,3 +86,108 @@ export const scorecardSubmissions = pgTable(
 
 export type ScorecardSubmission = typeof scorecardSubmissions.$inferSelect;
 export type NewScorecardSubmission = typeof scorecardSubmissions.$inferInsert;
+
+/**
+ * Workshop funnel — paid workshop signups (distinct from the gratis scorecard
+ * funnels). Two tables: the workshop entity (termine, capacity, price) and the
+ * submissions hanging off it. Glossary: see CONTEXT.md "Workshop" section.
+ *
+ * Token security (ADR-0002): action tokens and the admin token are stored as
+ * SHA-256 hashes, NOT plaintext — unlike the scorecard tokens above. Admin
+ * actions have money/capacity consequences, so a DB leak must not expose them.
+ */
+export const workshops = pgTable(
+  "workshops",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    /** NULL = termin open; the workshop is not bookable (form disabled). */
+    termin: timestamp("termin", { withTimezone: true }),
+    durationMin: integer("duration_min").notNull().default(90),
+    priceNetEur: integer("price_net_eur").notNull(),
+    capacity: integer("capacity").notNull(),
+    minBookedToRun: integer("min_booked_to_run").notNull(),
+    status: text("status").notNull().default("scheduled"), // scheduled | sold_out | cancelled | completed
+    format: text("format").notNull().default("live_online"),
+    locationLabel: text("location_label").notNull().default("live online"),
+    /** Recording mentioned only on the landingpage (Vault rule). */
+    recordingHint: boolean("recording_hint").notNull().default(true),
+    /** Pro-workshop, reusable admin overview token (SHA-256 hash). */
+    adminToken: text("admin_token").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("workshops_slug_idx").on(t.slug)],
+);
+
+export type Workshop = typeof workshops.$inferSelect;
+export type NewWorkshop = typeof workshops.$inferInsert;
+
+export const workshopSubmissions = pgTable(
+  "workshop_submissions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    workshopId: uuid("workshop_id").notNull().references(() => workshops.id),
+
+    // Anmeldende Person (Termin-Empfänger, Pflicht)
+    firstName: text("first_name").notNull(),
+    lastName: text("last_name").notNull(),
+    email: text("email").notNull(),
+    company: text("company").notNull(),
+    role: text("role"),
+
+    // Zweit-Person (optional, Firmaticket bis 2 Personen)
+    secondPersonName: text("second_person_name"),
+    secondPersonEmail: text("second_person_email"),
+
+    // Rechnungsempfänger (immer Pflicht, evtl. aus Anmeldender Person kopiert)
+    invoiceCompany: text("invoice_company").notNull(),
+    invoiceContactName: text("invoice_contact_name").notNull(),
+    invoiceEmail: text("invoice_email").notNull(),
+    invoiceStreet: text("invoice_street").notNull(),
+    invoiceZip: text("invoice_zip").notNull(),
+    invoiceCity: text("invoice_city").notNull(),
+    invoiceCountry: text("invoice_country").notNull().default("Deutschland"),
+    invoiceUstId: text("invoice_ust_id"),
+    isSmallBusiness: boolean("is_small_business").notNull().default(false),
+
+    // Zahlung
+    paymentPreference: text("payment_preference").notNull(), // bank_transfer | payment_link
+
+    // Newsletter
+    newsletterOptIn: boolean("newsletter_opt_in").notNull().default(false),
+    newsletterDoiConfirmedAt: timestamp("newsletter_doi_confirmed_at", { withTimezone: true }),
+
+    // Status machine: reserved → booked | cancelled (terminal)
+    status: text("status").notNull().default("reserved"), // reserved | booked | cancelled
+    reservedAt: timestamp("reserved_at", { withTimezone: true }).notNull().defaultNow(),
+    bookedAt: timestamp("booked_at", { withTimezone: true }),
+    cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
+
+    // TrackMySales
+    trackingId: text("tracking_id"),
+    leadReportedAt: timestamp("lead_reported_at", { withTimezone: true }),
+    revenueReportedAt: timestamp("revenue_reported_at", { withTimezone: true }),
+
+    // Action tokens (SHA-256 hashes, single-use — ADR-0002)
+    confirmPaymentToken: text("confirm_payment_token"),
+    cancelToken: text("cancel_token"),
+
+    // DOI audit trail (DSGVO-minimal)
+    ipAtSubmit: text("ip_at_submit"),
+    userAgent: text("user_agent"),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("workshop_submissions_workshop_id_idx").on(t.workshopId),
+    index("workshop_submissions_status_idx").on(t.status),
+    index("workshop_submissions_email_idx").on(t.email),
+    index("workshop_submissions_tracking_id_idx").on(t.trackingId),
+  ],
+);
+
+export type WorkshopSubmission = typeof workshopSubmissions.$inferSelect;
+export type NewWorkshopSubmission = typeof workshopSubmissions.$inferInsert;
