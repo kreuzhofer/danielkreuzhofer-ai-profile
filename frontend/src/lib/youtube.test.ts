@@ -3,94 +3,162 @@ import { FEATURED_VIDEOS } from '@/components/home/content';
 
 describe('getLatestVideos', () => {
   const realFetch = global.fetch;
+  const realEnv = process.env.YOUTUBE_API_KEY;
   afterEach(() => {
     global.fetch = realFetch;
+    process.env.YOUTUBE_API_KEY = realEnv;
   });
 
-  it('parses the latest videos (id + decoded title) from the channel RSS feed', async () => {
-    const xml = `<feed><title>Daniel Kreuzhofer</title>
-      <entry><yt:videoId>aaa111</yt:videoId><title>Erstes Video &amp; mehr</title><link rel="alternate" href="https://www.youtube.com/watch?v=aaa111"/></entry>
-      <entry><yt:videoId>bbb222</yt:videoId><title>Zweites Video</title><link rel="alternate" href="https://www.youtube.com/watch?v=bbb222"/></entry>
-      <entry><yt:videoId>ccc333</yt:videoId><title>Drittes Video</title><link rel="alternate" href="https://www.youtube.com/watch?v=ccc333"/></entry>
-    </feed>`;
-    global.fetch = jest.fn(async () => ({ ok: true, text: async () => xml })) as unknown as typeof fetch;
+  function searchResponse(items: Array<{ id: { videoId: string }; snippet: { title: string } }>) {
+    return { ok: true, json: async () => ({ items }) } as unknown as Response;
+  }
 
-    const videos = await getLatestVideos(2);
-    expect(videos).toEqual([
-      { id: 'aaa111', title: 'Erstes Video & mehr' },
-      { id: 'bbb222', title: 'Zweites Video' },
-    ]);
-  });
+  function videosResponse(items: Array<{ id: string; contentDetails: { duration: string } }>) {
+    return { ok: true, json: async () => ({ items }) } as unknown as Response;
+  }
 
-  it('excludes Shorts and returns only longforms in feed order', async () => {
-    const xml = `<feed><title>Daniel Kreuzhofer</title>
-      <entry><yt:videoId>short1</yt:videoId><title>Short Eins</title><link rel="alternate" href="https://www.youtube.com/shorts/short1"/></entry>
-      <entry><yt:videoId>long1</yt:videoId><title>Longform Eins</title><link rel="alternate" href="https://www.youtube.com/watch?v=long1"/></entry>
-      <entry><yt:videoId>short2</yt:videoId><title>Short Zwei</title><link rel="alternate" href="https://www.youtube.com/shorts/short2"/></entry>
-      <entry><yt:videoId>long2</yt:videoId><title>Longform Zwei</title><link rel="alternate" href="https://www.youtube.com/watch?v=long2"/></entry>
-    </feed>`;
-    global.fetch = jest.fn(async () => ({ ok: true, text: async () => xml })) as unknown as typeof fetch;
+  function isoDuration(seconds: number): string {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `PT${h > 0 ? h + 'H' : ''}${m > 0 ? m + 'M' : ''}${s > 0 ? s + 'S' : ''}`;
+  }
 
-    const videos = await getLatestVideos(10);
-    expect(videos).toEqual([
-      { id: 'long1', title: 'Longform Eins' },
-      { id: 'long2', title: 'Longform Zwei' },
-    ]);
-  });
-
-  it('falls back to the seeded videos when the fetch fails', async () => {
-    global.fetch = jest.fn(async () => {
-      throw new Error('network down');
+  function mockApiCalls(
+    searchItems: Array<{ id: { videoId: string }; snippet: { title: string } }>,
+    durationMap: Record<string, number>,
+  ) {
+    global.fetch = jest.fn(async (url: string | URL | Request) => {
+      const u = typeof url === 'string' ? url : url.toString();
+      if (u.includes('/search')) {
+        return searchResponse(searchItems);
+      }
+      if (u.includes('/videos')) {
+        const items = Object.entries(durationMap).map(([id, dur]) => ({
+          id,
+          contentDetails: { duration: isoDuration(dur) },
+        }));
+        return videosResponse(items);
+      }
+      throw new Error(`Unexpected fetch: ${u}`);
     }) as unknown as typeof fetch;
+  }
 
-    const videos = await getLatestVideos(3);
-    expect(videos).toEqual(FEATURED_VIDEOS.slice(0, 3));
+  describe('with YOUTUBE_API_KEY', () => {
+    beforeEach(() => {
+      process.env.YOUTUBE_API_KEY = 'test-api-key';
+    });
+
+    it('returns only longform videos (>= 4 min) from the API, in search order', async () => {
+      mockApiCalls(
+        [
+          { id: { videoId: 'short1' }, snippet: { title: 'Short Eins' } },
+          { id: { videoId: 'long1' }, snippet: { title: 'Longform Eins' } },
+          { id: { videoId: 'short2' }, snippet: { title: 'Short Zwei' } },
+          { id: { videoId: 'long2' }, snippet: { title: 'Longform Zwei' } },
+        ],
+        { short1: 30, long1: 600, short2: 45, long2: 400 },
+      );
+
+      const videos = await getLatestVideos(10);
+      expect(videos).toEqual([
+        { id: 'long1', title: 'Longform Eins' },
+        { id: 'long2', title: 'Longform Zwei' },
+      ]);
+    });
+
+    it('slices to the limit after duration filtering — Shorts do not count', async () => {
+      mockApiCalls(
+        [
+          { id: { videoId: 'short1' }, snippet: { title: 'Short Eins' } },
+          { id: { videoId: 'long1' }, snippet: { title: 'Longform Eins' } },
+          { id: { videoId: 'short2' }, snippet: { title: 'Short Zwei' } },
+          { id: { videoId: 'long2' }, snippet: { title: 'Longform Zwei' } },
+          { id: { videoId: 'long3' }, snippet: { title: 'Longform Drei' } },
+        ],
+        { short1: 30, long1: 600, short2: 45, long2: 400, long3: 500 },
+      );
+
+      const videos = await getLatestVideos(2);
+      expect(videos).toEqual([
+        { id: 'long1', title: 'Longform Eins' },
+        { id: 'long2', title: 'Longform Zwei' },
+      ]);
+    });
+
+    it('returns fewer than limit when the API returns fewer longforms — no backfill', async () => {
+      mockApiCalls(
+        [
+          { id: { videoId: 'short1' }, snippet: { title: 'Short Eins' } },
+          { id: { videoId: 'long1' }, snippet: { title: 'Longform Eins' } },
+        ],
+        { short1: 30, long1: 600 },
+      );
+
+      const videos = await getLatestVideos(3);
+      expect(videos).toEqual([{ id: 'long1', title: 'Longform Eins' }]);
+    });
+
+    it('falls back to FEATURED_VIDEOS when the API call fails', async () => {
+      global.fetch = jest.fn(async () => {
+        throw new Error('network down');
+      }) as unknown as typeof fetch;
+
+      const videos = await getLatestVideos(3);
+      expect(videos).toEqual(FEATURED_VIDEOS.slice(0, 3));
+    });
+
+    it('falls back to FEATURED_VIDEOS when the API returns a non-ok response', async () => {
+      global.fetch = jest.fn(async () => ({ ok: false, status: 403 })) as unknown as typeof fetch;
+
+      const videos = await getLatestVideos(3);
+      expect(videos).toEqual(FEATURED_VIDEOS.slice(0, 3));
+    });
+
+    it('falls back to FEATURED_VIDEOS when no videos are long enough', async () => {
+      mockApiCalls(
+        [
+          { id: { videoId: 'short1' }, snippet: { title: 'Short Eins' } },
+          { id: { videoId: 'short2' }, snippet: { title: 'Short Zwei' } },
+        ],
+        { short1: 30, short2: 45 },
+      );
+
+      const videos = await getLatestVideos(3);
+      expect(videos).toEqual(FEATURED_VIDEOS.slice(0, 3));
+    });
+
+    it('falls back to FEATURED_VIDEOS when search succeeds but videos.list fails', async () => {
+      global.fetch = jest.fn(async (url: string | URL | Request) => {
+        const u = typeof url === 'string' ? url : url.toString();
+        if (u.includes('/search')) {
+          return searchResponse([
+            { id: { videoId: 'long1' }, snippet: { title: 'Longform Eins' } },
+          ]);
+        }
+        if (u.includes('/videos')) {
+          return { ok: false, status: 403 } as unknown as Response;
+        }
+        throw new Error(`Unexpected fetch: ${u}`);
+      }) as unknown as typeof fetch;
+
+      const videos = await getLatestVideos(3);
+      expect(videos).toEqual(FEATURED_VIDEOS.slice(0, 3));
+    });
   });
 
-  it('falls back when the feed is empty', async () => {
-    global.fetch = jest.fn(async () => ({ ok: true, text: async () => '<feed></feed>' })) as unknown as typeof fetch;
+  describe('without YOUTUBE_API_KEY', () => {
+    beforeEach(() => {
+      delete process.env.YOUTUBE_API_KEY;
+    });
 
-    const videos = await getLatestVideos(3);
-    expect(videos).toEqual(FEATURED_VIDEOS.slice(0, 3));
-  });
+    it('falls back to FEATURED_VIDEOS when no API key is set', async () => {
+      global.fetch = jest.fn(async () => {
+        throw new Error('should not fetch without API key');
+      }) as unknown as typeof fetch;
 
-  it('falls back to the seeded videos when the feed contains only Shorts', async () => {
-    const xml = `<feed><title>Daniel Kreuzhofer</title>
-      <entry><yt:videoId>short1</yt:videoId><title>Short Eins</title><link rel="alternate" href="https://www.youtube.com/shorts/short1"/></entry>
-      <entry><yt:videoId>short2</yt:videoId><title>Short Zwei</title><link rel="alternate" href="https://www.youtube.com/shorts/short2"/></entry>
-    </feed>`;
-    global.fetch = jest.fn(async () => ({ ok: true, text: async () => xml })) as unknown as typeof fetch;
-
-    const videos = await getLatestVideos(3);
-    expect(videos).toEqual(FEATURED_VIDEOS.slice(0, 3));
-  });
-
-  it('slices to the limit after filtering — Shorts do not count toward the limit', async () => {
-    const xml = `<feed><title>Daniel Kreuzhofer</title>
-      <entry><yt:videoId>short1</yt:videoId><title>Short Eins</title><link rel="alternate" href="https://www.youtube.com/shorts/short1"/></entry>
-      <entry><yt:videoId>long1</yt:videoId><title>Longform Eins</title><link rel="alternate" href="https://www.youtube.com/watch?v=long1"/></entry>
-      <entry><yt:videoId>short2</yt:videoId><title>Short Zwei</title><link rel="alternate" href="https://www.youtube.com/shorts/short2"/></entry>
-      <entry><yt:videoId>long2</yt:videoId><title>Longform Zwei</title><link rel="alternate" href="https://www.youtube.com/watch?v=long2"/></entry>
-      <entry><yt:videoId>long3</yt:videoId><title>Longform Drei</title><link rel="alternate" href="https://www.youtube.com/watch?v=long3"/></entry>
-      <entry><yt:videoId>long4</yt:videoId><title>Longform Vier</title><link rel="alternate" href="https://www.youtube.com/watch?v=long4"/></entry>
-    </feed>`;
-    global.fetch = jest.fn(async () => ({ ok: true, text: async () => xml })) as unknown as typeof fetch;
-
-    const videos = await getLatestVideos(2);
-    expect(videos).toEqual([
-      { id: 'long1', title: 'Longform Eins' },
-      { id: 'long2', title: 'Longform Zwei' },
-    ]);
-  });
-
-  it('returns fewer than limit when the feed has fewer longforms — no backfill', async () => {
-    const xml = `<feed><title>Daniel Kreuzhofer</title>
-      <entry><yt:videoId>short1</yt:videoId><title>Short Eins</title><link rel="alternate" href="https://www.youtube.com/shorts/short1"/></entry>
-      <entry><yt:videoId>long1</yt:videoId><title>Longform Eins</title><link rel="alternate" href="https://www.youtube.com/watch?v=long1"/></entry>
-    </feed>`;
-    global.fetch = jest.fn(async () => ({ ok: true, text: async () => xml })) as unknown as typeof fetch;
-
-    const videos = await getLatestVideos(3);
-    expect(videos).toEqual([{ id: 'long1', title: 'Longform Eins' }]);
+      const videos = await getLatestVideos(3);
+      expect(videos).toEqual(FEATURED_VIDEOS.slice(0, 3));
+    });
   });
 });
