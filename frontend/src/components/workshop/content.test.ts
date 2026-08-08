@@ -1,5 +1,8 @@
 import { workshopContent } from './content';
 
+/** Counts words in a string. */
+const wc = (s: string) => s.trim().split(/\s+/).length;
+
 describe('workshop content module', () => {
   it('exposes the hero headline from the vault copy', () => {
     expect(workshopContent.hero.headline).toMatch(/KI-Souveränität/);
@@ -7,38 +10,56 @@ describe('workshop content module', () => {
     expect(workshopContent.hero.headline).toMatch(/Roadmap/);
   });
 
-  it('provides the hero intro text from the vault copy', () => {
+  it('keeps the hero intro terse — the Kante, not the process', () => {
     expect(workshopContent.hero.intro).toMatch(/Bauchgefühl/);
     expect(workshopContent.hero.intro).toMatch(/Anbieter-Folien/);
-    expect(workshopContent.hero.intro).toMatch(/90 Minuten/);
+    // Content-Leitfaden: "Kurze Formeln statt Romane" — hero stays under 50 words.
+    expect(wc(workshopContent.hero.intro)).toBeLessThanOrEqual(50);
   });
 
-  it('lists exactly five agenda blocks from the vault plan', () => {
-    expect(workshopContent.agenda.blocks).toHaveLength(5);
-    expect(workshopContent.agenda.blocks[0].name).toMatch(/Lage/);
-    expect(workshopContent.agenda.blocks[2].name).toMatch(/Messen/);
-    expect(workshopContent.agenda.blocks[4].name).toMatch(/Abschluss/);
+  it('provides the six at-a-glance facts a decision-maker needs', () => {
+    const g = workshopContent.atAGlance;
+    expect(g.duration).toMatch(/90 Minuten/);
+    expect(g.price).toMatch(/99 €/);
+    expect(g.capacity).toMatch(/5 Plätze/);
+    expect(g.preWork).toMatch(/Pre-Work/);
+    expect(g.payment).toMatch(/keine Kreditkarte/);
   });
 
   it('promises two outcome artefacts (Rechnung + Roadmap)', () => {
     expect(workshopContent.outcome.artefacts).toHaveLength(2);
-    expect(workshopContent.outcome.artefacts[0]).toMatch(/Souveränitäts-Rechnung/);
-    expect(workshopContent.outcome.artefacts[1]).toMatch(/90-Tage-Roadmap/);
+    expect(workshopContent.outcome.artefacts[0].name).toMatch(/Souveränitäts-Rechnung/);
+    expect(workshopContent.outcome.artefacts[1].name).toMatch(/90-Tage-Roadmap/);
   });
 
-  it('provides the demarcation block from the vault copy', () => {
-    expect(workshopContent.demarcation.heading).toMatch(/NICHT bekommst/);
-    expect(workshopContent.demarcation.body).toMatch(/Folienschlacht/);
-    expect(workshopContent.demarcation.body).toMatch(/Cloud bleibt für uns richtig/);
+  it('lists exactly five agenda blocks as short fragments', () => {
+    const { blocks } = workshopContent.agenda;
+    expect(blocks).toHaveLength(5);
+    expect(blocks[0].name).toMatch(/Lage/);
+    expect(blocks[4].name).toMatch(/Abschluss/);
+    // Each block is a fragment, not a sentence — max 10 words.
+    for (const b of blocks) {
+      expect(wc(b.content)).toBeLessThanOrEqual(10);
+    }
   });
 
-  it('provides the framework block with termin, price, capacity, pre-work, recording, pilot clause', () => {
-    const { framework } = workshopContent;
-    expect(framework.priceLabel).toMatch(/99/);
-    expect(framework.capacityLabel).toMatch(/5 Unternehmen/);
-    expect(framework.preWorkLabel).toMatch(/Vorbereitung/);
-    expect(framework.recordingLabel).toMatch(/Aufzeichnung/);
-    expect(framework.pilotClause).toMatch(/ab 3/);
+  it('marks the two agenda blocks that produce the artefacts', () => {
+    const withResults = workshopContent.agenda.blocks.filter((b) => b.result);
+    expect(withResults.map((b) => b.result)).toContain('Deine Rechnung');
+    expect(withResults.map((b) => b.result)).toContain('Deine Roadmap');
+  });
+
+  it('provides the demarcation as scannable bullets plus one Kante line', () => {
+    const { demarcation } = workshopContent;
+    expect(demarcation.heading).toMatch(/NICHT bekommst/);
+    expect(demarcation.bullets).toHaveLength(3);
+    expect(demarcation.bullets.join(' ')).toMatch(/Folienschlacht/);
+    expect(demarcation.kante).toMatch(/Cloud bleibt für uns richtig/);
+  });
+
+  it('keeps the framework to the fine print not already in the at-a-glance box', () => {
+    const labels = workshopContent.framework.items.map((i) => i.label);
+    expect(labels).toEqual(['Aufzeichnung', 'Ablauf', 'Pilot']);
   });
 
   it('provides the newsletter consent text from the vault copy', () => {
@@ -46,12 +67,25 @@ describe('workshop content module', () => {
     expect(workshopContent.consent.newsletter).toMatch(/Abmeldung/);
   });
 
-  it('provides the storno/verschiebe conditions for the legal block', () => {
+  it('provides the storno conditions and links to the privacy page', () => {
     expect(workshopContent.legal.stornoConditions).toMatch(/Verschiebung/);
     expect(workshopContent.legal.stornoConditions).toMatch(/storniere/);
+    expect(workshopContent.legal.privacyHref).toBe('/datenschutz');
   });
 
-  it('references the privacy page from the legal block', () => {
-    expect(workshopContent.legal.privacyHref).toBe('/datenschutz');
+  it('stays within the Content-Leitfaden norm of 200–300 words', () => {
+    const c = workshopContent;
+    const g = c.atAGlance;
+    const total =
+      wc(c.hero.intro) +
+      [g.duration, g.price, g.capacity, g.preWork, g.payment].reduce((n, s) => n + wc(s), 0) +
+      c.outcome.artefacts.reduce((n, a) => n + wc(a.name) + wc(a.body), 0) +
+      c.agenda.blocks.reduce((n, b) => n + wc(b.content) + (b.result ? wc(b.result) : 0), 0) +
+      c.demarcation.bullets.reduce((n, b) => n + wc(b), 0) +
+      wc(c.demarcation.kante) +
+      c.framework.items.reduce((n, i) => n + wc(i.label) + wc(i.value), 0) +
+      wc(c.consent.newsletter) +
+      wc(c.legal.stornoConditions);
+    expect(total).toBeLessThanOrEqual(300);
   });
 });

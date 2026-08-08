@@ -9,6 +9,7 @@ import {
   workshops,
   type NewWorkshopSubmission,
   type WorkshopSubmission,
+  type Workshop,
 } from "@/db/schema";
 
 /** Insert a new workshop submission (status defaults to 'reserved'). */

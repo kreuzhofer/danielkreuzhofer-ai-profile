@@ -1,10 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import {
   WorkshopHero,
-  WorkshopAgenda,
+  WorkshopAtAGlance,
   WorkshopOutcome,
-  WorkshopFramework,
+  WorkshopAgenda,
   WorkshopDemarcation,
+  WorkshopFramework,
   WorkshopLegal,
   WorkshopFormPlaceholder,
 } from './WorkshopSections';
@@ -34,61 +35,77 @@ function workshopFixture(overrides: Partial<Workshop> = {}): Workshop {
 
 describe('WorkshopHero', () => {
   it('renders the headline and brand eyebrow', () => {
-    render(<WorkshopHero workshop={null} />);
+    render(<WorkshopHero />);
     expect(screen.getByRole('heading', { level: 1, name: /KI-Souveränität/ })).toBeInTheDocument();
     expect(screen.getByText('KI-Coaching mit Kante')).toBeInTheDocument();
   });
 
-  it('renders the intro text from the vault copy', () => {
-    render(<WorkshopHero workshop={null} />);
+  it('renders the Kante intro', () => {
+    render(<WorkshopHero />);
     expect(screen.getByText(/Bauchgefühl/)).toBeInTheDocument();
+  });
+});
+
+describe('WorkshopAtAGlance', () => {
+  it('shows the placeholder termin when termin is null', () => {
+    render(<WorkshopAtAGlance workshop={workshopFixture({ termin: null })} />);
+    expect(screen.getByText(/Termin wird noch festgelegt/)).toBeInTheDocument();
+  });
+
+  it('shows a formatted termin when set', () => {
+    render(<WorkshopAtAGlance workshop={workshopFixture({ termin: new Date('2026-10-23T10:00:00Z') })} />);
+    expect(screen.getByText(/23/)).toBeInTheDocument();
+    expect(screen.getByText(/Okt/)).toBeInTheDocument();
+  });
+
+  it('shows price, capacity, pre-work and payment facts', () => {
+    render(<WorkshopAtAGlance workshop={workshopFixture()} />);
+    expect(screen.getByText(/99 € netto/)).toBeInTheDocument();
+    expect(screen.getByText(/5 Plätze/)).toBeInTheDocument();
+    expect(screen.getByText(/Pre-Work/)).toBeInTheDocument();
+    expect(screen.getByText(/keine Kreditkarte/)).toBeInTheDocument();
+  });
+});
+
+describe('WorkshopOutcome', () => {
+  it('renders two artefact cards', () => {
+    render(<WorkshopOutcome />);
+    expect(screen.getByText('Souveränitäts-Rechnung')).toBeInTheDocument();
+    expect(screen.getByText('90-Tage-Roadmap')).toBeInTheDocument();
+    expect(screen.getByText(/vorstandstauglich/)).toBeInTheDocument();
   });
 });
 
 describe('WorkshopAgenda', () => {
   it('renders five agenda blocks', () => {
     render(<WorkshopAgenda />);
-    expect(screen.getByText(/1\. Lage/)).toBeInTheDocument();
-    expect(screen.getByText(/5\. Abschluss/)).toBeInTheDocument();
-  });
-});
-
-describe('WorkshopOutcome', () => {
-  it('renders two artefact promises', () => {
-    render(<WorkshopOutcome />);
-    expect(screen.getByText(/Souveränitäts-Rechnung/)).toBeInTheDocument();
-    expect(screen.getByText(/90-Tage-Roadmap/)).toBeInTheDocument();
-  });
-});
-
-describe('WorkshopFramework', () => {
-  it('shows the placeholder termin when termin is null', () => {
-    render(<WorkshopFramework workshop={workshopFixture({ termin: null })} />);
-    expect(screen.getByText(/Termin wird noch festgelegt/)).toBeInTheDocument();
+    expect(screen.getByText(/1 · Lage/)).toBeInTheDocument();
+    expect(screen.getByText(/5 · Abschluss/)).toBeInTheDocument();
   });
 
-  it('shows a formatted termin when set', () => {
-    render(<WorkshopFramework workshop={workshopFixture({ termin: new Date('2026-10-23T10:00:00Z') })} />);
-    expect(screen.getByText(/23/)).toBeInTheDocument();
-    expect(screen.getByText(/Okt/)).toBeInTheDocument();
-  });
-
-  it('shows the price label with 99 €', () => {
-    render(<WorkshopFramework workshop={workshopFixture()} />);
-    expect(screen.getByText(/99 € netto/)).toBeInTheDocument();
-  });
-
-  it('shows the pilot clause (ab 3)', () => {
-    render(<WorkshopFramework workshop={workshopFixture()} />);
-    expect(screen.getByText(/ab 3 angemeldeten/)).toBeInTheDocument();
+  it('marks the blocks that produce the artefacts', () => {
+    render(<WorkshopAgenda />);
+    expect(screen.getByText(/→ Deine Rechnung/)).toBeInTheDocument();
+    expect(screen.getByText(/→ Deine Roadmap/)).toBeInTheDocument();
   });
 });
 
 describe('WorkshopDemarcation', () => {
-  it('renders the demarcation heading and body', () => {
+  it('renders the three demarcation bullets and the Kante line', () => {
     render(<WorkshopDemarcation />);
     expect(screen.getByRole('heading', { name: /NICHT bekommst/ })).toBeInTheDocument();
-    expect(screen.getByText(/Folienschlacht/)).toBeInTheDocument();
+    expect(screen.getByText('Keine Folienschlacht')).toBeInTheDocument();
+    expect(screen.getByText(/Cloud bleibt für uns richtig/)).toBeInTheDocument();
+  });
+});
+
+describe('WorkshopFramework', () => {
+  it('renders the three fine-print items', () => {
+    render(<WorkshopFramework />);
+    expect(screen.getByText('Aufzeichnung')).toBeInTheDocument();
+    expect(screen.getByText('Ablauf')).toBeInTheDocument();
+    expect(screen.getByText('Pilot')).toBeInTheDocument();
+    expect(screen.getByText(/Läuft ab 3 Firmen/)).toBeInTheDocument();
   });
 });
 
@@ -96,25 +113,13 @@ describe('WorkshopLegal', () => {
   it('renders storno conditions and links to the privacy page', () => {
     render(<WorkshopLegal />);
     expect(screen.getByText(/Verschiebung/)).toBeInTheDocument();
-    const link = screen.getByRole('link', { name: /Datenschutzerklärung/ });
-    expect(link).toHaveAttribute('href', '/datenschutz');
+    expect(screen.getByRole('link', { name: /Datenschutzerklärung/ })).toHaveAttribute('href', '/datenschutz');
   });
 });
 
 describe('WorkshopFormPlaceholder', () => {
-  it('shows the not-bookable placeholder when bookable is false', () => {
-    render(<WorkshopFormPlaceholder bookable={false} />);
-    expect(screen.getByText(/Termin wird noch festgelegt/)).toBeInTheDocument();
-  });
-
-  it('shows the form section heading when bookable', () => {
-    render(<WorkshopFormPlaceholder bookable={true} />);
-    expect(screen.getByRole('heading', { name: /Platz reservieren/ })).toBeInTheDocument();
-  });
-
-  it('shows the newsletter consent text when bookable', () => {
-    render(<WorkshopFormPlaceholder bookable={true} />);
-    expect(screen.getByText(/E-Mail-Adresse/)).toBeInTheDocument();
-    expect(screen.getByText(/Abmeldung/)).toBeInTheDocument();
+  it('shows the not-bookable placeholder', () => {
+    render(<WorkshopFormPlaceholder />);
+    expect(screen.getByText(/Anmeldung aktuell nicht möglich/)).toBeInTheDocument();
   });
 });

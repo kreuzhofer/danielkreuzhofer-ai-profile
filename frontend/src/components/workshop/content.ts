@@ -10,98 +10,89 @@ export interface AgendaBlock {
   /** Block number, 1-based. */
   n: number;
   name: string;
+  /** Duration only, e.g. "15 Min". */
   time: string;
+  /** Short fragment — not a sentence. */
   content: string;
-  result: string;
+  /** The artefact this block produces, or null if it produces no artefact. */
+  result: string | null;
 }
 
+/**
+ * Landingpage copy. Deliberately terse: the Content-Leitfaden norm is
+ * 200–300 words ("Kurze Formeln statt Romane"). Workshop *teaching* content
+ * (Nadella-Paradox, Fable-5, CLOUD Act) belongs in the workshop, not here —
+ * this page sells the decision to attend, not the subject matter.
+ */
 export const workshopContent = {
   hero: {
     eyebrow: 'KI-Coaching mit Kante',
     headline: 'KI-Souveränität im Mittelstand: Deine Rechnung, deine Roadmap',
-    intro: `Wie abhängig ist Dein Unternehmen bei KI, und ist Dir das recht? Zu dieser Frage gibt es heute zwei Sorten Antworten: Bauchgefühl oder Anbieter-Folien. Beides ist keine Entscheidungsgrundlage.
+    intro: `Wie abhängig ist Dein Unternehmen bei KI — und ist Dir das recht?
 
-In 90 Minuten machst Du aus der Glaubensfrage eine Rechnung. Live, online, mit Deinen Zahlen. Ich führe Dich Schritt für Schritt durch den Prozess, den ich für mein eigenes Setup durchgerechnet habe: erst Deine KI-Anwendungsfälle und Datenklassen, dann die Kosten der drei Wege (gehostete offene Modelle, Premium-Cloud, eigene Hardware), dann die Entscheidung entlang von vier Dimensionen: Daten, Zugriff, Kosten, Qualität.
+Darauf gibt es zwei Antworten: Bauchgefühl oder Anbieter-Folien. Beides trägt keine Entscheidung.
 
-Du gehst raus mit zwei Dingen, die es vorher in Deinem Unternehmen nicht gab: Deiner Souveränitäts-Rechnung und Deiner 90-Tage-Roadmap. Alle Vorlagen und das Rechen-Sheet bleiben bei Dir. Die restlichen Anwendungsfälle rechnest Du danach selbst durch, das Vorgehen ist identisch.`,
+In 90 Minuten machst Du daraus eine Rechnung. Mit Deinen Zahlen.`,
   },
 
-  agenda: {
-    eyebrow: 'Agenda',
-    heading: '90 Minuten, geführte Arbeits-Session',
-    blocks: [
-      {
-        n: 1,
-        name: 'Lage',
-        time: '0:00–0:15',
-        content:
-          'Problem framen: das Nadella-Paradox, der Fable-5-Fall, die eine Kernfrage („wer kann rechtlich zugreifen, egal wo das RZ steht?"), die drei Fragen aus Video #13; Ablauf + Werkzeuge zeigen.',
-        result: 'Gemeinsames Raster',
-      },
-      {
-        n: 2,
-        name: 'Finden',
-        time: '0:15–0:35',
-        content:
-          'Workload-Karte: ich zeige meine, Teilnehmer tragen ihre Top-3-Workloads ein + Daten-Ampel; den wichtigsten markieren.',
-        result: 'Workload-Karte (Top 3)',
-      },
-      {
-        n: 3,
-        name: 'Messen',
-        time: '0:35–1:05',
-        content:
-          'Rechen-Sheet: ich rechne meinen Fall vor, dann rechnet jeder seinen Kern-Workload durch (Volumina aus dem Pre-Work), Fragen jederzeit.',
-        result: 'Die eigene Rechnung (Kern-Workload)',
-      },
-      {
-        n: 4,
-        name: 'Entscheiden',
-        time: '1:05–1:25',
-        content:
-          'Entscheidungsbaum anwenden (bleibt beim US-Anbieter / EU-Host / lokal / erst messen) entlang der vier Dimensionen: Datenklasse (DSGVO) · territorialer Zugriff (US-Jurisdiktion, CLOUD Act) · Kosten · Qualität. 3 Maßnahmen mit Verantwortlichem notieren.',
-        result: 'Die 90-Tage-Roadmap',
-      },
-      {
-        n: 5,
-        name: 'Abschluss',
-        time: '1:25–1:30',
-        content:
-          'Wie du zu Hause die restlichen Workloads durchrechnest (gleiche Vorlagen); wer seine Rechnung individuell durchsprechen will: begleitete Umsetzung (ein Satz, kein Pitch-Block).',
-        result: 'Verbindlichkeit',
-      },
-    ] as AgendaBlock[],
+  /** The five facts a Geschäftsführer needs in five seconds. Termin is injected from the DB. */
+  atAGlance: {
+    heading: 'Auf einen Blick',
+    duration: '90 Minuten · live online',
+    price: '99 € netto pro Unternehmen, bis 2 Personen',
+    capacity: '5 Plätze',
+    preWork: 'Pre-Work: 30 Minuten, Pflicht',
+    payment: 'Rechnung per Mail — keine Kreditkarte',
   },
 
   outcome: {
     eyebrow: 'Dein Ergebnis',
     heading: 'Zwei Artefakte, die es vorher nicht gab',
-    intro: 'Jedes Unternehmen verlässt den Workshop mit zwei fertigen Ergebnissen:',
     artefacts: [
-      'Deine Souveränitäts-Rechnung: Dein wichtigster KI-Anwendungsfall, durchgerechnet in Euro. Eine Seite, vorstandstauglich.',
-      'Deine 90-Tage-Roadmap: drei konkrete Maßnahmen, mit Verantwortlichem und Messpunkt.',
+      {
+        name: 'Souveränitäts-Rechnung',
+        body: 'Dein wichtigster KI-Fall in Euro. Eine Seite, vorstandstauglich.',
+      },
+      {
+        name: '90-Tage-Roadmap',
+        body: 'Drei Maßnahmen, mit Verantwortlichem und Messpunkt.',
+      },
     ],
   },
 
-  framework: {
-    eyebrow: 'Rahmen',
-    heading: 'Termin, Preis, Plätze',
-    /** Price label — the numeric value comes from the DB workshop entity. */
-    priceLabel: '99 € netto pro Unternehmen, bis zu 2 Personen (Entscheider + IT-Verantwortlicher)',
-    capacityLabel: 'nur 5 Unternehmen. Sind sie weg, kommst Du auf die Liste für die nächste Runde.',
-    bookingLabel:
-      'Ablauf nach Anmeldung: Du bekommst eine Rechnung von mir. Kein Zahlungsformular, keine Kreditkarte. Dein Platz ist fix, sobald die Rechnung bezahlt ist.',
-    preWorkLabel:
-      'Vorbereitung: Mit der Bestätigung bekommst Du ein kurzes Arbeitsblatt (30 Minuten). Ohne diese Vorbereitung kannst Du im Termin nicht mitrechnen, deshalb ist sie Pflicht.',
-    recordingLabel: 'Kannst Du am Termin nicht live dabei sein? Zahlende Teilnehmer bekommen die Aufzeichnung.',
-    pilotClause:
-      'Die erste Runde findet ab 3 angemeldeten Unternehmen statt. Falls verschoben wird, behältst Du Deinen Platz, oder ich storniere die Rechnung, wenn der neue Termin nicht passt.',
+  agenda: {
+    eyebrow: 'Ablauf',
+    heading: '90 Minuten, geführte Arbeits-Session',
+    blocks: [
+      { n: 1, name: 'Lage', time: '15 Min', content: 'Die eine Kernfrage. Gemeinsames Raster.', result: null },
+      { n: 2, name: 'Finden', time: '20 Min', content: 'Deine Top-3-Workloads, Daten-Ampel.', result: 'Workload-Karte' },
+      { n: 3, name: 'Messen', time: '30 Min', content: 'Drei Wege in Euro.', result: 'Deine Rechnung' },
+      { n: 4, name: 'Entscheiden', time: '20 Min', content: 'Bleibt / wechselt / wird gemessen.', result: 'Deine Roadmap' },
+      { n: 5, name: 'Abschluss', time: '5 Min', content: 'Wie Du den Rest selbst rechnest.', result: null },
+    ] as AgendaBlock[],
   },
 
   demarcation: {
     eyebrow: 'Abgrenzung',
-    heading: 'Damit Du weißt, was Du NICHT bekommst',
-    body: `Keine Folienschlacht, keine Server- oder Cloud-Verkaufsveranstaltung, keine Einzelfall-Beratung. Ich führe durch den Prozess, gerechnet wird mit Deinen Zahlen. Ich habe eigene KI-Hardware im Büro UND bezahle Cloud-Anbieter, ich habe in dieser Frage nichts zu verkaufen außer der Rechnung selbst. Und ein ehrliches Ergebnis ist ausdrücklich möglich: „Cloud bleibt für uns richtig" ist ein valides Resultat.`,
+    heading: 'Was Du NICHT bekommst',
+    bullets: [
+      'Keine Folienschlacht',
+      'Kein Server- oder Cloud-Verkauf',
+      'Keine Einzelfall-Beratung',
+    ],
+    kante:
+      'Ich habe eigene KI-Hardware und bezahle Cloud-Anbieter. Ich verkaufe hier nichts außer der Rechnung. „Cloud bleibt für uns richtig" ist ein valides Ergebnis.',
+  },
+
+  /** Details that did not fit the at-a-glance box. */
+  framework: {
+    eyebrow: 'Rahmen',
+    heading: 'Das Kleingedruckte',
+    items: [
+      { label: 'Aufzeichnung', value: 'Zahlende Teilnehmer bekommen sie.' },
+      { label: 'Ablauf', value: 'Rechnung per Mail. Platz ist fix nach Zahlung.' },
+      { label: 'Pilot', value: 'Läuft ab 3 Firmen. Verschoben? Platz bleibt oder Rechnung storniert.' },
+    ],
   },
 
   consent: {

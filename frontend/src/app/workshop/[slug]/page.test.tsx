@@ -31,8 +31,8 @@ describe('WorkshopPage (/workshop/ki-souveraenitaet)', () => {
     const html = await WorkshopPage({ params });
     render(html);
     expect(screen.getByRole('heading', { level: 1, name: /KI-Souveränität/ })).toBeInTheDocument();
-    expect(screen.getByText(/1\. Lage/)).toBeInTheDocument();
-    expect(screen.getByText(/Souveränitäts-Rechnung.*vorstandstauglich/)).toBeInTheDocument();
+    expect(screen.getByText(/1 · Lage/)).toBeInTheDocument();
+    expect(screen.getByText('Souveränitäts-Rechnung')).toBeInTheDocument();
     expect(screen.getByText(/99 € netto/)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /NICHT bekommst/ })).toBeInTheDocument();
   });
