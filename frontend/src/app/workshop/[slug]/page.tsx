@@ -7,6 +7,7 @@ import {
   WorkshopOutcome,
   WorkshopAgenda,
   WorkshopDemarcation,
+  WorkshopAuthority,
   WorkshopFramework,
   WorkshopLegal,
   WorkshopFormPlaceholder,
@@ -59,6 +60,7 @@ export default async function WorkshopPage({
       <WorkshopOutcome />
       <WorkshopAgenda />
       <WorkshopDemarcation />
+      <WorkshopAuthority />
       <WorkshopFramework />
       {bookable ? <WorkshopForm slug={slug} /> : <WorkshopFormPlaceholder />}
       <WorkshopLegal />

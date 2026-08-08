@@ -38,6 +38,9 @@ export function WorkshopHero() {
         <p className="text-base md:text-lg text-[var(--foreground-muted)] max-w-2xl mx-auto whitespace-pre-line">
           {hero.intro}
         </p>
+        <p className="mt-5 text-sm font-semibold text-[var(--secondary-400)] max-w-2xl mx-auto">
+          {hero.urgency}
+        </p>
       </div>
     </section>
   );
@@ -153,6 +156,28 @@ export function WorkshopDemarcation() {
           ))}
         </ul>
         <p className="text-[var(--foreground-muted)] text-base">{demarcation.kante}</p>
+      </div>
+    </section>
+  );
+}
+
+export function WorkshopAuthority() {
+  const { authority } = workshopContent;
+  return (
+    <section id="beweis" aria-label={authority.heading} className="py-10 md:py-14">
+      <div className="max-w-3xl mx-auto">
+        <p className="text-xs font-bold tracking-[0.18em] uppercase mb-3 text-[var(--secondary-400)]">
+          {authority.eyebrow}
+        </p>
+        <h2 className="heading-section text-2xl md:text-3xl text-[var(--foreground)] mb-4">
+          {authority.heading}
+        </h2>
+        <blockquote className="border-l-2 border-[var(--secondary-400)] pl-4">
+          <p className="text-[var(--foreground)] text-lg font-semibold">{authority.body}</p>
+          <footer className="mt-2 text-[var(--foreground-muted)] text-sm">
+            — {authority.source}
+          </footer>
+        </blockquote>
       </div>
     </section>
   );

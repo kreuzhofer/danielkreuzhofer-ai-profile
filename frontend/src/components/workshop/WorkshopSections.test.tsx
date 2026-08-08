@@ -5,6 +5,7 @@ import {
   WorkshopOutcome,
   WorkshopAgenda,
   WorkshopDemarcation,
+  WorkshopAuthority,
   WorkshopFramework,
   WorkshopLegal,
   WorkshopFormPlaceholder,
@@ -43,6 +44,12 @@ describe('WorkshopHero', () => {
   it('renders the Kante intro', () => {
     render(<WorkshopHero />);
     expect(screen.getByText(/Bauchgefühl/)).toBeInTheDocument();
+  });
+
+  it('renders the Fable-5 urgency anchor', () => {
+    render(<WorkshopHero />);
+    expect(screen.getByText(/Fable-5/)).toBeInTheDocument();
+    expect(screen.getByText(/US-Exportkontrolle/)).toBeInTheDocument();
   });
 });
 
@@ -96,6 +103,15 @@ describe('WorkshopDemarcation', () => {
     expect(screen.getByRole('heading', { name: /NICHT bekommst/ })).toBeInTheDocument();
     expect(screen.getByText('Keine Folienschlacht')).toBeInTheDocument();
     expect(screen.getByText(/Cloud bleibt für uns richtig/)).toBeInTheDocument();
+  });
+});
+
+describe('WorkshopAuthority', () => {
+  it('renders the DSK quote with source attribution', () => {
+    render(<WorkshopAuthority />);
+    expect(screen.getByText(/EU-Rechenzentrum/)).toBeInTheDocument();
+    expect(screen.getByText(/keine Souveränität/)).toBeInTheDocument();
+    expect(screen.getByText(/DSK-Kriterien/)).toBeInTheDocument();
   });
 });
 

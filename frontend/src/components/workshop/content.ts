@@ -21,8 +21,10 @@ export interface AgendaBlock {
 /**
  * Landingpage copy. Deliberately terse: the Content-Leitfaden norm is
  * 200–300 words ("Kurze Formeln statt Romane"). Workshop *teaching* content
- * (Nadella-Paradox, Fable-5, CLOUD Act) belongs in the workshop, not here —
- * this page sells the decision to attend, not the subject matter.
+ * (Nadella-Paradox, CLOUD Act details) belongs in the workshop, not here —
+ * this page sells the decision to attend, not the subject matter. The two
+ * exceptions are urgency and authority one-liners (Fable-5, DSK) that make
+ * the case *to attend*, without teaching the substance.
  */
 export const workshopContent = {
   hero: {
@@ -33,6 +35,8 @@ export const workshopContent = {
 Darauf gibt es zwei Antworten: Bauchgefühl oder Anbieter-Folien. Beides trägt keine Entscheidung.
 
 In 90 Minuten machst Du daraus eine Rechnung. Mit Deinen Zahlen.`,
+    /** One-line urgency anchor — the Fable-5 case makes this a Vorstandsfrage, not theory. */
+    urgency: 'Fable-5-Fall: Das beste Modell der Welt war drei Wochen vom Markt — per US-Exportkontrolle.',
   },
 
   /** The five facts a Geschäftsführer needs in five seconds. Termin is injected from the DB. */
@@ -82,6 +86,14 @@ In 90 Minuten machst Du daraus eine Rechnung. Mit Deinen Zahlen.`,
     ],
     kante:
       'Ich habe eigene KI-Hardware und bezahle Cloud-Anbieter. Ich verkaufe hier nichts außer der Rechnung. „Cloud bleibt für uns richtig" ist ein valides Ergebnis.',
+  },
+
+  /** External authority — the one argument Daniel does not make himself. */
+  authority: {
+    eyebrow: 'Beweis',
+    heading: 'Die deutsche Aufsicht sagt es, nicht nur ich',
+    body: 'EU-Rechenzentrum plus Vertragszusage ist keine Souveränität. Genau das rechnen wir aus.',
+    source: 'DSK-Kriterien 2.6 / 2.4',
   },
 
   /** Details that did not fit the at-a-glance box. */

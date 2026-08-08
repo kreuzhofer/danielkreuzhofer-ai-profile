@@ -17,6 +17,14 @@ describe('workshop content module', () => {
     expect(wc(workshopContent.hero.intro)).toBeLessThanOrEqual(50);
   });
 
+  it('adds the Fable-5 urgency anchor — one line, not the teaching', () => {
+    const { urgency } = workshopContent.hero;
+    expect(urgency).toMatch(/Fable-5/);
+    expect(urgency).toMatch(/US-Exportkontrolle/);
+    // Urgency is a single line — max 20 words.
+    expect(wc(urgency)).toBeLessThanOrEqual(20);
+  });
+
   it('provides the six at-a-glance facts a decision-maker needs', () => {
     const g = workshopContent.atAGlance;
     expect(g.duration).toMatch(/90 Minuten/);
@@ -57,6 +65,15 @@ describe('workshop content module', () => {
     expect(demarcation.kante).toMatch(/Cloud bleibt für uns richtig/);
   });
 
+  it('provides the DSK authority argument — external proof, not Daniels opinion', () => {
+    const { authority } = workshopContent;
+    expect(authority.body).toMatch(/EU-Rechenzentrum/);
+    expect(authority.body).toMatch(/keine Souveränität/);
+    expect(authority.source).toMatch(/DSK/);
+    // Authority stays terse — max 25 words.
+    expect(wc(authority.body)).toBeLessThanOrEqual(25);
+  });
+
   it('keeps the framework to the fine print not already in the at-a-glance box', () => {
     const labels = workshopContent.framework.items.map((i) => i.label);
     expect(labels).toEqual(['Aufzeichnung', 'Ablauf', 'Pilot']);
@@ -78,11 +95,14 @@ describe('workshop content module', () => {
     const g = c.atAGlance;
     const total =
       wc(c.hero.intro) +
+      wc(c.hero.urgency) +
       [g.duration, g.price, g.capacity, g.preWork, g.payment].reduce((n, s) => n + wc(s), 0) +
       c.outcome.artefacts.reduce((n, a) => n + wc(a.name) + wc(a.body), 0) +
       c.agenda.blocks.reduce((n, b) => n + wc(b.content) + (b.result ? wc(b.result) : 0), 0) +
       c.demarcation.bullets.reduce((n, b) => n + wc(b), 0) +
       wc(c.demarcation.kante) +
+      wc(c.authority.body) +
+      wc(c.authority.source) +
       c.framework.items.reduce((n, i) => n + wc(i.label) + wc(i.value), 0) +
       wc(c.consent.newsletter) +
       wc(c.legal.stornoConditions);

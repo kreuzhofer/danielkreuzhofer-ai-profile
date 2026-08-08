@@ -35,6 +35,8 @@ describe('WorkshopPage (/workshop/ki-souveraenitaet)', () => {
     expect(screen.getByText('Souveränitäts-Rechnung')).toBeInTheDocument();
     expect(screen.getByText(/99 € netto/)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /NICHT bekommst/ })).toBeInTheDocument();
+    expect(screen.getByText(/Fable-5/)).toBeInTheDocument();
+    expect(screen.getByText(/DSK-Kriterien/)).toBeInTheDocument();
   });
 
   it('shows the not-bookable placeholder when termin is null', async () => {
