@@ -18,8 +18,18 @@ Thumbs.db
 .DS_Store
 .DS_Store
 
-# Claude Code local settings (keep skills tracked)
+# Claude Code local settings
 .claude/settings.local.json
+
+# Personal workflow skills (symlinked from .agents/, not project-specific).
+# Project skills in .claude/skills/ that are real directories (e.g. build-and-deploy)
+# stay tracked — gitignore never untracks already-tracked files.
+.agents/
+skills-lock.json
+.claude/skills/*
+# Keep real project skill directories trackable (force-add new ones with -f)
+!/.claude/skills/build-and-deploy/
+.claude/retros/
 
 # Playwright MCP test artifacts
 .playwright-mcp/
