@@ -20,7 +20,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 describe('Layout Component', () => {
   describe('Semantic HTML Structure', () => {
-    it('renders header, main, and footer landmarks', () => {
+    it('renders header and main landmarks', () => {
       render(
         <Layout>
           <div>Test content</div>
@@ -30,7 +30,7 @@ describe('Layout Component', () => {
       // Check for semantic landmarks
       expect(screen.getByRole('banner')).toBeInTheDocument(); // header
       expect(screen.getByRole('main')).toBeInTheDocument(); // main
-      expect(screen.getByRole('contentinfo')).toBeInTheDocument(); // footer
+      // Footer is provided by the root layout's <Footer />, not by Layout
     });
 
     it('renders children within main content area', () => {
@@ -56,11 +56,9 @@ describe('Layout Component', () => {
       // Verify explicit roles are set
       const header = screen.getByRole('banner');
       const main = screen.getByRole('main');
-      const footer = screen.getByRole('contentinfo');
 
       expect(header).toHaveAttribute('role', 'banner');
       expect(main).toHaveAttribute('role', 'main');
-      expect(footer).toHaveAttribute('role', 'contentinfo');
     });
   });
 
@@ -140,17 +138,6 @@ describe('Layout Component', () => {
       const mainNav = screen.getByRole('navigation', { name: 'Main navigation' });
       expect(mainNav).toBeInTheDocument();
     });
-
-    it('renders footer navigation with proper aria-label', () => {
-      render(
-        <Layout>
-          <div>Content</div>
-        </Layout>
-      );
-
-      const footerNav = screen.getByRole('navigation', { name: 'Footer navigation' });
-      expect(footerNav).toBeInTheDocument();
-    });
   });
 
   describe('Responsive Container', () => {
@@ -175,18 +162,6 @@ describe('Layout Component', () => {
 
       const main = screen.getByRole('main');
       const container = main.querySelector('.container');
-      expect(container).toBeInTheDocument();
-    });
-
-    it('applies container class to footer content', () => {
-      render(
-        <Layout>
-          <div>Content</div>
-        </Layout>
-      );
-
-      const footer = screen.getByRole('contentinfo');
-      const container = footer.querySelector('.container');
       expect(container).toBeInTheDocument();
     });
   });
@@ -227,19 +202,6 @@ describe('Layout Component', () => {
     });
   });
 
-  describe('Footer Structure', () => {
-    it('renders copyright text', () => {
-      render(
-        <Layout>
-          <div>Content</div>
-        </Layout>
-      );
-
-      const currentYear = new Date().getFullYear();
-      expect(screen.getByText(new RegExp(`© ${currentYear}`))).toBeInTheDocument();
-    });
-  });
-
   describe('Accessibility', () => {
     it('has no duplicate landmark roles', () => {
       render(
@@ -251,7 +213,6 @@ describe('Layout Component', () => {
       // Should have exactly one of each main landmark
       expect(screen.getAllByRole('banner')).toHaveLength(1);
       expect(screen.getAllByRole('main')).toHaveLength(1);
-      expect(screen.getAllByRole('contentinfo')).toHaveLength(1);
     });
 
     it('main content has focus outline removed for visual cleanliness', () => {

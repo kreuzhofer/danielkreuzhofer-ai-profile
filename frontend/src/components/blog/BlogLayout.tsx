@@ -99,20 +99,6 @@ export function BlogLayout({ children, currentSection = 'blog' }: BlogLayoutProp
           {children}
         </div>
       </main>
-
-      <footer
-        role="contentinfo"
-        className="border-t border-[var(--border)] bg-[var(--background)]"
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <p className="text-sm text-[var(--foreground-muted)]">
-              &copy; {new Date().getFullYear()} Daniel Kreuzhofer. All rights reserved.
-            </p>
-            <nav aria-label="Footer navigation" className="flex gap-4" />
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

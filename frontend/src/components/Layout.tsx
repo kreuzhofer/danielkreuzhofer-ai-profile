@@ -27,7 +27,7 @@ const SECTION_IDS = DEFAULT_SECTIONS
  * 
  * Features:
  * - Skip link for keyboard navigation (WCAG 2.1 AA - Requirement 7.5)
- * - Semantic HTML landmarks (header, main, footer)
+ * - Semantic HTML landmarks (header, main; footer via root layout's Footer)
  * - Responsive container with Tailwind
  * - Proper heading hierarchy support (Requirement 7.4)
  * - Mobile navigation with hamburger menu (Requirement 1.3)
@@ -159,26 +159,6 @@ export function Layout({ children, initialSection = 'about', onSectionChange }: 
           {children}
         </div>
       </main>
-
-      {/* Footer landmark */}
-      <footer
-        role="contentinfo"
-        className="border-t border-[var(--border)] bg-[var(--background)]"
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            {/* Copyright and attribution */}
-            <p className="text-sm text-[var(--foreground-muted)]">
-              © {new Date().getFullYear()} Daniel Kreuzhofer. All rights reserved.
-            </p>
-
-            {/* Footer navigation/links */}
-            <nav aria-label="Footer navigation" className="flex gap-4">
-              {/* Footer links will be added as needed */}
-            </nav>
-          </div>
-        </div>
-      </footer>
 
     </div>
   );
