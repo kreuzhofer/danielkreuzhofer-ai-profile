@@ -106,9 +106,6 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
-
-      await user.tab();
       expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
       await user.tab();
@@ -146,12 +143,12 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       // Route links are keyboard-activatable via their href; focus, press Enter
       // (must not throw — JSDOM can't perform the navigation itself), and confirm
       // the link remains a real, focusable anchor pointing at the route.
-      const coachingLink = screen.getByRole('link', { name: 'Coaching' });
-      coachingLink.focus();
-      expect(coachingLink).toHaveFocus();
+      const aboutLink = screen.getByRole('link', { name: 'Über mich' });
+      aboutLink.focus();
+      expect(aboutLink).toHaveFocus();
       await user.keyboard('{Enter}');
-      expect(coachingLink).toHaveFocus();
-      expect(coachingLink).toHaveAttribute('href', '/coaching');
+      expect(aboutLink).toHaveFocus();
+      expect(aboutLink).toHaveAttribute('href', '/about');
     });
   });
 
@@ -378,7 +375,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
 
       // Tab through remaining links
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
     });
 
     it('mobile menu links have visible focus indicators', () => {
@@ -498,12 +495,9 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       await user.tab();
       expect(screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to homepage' })).toHaveFocus();
 
-      // 3-6. Navigation route links (Start, Coaching, Über mich, Blog)
+      // 3-5. Navigation route links (Start, Über mich, Blog)
       await user.tab();
       expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
 
       await user.tab();
       expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();

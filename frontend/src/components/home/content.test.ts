@@ -1,4 +1,4 @@
-import { FEATURED_VIDEOS, YOUTUBE_CHANNEL_URL, ENGPASS_HREF, COACHING_HREF, homeContent } from './content';
+import { FEATURED_VIDEOS, YOUTUBE_CHANNEL_URL, ENGPASS_HREF, homeContent } from './content';
 
 describe('home content module', () => {
   it('features the latest channel videos and links the channel', () => {
@@ -10,6 +10,5 @@ describe('home content module', () => {
   it('makes the micro-magnet the hero primary CTA (not a sales call)', () => {
     expect(homeContent.hero.primaryHref).toBe('/engpass-check');
     expect(ENGPASS_HREF).toBe('/engpass-check');
-    expect(COACHING_HREF).toBe('/coaching');
   });
 });

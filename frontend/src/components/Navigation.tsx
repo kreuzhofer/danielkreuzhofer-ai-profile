@@ -457,7 +457,6 @@ export interface NavigationProps {
  */
 export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
   { href: '/', label: 'Start' },
-  { href: '/coaching', label: 'Coaching' },
   { href: '/about', label: 'Über mich' },
   { href: '/blog', label: 'Blog' },
 ];

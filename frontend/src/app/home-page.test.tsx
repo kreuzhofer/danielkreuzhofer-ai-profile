@@ -18,9 +18,9 @@ describe('Home (top-of-funnel content entry)', () => {
     expect(screen.queryByText(/Erstgespräch/)).not.toBeInTheDocument();
   });
 
-  it('promotes content (videos) and softly points warm leads to /coaching', async () => {
+  it('promotes content (videos) and no longer pushes the removed coaching offer', async () => {
     render(await Home());
     expect(screen.getByRole('heading', { name: /Neueste Videos/ })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Coaching ansehen/ })).toHaveAttribute('href', '/coaching');
+    expect(screen.queryByRole('link', { name: /Coaching ansehen/ })).not.toBeInTheDocument();
   });
 });

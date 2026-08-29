@@ -131,9 +131,9 @@ describe('Navigation Component', () => {
         />
       );
 
-      expect(screen.getByRole('link', { name: 'Coaching' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Start' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Über mich' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Blog' })).toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'Coaching' })).not.toBeInTheDocument();
       expect(screen.queryByRole('link', { name: 'About' })).not.toBeInTheDocument();
       expect(screen.queryByRole('link', { name: 'Experience' })).not.toBeInTheDocument();
     });
@@ -254,7 +254,6 @@ describe('Navigation Component', () => {
       );
 
       expect(screen.getByRole('link', { name: 'Start' })).toHaveAttribute('href', '/');
-      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveAttribute('href', '/coaching');
       expect(screen.getByRole('link', { name: 'Über mich' })).toHaveAttribute('href', '/about');
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveAttribute('href', '/blog');
     });
@@ -302,9 +301,6 @@ describe('Navigation Component', () => {
       expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
-
-      await user.tab();
       expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
       await user.tab();
@@ -321,22 +317,21 @@ describe('DEFAULT_SECTIONS', () => {
     const sectionLabels = DEFAULT_SECTIONS.map(s => s.label);
 
     expect(sectionLabels).toContain('Start');
-    expect(sectionLabels).toContain('Coaching');
     expect(sectionLabels).toContain('Über mich');
     expect(sectionLabels).toContain('Blog');
+    expect(sectionLabels).not.toContain('Coaching');
   });
 
   it('has correct route hrefs', () => {
     const sectionHrefs = DEFAULT_SECTIONS.map(s => s.href);
 
     expect(sectionHrefs).toContain('/');
-    expect(sectionHrefs).toContain('/coaching');
     expect(sectionHrefs).toContain('/about');
     expect(sectionHrefs).toContain('/blog');
   });
 
-  it('has exactly 4 sections', () => {
-    expect(DEFAULT_SECTIONS).toHaveLength(4);
+  it('has exactly 3 sections', () => {
+    expect(DEFAULT_SECTIONS).toHaveLength(3);
   });
 
   it('contains Blog entry with /blog href', () => {
@@ -513,9 +508,10 @@ describe('MobileMenu Component', () => {
         />
       );
 
-      expect(screen.getByRole('link', { name: 'Coaching' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Start' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Über mich' })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Blog' })).toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'Coaching' })).not.toBeInTheDocument();
     });
 
     it('is hidden on desktop (md:hidden)', () => {
@@ -660,8 +656,8 @@ describe('MobileMenu Component', () => {
         />
       );
 
-      const coachingLink = screen.getByRole('link', { name: 'Coaching' });
-      await user.click(coachingLink);
+      const aboutLink = screen.getByRole('link', { name: 'Über mich' });
+      await user.click(aboutLink);
 
       expect(handleClose).toHaveBeenCalledTimes(1);
       expect(handleNavigate).not.toHaveBeenCalled();
@@ -784,9 +780,6 @@ describe('MobileMenu Component', () => {
       });
 
       // Tab through remaining navigation links and the micro-magnet CTA
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Coaching' })).toHaveFocus();
-
       await user.tab();
       expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 

@@ -1,7 +1,7 @@
 // src/components/home/content.ts
 // Top-of-funnel content homepage. The site's job here: promote Daniel's content
 // (YouTube/POV) and route visitors to the micro-magnet (Engpass-Check). NO sales
-// call CTA — the Erstgespräch lives on /coaching for warm leads only.
+// call CTA — the paid offer is no longer published on the site.
 
 export const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@DanielKreuzhofer';
 
@@ -27,7 +27,6 @@ export const youtubeThumb = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefa
 export const youtubeWatch = (id: string) => `https://www.youtube.com/watch?v=${id}`;
 
 export const ENGPASS_HREF = '/engpass-check';
-export const COACHING_HREF = '/coaching';
 export const ABOUT_HREF = '/about';
 export const BLOG_HREF = '/blog';
 
@@ -69,12 +68,5 @@ export const homeContent = {
     heading: 'Aus dem Blog',
     cta: 'Alle Artikel',
     href: BLOG_HREF,
-  },
-  coachingPointer: {
-    heading: 'Du willst KI in Deinem Bereich konkret umsetzen?',
-    body:
-      'Das 90-Tage-Pilot-System bringt Bereichsleitern im Mittelstand einen belastbaren ersten KI-Pilot — begleitet und messbar.',
-    cta: 'Coaching ansehen',
-    href: COACHING_HREF,
   },
 } as const;

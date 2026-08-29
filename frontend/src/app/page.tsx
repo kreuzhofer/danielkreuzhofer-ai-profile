@@ -6,7 +6,6 @@ import {
   MicroMagnetSection,
   BlogTeaser,
   AboutTeaser,
-  CoachingPointer,
 } from '@/components/home';
 import { getBlogPosts } from '@/lib/content';
 import { getLatestVideos } from '@/lib/youtube';
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
 /**
  * Home = top-of-funnel CONTENT entry point. Promotes Daniel's content (latest videos
  * fetched from the channel RSS) and routes visitors to the micro-magnet (Engpass-Check).
- * The offer + Erstgespräch live on /coaching for warm leads only.
+ * The paid offer is no longer published on the site.
  */
 export default async function Home() {
   const videos = await getLatestVideos(3);
@@ -41,7 +40,6 @@ export default async function Home() {
       <MicroMagnetSection />
       <BlogTeaser posts={posts} />
       <AboutTeaser />
-      <CoachingPointer />
     </Layout>
   );
 }
