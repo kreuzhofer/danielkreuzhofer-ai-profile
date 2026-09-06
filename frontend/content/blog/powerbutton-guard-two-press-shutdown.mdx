@@ -1,0 +1,361 @@
+---
+title: "I Kept Switching Off My Own Server. So I Took the Power Button Away From systemd."
+date: "2026-09-06"
+excerpt: "A flat wedge of a power button in the corner of a mini PC, a systemd default that shuts the machine down on one accidental touch, and the long-press setting that looks like the fix but loses a race against your own firmware. Includes the evdev daemon that replaced it, and the two bugs that only showed up on real hardware."
+tags:
+  - "linux"
+  - "systemd"
+  - "python"
+  - "evdev"
+  - "homelab"
+  - "open-source"
+slug: "powerbutton-guard-two-press-shutdown"
+headerImage: "/blog/powerbutton-guard-hero.png"
+---
+
+*A mini PC, a badly placed button, and the two bugs that turned out more interesting than the feature*
+
+---
+
+I run a small Linux box on my desk. It hosts my agents, so it is on all day, usually doing something useful while I am busy with something else.
+
+The case has a beautiful power button. It sits in the corner as a flat wedge, level with the edge, no ring around it to protect it, nothing standing above the surface. Great industrial design. Terrible position, if you talk with your hands.
+
+So I hit it. Not often, but often enough. A sleeve on the way to a cable. A coffee cup put down badly. Once leaning over to plug in a monitor.
+
+And then the box goes down. By default `systemd-logind` ships with `HandlePowerKey=poweroff`, so one short press starts a shutdown right away. No confirmation, no delay, nothing to cancel. Whatever the agents were doing is gone, and there is no way to take it back.
+
+## The setting that looks like the answer
+
+Since version 249, systemd offers this:
+
+```ini
+[Login]
+HandlePowerKey=ignore
+HandlePowerKeyLongPress=poweroff
+```
+
+Three lines, no daemon. It looks like the whole problem solved, and on some boards it is.
+
+I tried that first. It loses a race you cannot see.
+
+systemd's long press threshold is hardcoded at **5 seconds**. The ACPI override implemented in firmware is typically **4 seconds**. Hold the button and the firmware usually gets there first, cutting power directly instead of letting systemd run a clean shutdown. You asked for a safer button and got a harder off switch.
+
+Neither number is yours to tune. Five seconds lives in systemd's source, four lives in your board's firmware. If your board sits above five it works, and if it does not you find out the first time you need it.
+
+## What I needed instead
+
+I needed something that makes shutdowns via the power button more intentional, less error prone and reversible - this is what I landed on:
+
+- **One press** does nothing at all, except blink a keyboard LED so you know it registered. It arms for two seconds, then quietly disarms.
+- **Two presses** inside that window start a shutdown with a full minute of cancellable grace.
+- **A press during the countdown** cancels it. So does `shutdown -c` from any SSH session.
+
+A double press also sidesteps the firmware race completely, because it never asks the firmware to wait for anything.
+
+The rest of this post is how that works, and the two bugs that only showed up once real hardware was involved.
+
+## Handing the button over
+
+The drop in that takes logind out of the picture:
+
+```ini
+# /etc/systemd/logind.conf.d/10-powerbutton.conf
+[Login]
+HandlePowerKey=ignore
+HandlePowerKeyLongPress=ignore
+```
+
+Both are set to `ignore` on purpose. logind still opens the button device, it just never acts on the events. That leaves the device readable by anyone else who wants it.
+
+## Reading evdev without python-evdev
+
+Every input device on Linux surfaces as a character device under `/dev/input/event*`, emitting a fixed size C struct per event:
+
+```c
+struct input_event {
+    struct timeval time;   /* two longs: seconds, microseconds */
+    __u16 type;
+    __u16 code;
+    __s32 value;
+};
+```
+
+That maps onto one `struct` format string, and suddenly you need no third party package at all:
+
+```python
+import struct
+
+EVENT_FMT = 'llHHi'                       # time_t sec, suseconds_t usec, type, code, value
+EVENT_SIZE = struct.calcsize(EVENT_FMT)   # 24 on 64-bit
+EV_KEY, KEY_POWER = 0x01, 116
+```
+
+Reading is then a blocking read of exactly `EVENT_SIZE` bytes:
+
+```python
+data = fd.read(EVENT_SIZE)
+_, _, etype, code, value = struct.unpack(EVENT_FMT, data)
+if etype == EV_KEY and code == KEY_POWER and value == 1:
+    handle_press()
+```
+
+`value` carries `1` for press, `0` for release and `2` for autorepeat. Only `1` is interesting here, and filtering on it is what stops a held button from producing a stream of presses.
+
+One portability caveat: `'llHHi'` assumes a 64 bit `time_t` and native struct alignment. On 32 bit userland the layout differs and the format string has to change. For a daemon targeting modern x86_64 machines this is fine, but it is the first thing to check if the reads come back as garbage.
+
+## Finding the right device, and why there is more than one
+
+Device numbering is not stable, so the daemon globs and matches on name instead:
+
+```python
+def button_devices():
+    found = []
+    for path in sorted(glob.glob('/dev/input/event*')):
+        try:
+            fd = open(path, 'rb', buffering=0)
+        except OSError:
+            continue
+        name = ''
+        try:
+            with open('/sys/class/input/%s/device/name'
+                      % os.path.basename(path)) as n:
+                name = n.read().strip()
+        except OSError:
+            pass
+        if name == 'Power Button':
+            found.append(fd)
+            log('watching %s (%s)' % (path, name))
+        else:
+            fd.close()
+    return found
+```
+
+Note `buffering=0`. With Python's default buffering, a read can pull several events into userspace at once and the parsing stops lining up with the 24 byte boundary.
+
+Now the part that matters. ACPI commonly exposes **two** power buttons:
+
+- `LNXPWRBN`, the fixed feature button defined in the ACPI tables
+- `PNP0C0C`, the control method button
+
+Both appear under `/dev/input`, and both are named exactly `Power Button`.
+
+Here are the two relevant blocks from `/proc/bus/input/devices` on the machine this post is about:
+
+```
+I: Bus=0019 Vendor=0000 Product=0001 Version=0000
+N: Name="Power Button"
+P: Phys=PNP0C0C/button/input0
+S: Sysfs=/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0C:00/input/input0
+U: Uniq=
+H: Handlers=kbd event0
+
+I: Bus=0019 Vendor=0000 Product=0001 Version=0000
+N: Name="Power Button"
+P: Phys=LNXPWRBN/button/input0
+S: Sysfs=/devices/LNXSYSTM:00/LNXPWRBN:00/input/input1
+U: Uniq=
+H: Handlers=kbd event1
+```
+
+Same name, same bus, same vendor and product id. The only thing telling them apart is `Phys`, and they land on **two different event nodes**: `event0` and `event1`.
+
+The daemon watches every match rather than picking one, because which of the two your firmware actually wires up is not knowable in advance. You can see both being picked up at startup:
+
+```
+powerbutton-guard[1107]: config: ARM_WINDOW=2.0s GRACE_MINUTES=1 LED=/sys/class/leds/input3::scrolllock/brightness TTY=/dev/tty1
+powerbutton-guard[1107]: watching /dev/input/event0 (Power Button)
+powerbutton-guard[1107]: watching /dev/input/event1 (Power Button)
+```
+
+On many boards a single physical press then produces an event on **both**.
+
+## Bug one: one press, two events
+
+With two devices delivering the same press, the naive implementation sees a double press from a single touch. The guard then treats an accidental brush as a deliberate confirmation and shuts the machine down instantly. That is not a broken feature, it is precisely the bug the daemon exists to prevent, reintroduced by its own fix.
+
+The fix is a debounce, and the important detail is that it is **global rather than per device**:
+
+```python
+DEBOUNCE = 0.4   # one physical press can surface on several ACPI devices
+
+if pressed:
+    if now - last_press < DEBOUNCE:
+        continue          # same physical press seen on another device
+    last_press = now
+```
+
+A per device debounce would do nothing here, because the duplicate arrives on a *different* file descriptor. One shared timestamp across all devices is what collapses them.
+
+400 ms is comfortably longer than the few milliseconds between the two kernel deliveries, and comfortably shorter than any human double press.
+
+## The event loop
+
+`select()` with a computed timeout keeps the loop asleep when nothing is happening while still expiring the arm window on time:
+
+```python
+while True:
+    timeout = None
+    if armed_until:
+        timeout = max(0.05, armed_until - time.monotonic())
+    ready, _, _ = select.select(list(fds), [], [], timeout)
+```
+
+`timeout=None` blocks indefinitely when disarmed, so an idle daemon costs nothing. `time.monotonic()` rather than `time.time()` matters: the arm window must survive an NTP step or a manual clock change, and wall clock time does not guarantee that. The `0.05` floor prevents a busy spin when the deadline has just passed.
+
+## Bug two: never cache what another process can change
+
+A press during the countdown means cancel. So the daemon needs to know whether a shutdown is pending.
+
+My first version kept a boolean. It was wrong within a day.
+
+Cancel a countdown from an SSH session with `shutdown -c` and that boolean goes stale. systemd no longer has a shutdown scheduled, the daemon still believes it does, and the next press gets swallowed as a redundant cancel instead of arming a new one. The button appears dead and nothing in the logs explains it.
+
+systemd already publishes the answer:
+
+```python
+SCHEDULED = '/run/systemd/shutdown/scheduled'
+
+def shutdown_pending():
+    """Authoritative. Deliberately NOT cached: a `shutdown -c` from an SSH
+    session would leave a cached flag stale."""
+    return os.path.exists(SCHEDULED)
+```
+
+The file itself is readable and worth knowing about:
+
+```
+USEC=1757152800000000
+WARN_WALL=1
+MODE=poweroff
+```
+
+One `os.path.exists` per button press is free at this frequency. The general form of the lesson: when another process can change a piece of state, your copy of it is a guess with a timestamp on it. Ask the system.
+
+## The state machine
+
+Three branches, in priority order:
+
+```python
+if shutdown_pending():                       # cancel beats everything
+    subprocess.run(['shutdown', '-c'], check=False)
+    armed_until = 0.0
+    notify('shutdown CANCELLED')
+    blink(2)
+elif armed_until and now < armed_until:      # second press inside the window
+    armed_until = 0.0
+    subprocess.run(['shutdown', '-h', '+%d' % GRACE_MIN], check=False)
+    blink(6, 0.08, 0.08)
+else:                                        # first press: arm only
+    armed_until = now + ARM_WINDOW
+    blink(1, 0.25, 0.1)
+```
+
+Cancel is checked first deliberately. If a shutdown is running, every press should stop it, regardless of what the daemon believes about its own arm state.
+
+Here is a real cycle from the journal, timestamps and all:
+
+```
+16:12:12  powerbutton-guard[14166]: armed
+16:12:14  powerbutton-guard[14166]: disarmed
+16:12:20  powerbutton-guard[14166]: armed
+16:12:22  powerbutton-guard[14166]: confirmed -> shutdown -h +1
+16:12:22  shutdown[16947]: Shutdown scheduled for Tue 2026-09-01 16:13:22 UTC, use 'shutdown -c' to cancel.
+16:12:25  systemd-logind[14514]: System shutdown has been cancelled
+16:12:25  powerbutton-guard[14166]: cancelled
+```
+
+The first two lines are the whole point of the thing: a press, two seconds of nothing, and then the guard quietly forgets about it. The machine stayed up.
+
+The second group is a deliberate shutdown at 16:12:20 and 16:12:22, and a third press three seconds later that cancelled it with 57 seconds of grace still on the clock.
+
+Follow along live with `journalctl -u powerbutton-guard -f`.
+
+## Why the feedback is a keyboard LED and not a beep
+
+The obvious confirmation is a beep. My mini PC cannot make a sound: no buzzer on the board, nothing in the analog jack, an HDMI monitor without speakers.
+
+Worth knowing before you go down that path: `pcspkr` loading successfully proves nothing. `/sys/devices/platform/pcspkr` and the legacy `isa0061` port exist on essentially every x86 board whether or not a buzzer was ever soldered on, and most distributions blacklist the module anyway.
+
+So feedback is a keyboard LED over sysfs:
+
+```python
+for pattern in ('*::scrolllock', '*::capslock', '*::numlock'):
+    for path in sorted(glob.glob('/sys/class/leds/' + pattern)):
+        candidate = os.path.join(path, 'brightness')
+        if os.access(candidate, os.W_OK):
+            return candidate
+```
+
+Scroll lock first, because nothing else uses it. Blinking caps or num lock would be indistinguishable from a real state change. The `os.access(..., W_OK)` check matters because plenty of `/sys/class/leds` entries exist but are not writable, and picking one of those means silent failure.
+
+Two more channels back it up, and none of the three is required to succeed:
+
+```python
+with open(NOTIFY_TTY, 'w') as t:            # console, for an attached monitor
+    t.write('\n[power button] ' + msg + '\n')
+subprocess.run(['wall', '-n', '[power button] ' + msg],
+               stderr=subprocess.DEVNULL, check=False)   # every SSH session
+```
+
+`wall -n` suppresses the usual broadcast banner, so what lands in an SSH session is just the line itself, dropped straight into whatever you were doing:
+
+```
+daniel@agenthost:~$ tail -f /var/log/syslog
+
+[power button] shutting down in 1 minute(s) - press the button again or run "shutdown -c" to cancel
+```
+
+That is the channel that matters when the machine lives under a desk in another room. The console message is for whoever is standing in front of it, and the LED is for whoever is looking at the keyboard. This one reaches you wherever you happen to be logged in.
+
+## The unit file
+
+```ini
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/powerbutton-guard
+ExecStart=/usr/local/sbin/powerbutton-guard
+Restart=always
+RestartSec=2
+
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+RestrictSUIDSGID=yes
+MemoryDenyWriteExecute=yes
+```
+
+The daemon needs root for `/dev/input` and to call `shutdown(8)`, so the hardening is worth having. `ProtectSystem=strict` mounts the entire filesystem read only **except** `/dev`, `/proc` and `/sys`, which is exactly the set the LED write needs. That is a convenient accident rather than a design, but it means the strictest setting happens to be the compatible one.
+
+`Restart=always` is not cosmetic. If the daemon dies, the button does nothing at all.
+
+## Configuration
+
+```sh
+# /etc/default/powerbutton-guard
+ARM_WINDOW=2.0        # seconds between first and second press
+GRACE_MINUTES=1       # cancellable minutes before power actually goes off
+LED_PATH=auto         # auto | none | /sys/class/leds/<name>/brightness
+NOTIFY_TTY=/dev/tty1  # console to write to, or none. wall is always used
+```
+
+Then `sudo systemctl restart powerbutton-guard`.
+
+## Installing it
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/kreuzhofer/powerbutton-guard/main/install.sh | sudo bash
+```
+
+The installer is idempotent and keeps config you have already edited. If you would rather read it first, and you should before piping anything into a root shell, clone the repo and run `./install.sh` from the checkout so nothing is downloaded at install time.
+
+Requirements: systemd (tested on 255 under Ubuntu 24.04), `python3` with standard library only, and root.
+
+## The failure mode you should know about
+
+If the daemon is not running, the button does nothing at all.
+
+That is the safe direction to fail and it is deliberate. But it does mean you cannot power the machine down from the front panel any more without holding the button for a firmware level hard cut. Keep another way in, and test the pattern before you rely on it.
+
+The code is on GitHub under MIT: [kreuzhofer/powerbutton-guard](https://github.com/kreuzhofer/powerbutton-guard). If your box has the same problem, take it. And if you solved it differently, I would like to hear it.
