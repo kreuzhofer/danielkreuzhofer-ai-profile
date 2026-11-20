@@ -1,22 +1,18 @@
-jest.mock('next/server', () => ({
-  NextResponse: {
-    redirect: (url: URL, status: number) => ({
-      status,
-      headers: {
-        get: (name: string) =>
-          name.toLowerCase() === 'location' ? url.toString() : null,
-      },
-    }),
-  },
-}));
-
+/**
+ * @jest-environment node
+ */
 import { GET } from './route';
 
-describe('/coaching 301 redirect (offer offline)', () => {
-  it('redirects GET /coaching to the home page with 301', async () => {
-    const request = { url: 'https://danielkreuzhofer.de/coaching' } as Request;
-    const response = await GET(request);
+describe('/coaching 301 redirect', () => {
+  it('redirects to the home page with 301', () => {
+    const response = GET();
     expect(response.status).toBe(301);
-    expect(response.headers.get('location')).toBe('https://danielkreuzhofer.de/');
+  });
+
+  it('uses a relative Location so the public host is kept behind the reverse proxy', () => {
+    // Regression: building the target from request.url resolved to the internal
+    // host (https://localhost:8087/) in production.
+    const response = GET();
+    expect(response.headers.get('location')).toBe('/');
   });
 });
