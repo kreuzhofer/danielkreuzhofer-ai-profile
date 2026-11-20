@@ -6,6 +6,7 @@
  *
  * @see Requirements 9.1, 9.2, 9.3, 9.4, 9.5
  */
+import { PORTFOLIO_OWNER } from '@/lib/portfolio-owner';
 
 import {
   buildAnalysisPrompt,
@@ -167,8 +168,8 @@ describe("fit-analysis-prompt", () => {
       expect(prompt).not.toContain("{ownerRole}");
       expect(prompt).not.toContain("{ownerEmployer}");
       expect(prompt).toContain("Daniel Kreuzhofer");
-      expect(prompt).toContain("Senior AI Solutions Architect");
-      expect(prompt).toContain("Amazon Web Services");
+      expect(prompt).toContain(PORTFOLIO_OWNER.role);
+      expect(prompt).toContain(PORTFOLIO_OWNER.employer);
     });
 
     it("uses third-person voice instructions", async () => {

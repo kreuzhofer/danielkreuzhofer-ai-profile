@@ -5,6 +5,7 @@
 
 // Experience entries - listed in order of appearance (most recent first)
 export const experienceFiles: string[] = [
+  'nebius.mdx',
   'aws-current.mdx',
   'aws-team-lead.mdx',
   'aws-healthcare.mdx',

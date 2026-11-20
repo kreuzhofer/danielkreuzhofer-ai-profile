@@ -1,3 +1,4 @@
+import { PORTFOLIO_OWNER } from '@/lib/portfolio-owner';
 import {
   generateResultsMarkdown,
   generateResultsPdf,
@@ -63,7 +64,7 @@ describe('generateResultsMarkdown', () => {
   it('includes the portfolio owner name and role', () => {
     const md = generateResultsMarkdown(makeAssessment(), 'Full job description text');
     expect(md).toContain('Daniel Kreuzhofer');
-    expect(md).toContain('Senior AI Solutions Architect');
+    expect(md).toContain(PORTFOLIO_OWNER.role);
   });
 
   it('includes the confidence level label', () => {
