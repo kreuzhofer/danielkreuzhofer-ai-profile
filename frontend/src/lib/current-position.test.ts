@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { getExperiences } from './content';
+import { getAbout, getExperiences } from './content';
 import { PORTFOLIO_OWNER } from './portfolio-owner';
 import { experienceFiles } from '../../content/experience/_index';
 
@@ -26,5 +26,12 @@ describe('current position (Nebius since Sep 2026)', () => {
   it('names Nebius as the current employer for chat and fit analysis', () => {
     expect(PORTFOLIO_OWNER.employer).toBe('Nebius');
     expect(PORTFOLIO_OWNER.role).toBe('Senior Solutions Architect');
+  });
+
+  it('bio no longer presents the AWS job as current or offers coaching', () => {
+    const about = getAbout();
+    expect(about.bio).not.toMatch(/Today I help companies in retail|migrating to AWS/);
+    expect(about.bio).toMatch(/AI infrastructure/);
+    expect(about.valueProposition).not.toMatch(/coaching/i);
   });
 });
