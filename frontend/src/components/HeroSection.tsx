@@ -117,7 +117,7 @@ export function HeroSection({
       <div className="relative z-10 max-w-4xl mx-auto text-center flex-1 flex flex-col justify-center">
         {/* Eyebrow */}
         <p className="text-[var(--secondary-400)] text-xs font-bold tracking-[0.18em] uppercase mb-3">
-          KI-Coaching mit Kante
+          Cloud. AI. Clarity.
         </p>
         {/* Headline */}
         <h1

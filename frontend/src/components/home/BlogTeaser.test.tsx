@@ -10,7 +10,7 @@ describe('BlogTeaser', () => {
   it('renders the given posts linking to their slug + an all-articles link', () => {
     render(<BlogTeaser posts={posts} />);
     expect(screen.getByRole('link', { name: /Erster Artikel/ })).toHaveAttribute('href', '/blog/erster');
-    expect(screen.getByRole('link', { name: /Alle Artikel/ })).toHaveAttribute('href', '/blog');
+    expect(screen.getByRole('link', { name: /All articles/ })).toHaveAttribute('href', '/blog');
   });
 
   it('renders nothing when there are no posts', () => {

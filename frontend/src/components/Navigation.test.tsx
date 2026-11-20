@@ -132,16 +132,16 @@ describe('Navigation Component', () => {
       );
 
       expect(screen.getByRole('link', { name: 'Start' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Über mich' })).toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'Über mich' })).not.toBeInTheDocument();
       expect(screen.queryByRole('link', { name: 'Coaching' })).not.toBeInTheDocument();
       expect(screen.queryByRole('link', { name: 'About' })).not.toBeInTheDocument();
       expect(screen.queryByRole('link', { name: 'Experience' })).not.toBeInTheDocument();
     });
 
-    it('renders the Engpass-Check micro-magnet CTA as an internal link', () => {
+    it('renders the Contact CTA as an internal link to the contact section', () => {
       render(<Navigation sections={DEFAULT_SECTIONS} currentSection="" />);
-      const cta = screen.getByRole('link', { name: 'Engpass-Check' });
-      expect(cta).toHaveAttribute('href', '/engpass-check');
+      const cta = screen.getByRole('link', { name: 'Contact' });
+      expect(cta).toHaveAttribute('href', '/#contact');
       expect(cta).not.toHaveAttribute('target');
     });
 
@@ -254,7 +254,6 @@ describe('Navigation Component', () => {
       );
 
       expect(screen.getByRole('link', { name: 'Start' })).toHaveAttribute('href', '/');
-      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveAttribute('href', '/about');
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveAttribute('href', '/blog');
     });
   });
@@ -296,18 +295,15 @@ describe('Navigation Component', () => {
         />
       );
 
-      // Tab through all navigation links and the micro-magnet CTA
+      // Tab through all navigation links and the Contact CTA
       await user.tab();
       expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
       await user.tab();
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Engpass-Check' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
     });
   });
 });
@@ -317,7 +313,7 @@ describe('DEFAULT_SECTIONS', () => {
     const sectionLabels = DEFAULT_SECTIONS.map(s => s.label);
 
     expect(sectionLabels).toContain('Start');
-    expect(sectionLabels).toContain('Über mich');
+    expect(sectionLabels).not.toContain('Über mich');
     expect(sectionLabels).toContain('Blog');
     expect(sectionLabels).not.toContain('Coaching');
   });
@@ -326,12 +322,12 @@ describe('DEFAULT_SECTIONS', () => {
     const sectionHrefs = DEFAULT_SECTIONS.map(s => s.href);
 
     expect(sectionHrefs).toContain('/');
-    expect(sectionHrefs).toContain('/about');
+    expect(sectionHrefs).not.toContain('/about');
     expect(sectionHrefs).toContain('/blog');
   });
 
-  it('has exactly 3 sections', () => {
-    expect(DEFAULT_SECTIONS).toHaveLength(3);
+  it('has exactly 2 sections', () => {
+    expect(DEFAULT_SECTIONS).toHaveLength(2);
   });
 
   it('contains Blog entry with /blog href', () => {
@@ -509,7 +505,7 @@ describe('MobileMenu Component', () => {
       );
 
       expect(screen.getByRole('link', { name: 'Start' })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Über mich' })).toBeInTheDocument();
+      expect(screen.queryByRole('link', { name: 'Über mich' })).not.toBeInTheDocument();
       expect(screen.getByRole('link', { name: 'Blog' })).toBeInTheDocument();
       expect(screen.queryByRole('link', { name: 'Coaching' })).not.toBeInTheDocument();
     });
@@ -656,8 +652,8 @@ describe('MobileMenu Component', () => {
         />
       );
 
-      const aboutLink = screen.getByRole('link', { name: 'Über mich' });
-      await user.click(aboutLink);
+      const blogLink = screen.getByRole('link', { name: 'Blog' });
+      await user.click(blogLink);
 
       expect(handleClose).toHaveBeenCalledTimes(1);
       expect(handleNavigate).not.toHaveBeenCalled();
@@ -779,15 +775,12 @@ describe('MobileMenu Component', () => {
         expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
       });
 
-      // Tab through remaining navigation links and the micro-magnet CTA
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
-
+      // Tab through remaining navigation links and the Contact CTA
       await user.tab();
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Engpass-Check' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
     });
   });
 });

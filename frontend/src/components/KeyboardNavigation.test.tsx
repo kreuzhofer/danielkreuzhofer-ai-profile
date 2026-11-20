@@ -101,18 +101,15 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
         />
       );
 
-      // Tab through all navigation links and the micro-magnet CTA
+      // Tab through all navigation links and the Contact CTA
       await user.tab();
       expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
-
-      await user.tab();
-      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
 
       await user.tab();
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Engpass-Check' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
     });
 
     it('navigation links have visible focus indicators', () => {
@@ -143,12 +140,12 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       // Route links are keyboard-activatable via their href; focus, press Enter
       // (must not throw — JSDOM can't perform the navigation itself), and confirm
       // the link remains a real, focusable anchor pointing at the route.
-      const aboutLink = screen.getByRole('link', { name: 'Über mich' });
-      aboutLink.focus();
-      expect(aboutLink).toHaveFocus();
+      const blogLink = screen.getByRole('link', { name: 'Blog' });
+      blogLink.focus();
+      expect(blogLink).toHaveFocus();
       await user.keyboard('{Enter}');
-      expect(aboutLink).toHaveFocus();
-      expect(aboutLink).toHaveAttribute('href', '/about');
+      expect(blogLink).toHaveFocus();
+      expect(blogLink).toHaveAttribute('href', '/blog');
     });
   });
 
@@ -375,7 +372,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
 
       // Tab through remaining links
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
     });
 
     it('mobile menu links have visible focus indicators', () => {
@@ -448,7 +445,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       });
     });
 
-    it('Engpass-Check micro-magnet CTA has visible focus indicator', () => {
+    it('Contact CTA has visible focus indicator', () => {
       render(
         <Navigation
           sections={DEFAULT_SECTIONS}
@@ -456,7 +453,7 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
         />
       );
 
-      const ctaLink = screen.getByRole('link', { name: 'Engpass-Check' });
+      const ctaLink = screen.getByRole('link', { name: 'Contact' });
       expect(ctaLink).toHaveClass('focus:ring-2');
       expect(ctaLink).toHaveClass('focus:ring-[var(--primary-500)]');
     });
@@ -495,19 +492,16 @@ describe('Keyboard Navigation (Requirements 1.6, 7.2)', () => {
       await user.tab();
       expect(screen.getByRole('link', { name: 'Daniel Kreuzhofer - Go to homepage' })).toHaveFocus();
 
-      // 3-5. Navigation route links (Start, Über mich, Blog)
+      // 3-4. Navigation route links (Start, Blog)
       await user.tab();
       expect(screen.getByRole('link', { name: 'Start' })).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Über mich' })).toHaveFocus();
-
-      await user.tab();
       expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
 
-      // 7. Engpass-Check micro-magnet CTA
+      // 5. Contact CTA
       await user.tab();
-      expect(screen.getByRole('link', { name: 'Engpass-Check' })).toHaveFocus();
+      expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus();
 
       // 7. Mobile menu button (visible in DOM even if hidden on desktop)
       await user.tab();

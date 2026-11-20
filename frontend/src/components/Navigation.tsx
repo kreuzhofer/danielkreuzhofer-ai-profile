@@ -339,10 +339,10 @@ export function MobileMenu({
           })}
         </ul>
 
-        {/* Micro-magnet CTA */}
+        {/* Contact CTA */}
         <div className="px-4 py-4 border-t border-[var(--border)]">
           <Link
-            href="/engpass-check"
+            href="/#contact"
             onClick={onClose}
             className="
               flex items-center justify-center
@@ -354,7 +354,7 @@ export function MobileMenu({
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--surface)]
             "
           >
-            Engpass-Check
+            Contact
           </Link>
         </div>
       </nav>
@@ -457,7 +457,6 @@ export interface NavigationProps {
  */
 export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
   { href: '/', label: 'Start' },
-  { href: '/about', label: 'Über mich' },
   { href: '/blog', label: 'Blog' },
 ];
 
@@ -469,7 +468,7 @@ export const DEFAULT_SECTIONS: Omit<NavLinkProps, 'isActive' | 'onClick'>[] = [
  * - Provides access to all sections within 2 clicks (Requirement 1.1)
  * - Indicates current active section (Requirement 1.5)
  * - Keyboard navigable with visible focus states
- * - Includes Erstgespräch booking CTA button
+ * - Includes Contact CTA button (jumps to the contact section on /)
  * - Supports route-based links (e.g., /blog) alongside anchor links
  * - Determines active state for route links via pathname
  * 
@@ -539,10 +538,10 @@ export function Navigation({
         );
       })}
       
-      {/* Micro-magnet CTA */}
+      {/* Contact CTA */}
       <div className="flex items-center ml-4">
         <Link
-          href="/engpass-check"
+          href="/#contact"
           className="
             px-4 py-2
             bg-[var(--primary-500)] hover:bg-[var(--primary-400)]
@@ -552,7 +551,7 @@ export function Navigation({
             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-500)] focus:ring-offset-[var(--background)]
           "
         >
-          Engpass-Check
+          Contact
         </Link>
       </div>
     </nav>

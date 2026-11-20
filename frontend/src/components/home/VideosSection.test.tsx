@@ -11,7 +11,7 @@ describe('VideosSection', () => {
 
   it('links to the YouTube channel', () => {
     render(<VideosSection />);
-    expect(screen.getByRole('link', { name: /YouTube-Kanal/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /YouTube channel/ })).toHaveAttribute(
       'href',
       'https://www.youtube.com/@DanielKreuzhofer',
     );

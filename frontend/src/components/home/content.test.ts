@@ -1,4 +1,4 @@
-import { FEATURED_VIDEOS, YOUTUBE_CHANNEL_URL, ENGPASS_HREF, homeContent } from './content';
+import { FEATURED_VIDEOS, YOUTUBE_CHANNEL_URL, homeContent } from './content';
 
 describe('home content module', () => {
   it('features the latest channel videos and links the channel', () => {
@@ -7,8 +7,7 @@ describe('home content module', () => {
     expect(YOUTUBE_CHANNEL_URL).toContain('@DanielKreuzhofer');
   });
 
-  it('makes the micro-magnet the hero primary CTA (not a sales call)', () => {
-    expect(homeContent.hero.primaryHref).toBe('/engpass-check');
-    expect(ENGPASS_HREF).toBe('/engpass-check');
+  it('links the blog teaser to the blog index', () => {
+    expect(homeContent.blog.href).toBe('/blog');
   });
 });

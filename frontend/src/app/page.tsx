@@ -1,33 +1,47 @@
 import { Metadata } from 'next';
 import { Layout } from '@/components/Layout';
+import { HeroSection } from '@/components/HeroSection';
+import { AboutSection } from '@/components/AboutSection';
+import { ExperienceSection } from '@/components/ExperienceSection';
+import { ProjectsSection } from '@/components/ProjectsSection';
+import { SkillsSection } from '@/components/SkillsSection';
+import { RecruiterCTASection } from '@/components/RecruiterCTASection';
+import { ContactSection } from '@/components/ContactSection';
+import { VideosSection, BlogTeaser } from '@/components/home';
 import {
-  ContentHero,
-  VideosSection,
-  MicroMagnetSection,
-  BlogTeaser,
-  AboutTeaser,
-} from '@/components/home';
-import { getBlogPosts } from '@/lib/content';
+  getAbout,
+  getHero,
+  getExperiences,
+  getProjects,
+  getSkillCategories,
+  getContact,
+  getBlogPosts,
+} from '@/lib/content';
 import { getLatestVideos } from '@/lib/youtube';
 
 export const metadata: Metadata = {
-  title: 'Daniel Kreuzhofer — KI-Coaching mit Kante',
+  title: 'Daniel Kreuzhofer — Senior Solutions Architect',
   description:
-    'Klartext zu KI für Führungskräfte im Mittelstand: Videos, Tools und der 3-Minuten-Engpass-Check. Selbst getestet, ohne Hype.',
+    'Daniel Kreuzhofer — Senior Solutions Architect. Experience, projects, skills, self-built AI tools, plus videos and blog posts on AI in practice.',
   openGraph: {
-    title: 'Daniel Kreuzhofer — KI-Coaching mit Kante',
-    description:
-      'Klartext zu KI für Führungskräfte im Mittelstand: Videos, Tools und der 3-Minuten-Engpass-Check.',
+    title: 'Daniel Kreuzhofer — Senior Solutions Architect',
+    description: 'Experience, projects, skills, self-built AI tools, videos and blog.',
     type: 'website',
   },
 };
 
 /**
- * Home = top-of-funnel CONTENT entry point. Promotes Daniel's content (latest videos
- * fetched from the channel RSS) and routes visitors to the micro-magnet (Engpass-Check).
- * The paid offer is no longer published on the site.
+ * Home = Daniel's personal profile (the coaching offer is offline; /about and
+ * /coaching 301 here). Latest videos and blog posts follow the profile, the
+ * contact section closes the page.
  */
 export default async function Home() {
+  const hero = getHero();
+  const about = getAbout();
+  const experiences = getExperiences();
+  const projects = getProjects();
+  const skillCategories = getSkillCategories();
+  const contact = getContact();
   const videos = await getLatestVideos(3);
   const posts = [...getBlogPosts()]
     .sort((a, b) => b.date.localeCompare(a.date))
@@ -35,11 +49,20 @@ export default async function Home() {
 
   return (
     <Layout>
-      <ContentHero />
+      <HeroSection
+        headline={hero.headline}
+        tagline={hero.tagline}
+        ctaText={hero.ctaText}
+        ctaHref={hero.ctaHref}
+      />
+      <AboutSection about={about} />
+      <ExperienceSection experiences={experiences} />
+      <ProjectsSection projects={projects} />
+      <SkillsSection skillCategories={skillCategories} />
       <VideosSection videos={videos} />
-      <MicroMagnetSection />
       <BlogTeaser posts={posts} />
-      <AboutTeaser />
+      <RecruiterCTASection />
+      <ContactSection contact={contact} />
     </Layout>
   );
 }
